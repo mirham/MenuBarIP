@@ -10,7 +10,8 @@ import Foundation
 struct Constants{
     // MARK: Default values
     static let defaultCountryCode = "US"
-    static let defaultIpAddress = "1.1.1.1"
+    static let defaultPublicIpAddress = "1.1.1.1"
+    static let defaultLocalIpAddress = "192.168.1.2"
     static let zshPath = "/bin/zsh"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
@@ -21,6 +22,8 @@ struct Constants{
     static let ipV6: Int = 6
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
+    static let physicalNetworkInterfacePrefix = "en"
+    static let defaultMenuBarTextSize: Double = 10.0
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -50,13 +53,14 @@ struct Constants{
     static let settingsKeyShownMenuBarItems = "shown-menubar-items"
     static let settingsKeyHiddenMenuBarItems = "hidden-menubar-items"
     static let settingsKeyMenuBarUseThemeColor = "menubar-use-theme-color"
+    static let settingsKeyMenuBarTextSize = "menubar-text-size"
     
     // MARK: Elements names
     static let settings = "Settings"
     static let info = "Info"
     static let show = "Show"
     static let quit = "Quit"
-    static let none = "None"
+    static let none = "..."
     static let on = "On"
     static let off = "Off"
     static let add = "Add"
@@ -91,6 +95,7 @@ struct Constants{
     static let settingsElementCustomization = "Customization"
     static let settingsElementShownItems = "Shown menu bar items"
     static let settingsElementHiddenItems = "Hidden menu bar items"
+    static let settingsElementItemsSize = "Items size"
     static let settingsElementKeepAppRunning = "Keep application running"
     static let settingsElementIps = "IP adresses customization"
     static let settingsElementIpAddressApis = "IP APIs"
@@ -113,7 +118,10 @@ struct Constants{
     static let hintIpApis = "Add an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
     
     // MARK: Menubar item keys
-    static let mbItemKeyIpAddress = "ip-address"
+    static let mbItemKeyPublicIpAddress = "public-ip-address"
+    static let mbItemKeyLocalIpAddress = "local-ip-address"
+    static let mbItemKeyBothIpAddressesPublicUpper = "both-ips-public-upper"
+    static let mbItemKeyBothIpAddressesPublicLower = "both-ips-public-lower"
     static let mbItemKeyCountryCode = "country-code"
     static let mbItemKeyCountryFlag = "country-flag"
     static let mbItemKeyCustomText = "custom-text"
@@ -165,13 +173,16 @@ struct Constants{
         """;
     
     static let defaultShownMenuBarItems = [
-        mbItemKeyIpAddress,
-        mbItemKeySeparatorBullet,
+        mbItemKeyPublicIpAddress,
+        mbItemKeySeparatorBigBullet,
         mbItemKeyCountryFlag,
         mbItemKeyCountryCode
     ]
     
     static let defaultHiddenMenuBarItems = [
+        mbItemKeyBothIpAddressesPublicUpper,
+        mbItemKeyBothIpAddressesPublicLower,
+        mbItemKeyLocalIpAddress,
         mbItemKeyCustomText,
         mbItemKeySeparatorBullet,
         mbItemKeySeparatorBigBullet,

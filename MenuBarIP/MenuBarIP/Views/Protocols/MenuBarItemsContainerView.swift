@@ -29,50 +29,103 @@ extension MenuBarItemsContainerView {
             
             for key in keys {
                 switch key {
-                    case Constants.mbItemKeyIpAddress:
-                        let ipAddress = getIpAddressItem(
-                            ipAddress: appState.network.currentIpInfo == nil
-                            ? Constants.none
-                            : appState.network.currentIpInfo!.ipAddress,
+                    case Constants.mbItemKeyPublicIpAddress:
+                        let publicIpAddress = getIpAddressItem(
+                            ipAddress: appState.network.publicIpInfo == nil
+                                ? Constants.none
+                                : appState.network.publicIpInfo!.ipAddress,
                             color: mainColor,
-                            exampleAllowed: exampleAllowed)
-                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: ipAddress), key: key)
+                            exampleAllowed: exampleAllowed,
+                            isPublic: true,
+                            textSize: appState.userData.menuBarTextSize)
+                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: publicIpAddress), key: key)
+                        result.append(menuBarItem)
+                    case Constants.mbItemKeyLocalIpAddress:
+                        let localIpAddress = getIpAddressItem(
+                            ipAddress: appState.network.localIp == nil
+                                ? Constants.none
+                                : appState.network.localIp!,
+                            color: mainColor,
+                            exampleAllowed: exampleAllowed,
+                            isPublic: false,
+                            textSize: appState.userData.menuBarTextSize)
+                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: localIpAddress), key: key)
+                        result.append(menuBarItem)
+                    case Constants.mbItemKeyBothIpAddressesPublicUpper:
+                        let view = getBothIpAddressessItem(
+                            ipAddressUpper: appState.network.publicIpInfo == nil
+                                ? Constants.none
+                                : appState.network.publicIpInfo!.ipAddress,
+                            ipAddressLower: appState.network.localIp == nil
+                                ? Constants.none
+                                : appState.network.localIp!,
+                            colorUpper: mainColor,
+                            colorLower: mainColor,
+                            exampleAllowed: exampleAllowed,
+                            isPublicUpper: true)
+                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
+                        result.append(menuBarItem)
+                    case Constants.mbItemKeyBothIpAddressesPublicLower:
+                        let view = getBothIpAddressessItem(
+                            ipAddressUpper: appState.network.localIp == nil
+                                ? Constants.none
+                                : appState.network.localIp!,
+                            ipAddressLower: appState.network.publicIpInfo == nil
+                                ? Constants.none
+                                : appState.network.publicIpInfo!.ipAddress,
+                            colorUpper: mainColor,
+                            colorLower: mainColor,
+                            exampleAllowed: exampleAllowed,
+                            isPublicUpper: false)
+                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCountryCode:
                         let countryCode = getCountryCodeItem(
-                            countryCode: appState.network.currentIpInfo == nil
+                            countryCode: appState.network.publicIpInfo == nil
                             ? String()
-                            : appState.network.currentIpInfo!.countryCode,
+                            : appState.network.publicIpInfo!.countryCode,
                             color: mainColor,
-                            exampleAllowed: exampleAllowed)
+                            exampleAllowed: exampleAllowed,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: countryCode), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCountryFlag:
                         let countryFlag = getCountryFlagItem(
-                            countryCode: appState.network.currentIpInfo == nil
+                            countryCode: appState.network.publicIpInfo == nil
                             ? String()
-                            : appState.network.currentIpInfo!.countryCode,
-                            exampleAllowed: exampleAllowed)
+                            : appState.network.publicIpInfo!.countryCode,
+                            exampleAllowed: exampleAllowed,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: countryFlag, key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorBullet:
-                        let bullet = getBulletItem(color: baseColor)
+                        let bullet = getBulletItem(
+                            color: baseColor,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: bullet), key: key, isSeparator: true)
                         result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorBigBullet:
-                        let bigBullet = getBulletItem(color: baseColor, textSize: 16.0)
+                        let bigBullet = getBulletItem(
+                            color: baseColor,
+                            textSize: 16.0)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: bigBullet), key: key, isSeparator: true)
                         result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorPipe:
-                        let pipe = getPipeItem(color: baseColor)
+                        let pipe = getPipeItem(
+                            color: baseColor,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: pipe), key: key, isSeparator: true)
                         result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorLeftBracket:
-                        let leftBracket = getLeftBracketItem(color: baseColor)
+                        let leftBracket = getLeftBracketItem(
+                            color: baseColor,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: leftBracket), key: key, isSeparator: true)
                         result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorRightBracket:
-                        let rightBracket = getRightBracketItem(color: baseColor)
+                        let rightBracket = getRightBracketItem(
+                            color: baseColor,
+                            textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: rightBracket), key: key, isSeparator: true)
                         result.append(menuBarItem)
                     default:
@@ -92,27 +145,69 @@ extension MenuBarItemsContainerView {
         return result
     }
     
-    private func getIpAddressItem(ipAddress: String, color: Color, exampleAllowed: Bool) -> Text {
+    private func getIpAddressItem(
+        ipAddress: String,
+        color: Color,
+        exampleAllowed: Bool,
+        isPublic: Bool,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let effectiveIpAddress = (ipAddress.isEmpty || ipAddress == Constants.none) && exampleAllowed
-        ? Constants.defaultIpAddress
-        : ipAddress
+            ? isPublic
+                ? Constants.defaultPublicIpAddress
+                : Constants.defaultLocalIpAddress
+            : ipAddress
         
         let result = Text(effectiveIpAddress.uppercased())
-            .asMenuBarItem(color: color)
+            .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
     
-    private func getCountryCodeItem(countryCode: String, color: Color, exampleAllowed: Bool) -> Text {
+    private func getBothIpAddressessItem(
+        ipAddressUpper: String,
+        ipAddressLower: String,
+        colorUpper: Color,
+        colorLower: Color,
+        exampleAllowed: Bool,
+        isPublicUpper: Bool) -> some View {
+            let upperItem = getIpAddressItem(
+                ipAddress: ipAddressUpper,
+                color: colorUpper,
+                exampleAllowed: exampleAllowed,
+                isPublic: isPublicUpper,
+                textSize: 10)
+            let lowerItem = getIpAddressItem(
+                ipAddress: ipAddressLower,
+                color: colorLower,
+                exampleAllowed: exampleAllowed,
+                isPublic: !isPublicUpper,
+                textSize: 10)
+            
+            let result = VStack(alignment: .leading) {
+                upperItem
+                lowerItem
+            }
+            
+            return result
+        }
+    
+    private func getCountryCodeItem(
+        countryCode: String, 
+        color: Color,
+        exampleAllowed: Bool,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let effectiveCountryCode = countryCode.isEmpty && exampleAllowed ? Constants.defaultCountryCode : countryCode
         
         let result = Text(effectiveCountryCode.uppercased())
-            .asMenuBarItem(color: color)
+            .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
     
-    private func getCountryFlagItem(countryCode: String, exampleAllowed: Bool) -> NSImage {
+    private func getCountryFlagItem(
+        countryCode: String,
+        exampleAllowed: Bool,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> NSImage {
         let scale = 0.9
         let effectiveCountryCode = countryCode.isEmpty && exampleAllowed ? Constants.defaultCountryCode : countryCode
         let result = getCountryFlag(countryCode: effectiveCountryCode)
@@ -122,37 +217,45 @@ extension MenuBarItemsContainerView {
         return result
     }
     
-    private func getBulletItem(color: Color, textSize: Double = 12.0) -> Text {
+    private func getBulletItem(
+        color: Color,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let result = Text(Constants.bullet)
             .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
     
-    private func getPipeItem(color: Color) -> Text {
+    private func getPipeItem(
+        color: Color,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let result = Text(Constants.pipe)
-            .asMenuBarItem(color: color)
+            .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
     
-    private func getLeftBracketItem(color: Color) -> Text {
+    private func getLeftBracketItem(
+        color: Color,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let result = Text(Constants.leftBracket)
-            .asMenuBarItem(color: color)
+            .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
     
-    private func getRightBracketItem(color: Color) -> Text {
+    private func getRightBracketItem(
+        color: Color,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let result = Text(Constants.rightBracket)
-            .asMenuBarItem(color: color)
+            .asMenuBarItem(color: color, textSize: textSize)
         
         return result
     }
 }
 
 private extension Text {
-    func asMenuBarItem(color: Color, textSize: Double = 16.0) -> Text {
+    func asMenuBarItem(color: Color, textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         self.font(.system(size: textSize))
             .foregroundColor(color)
     }

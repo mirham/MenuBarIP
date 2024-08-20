@@ -18,7 +18,8 @@ class AppState : ObservableObject {
 extension AppState {
     struct Network : Equatable {
         var status: NetworkStatusType = NetworkStatusType.unknown
-        var currentIpInfo: IpInfoBase? = nil
+        var publicIpInfo: IpInfoBase? = nil
+        var localIp: String? = nil
         var obtainingIp = false
         var activeNetworkInterfaces: [NetworkInterface] = [NetworkInterface]()
     }
@@ -48,6 +49,9 @@ extension AppState {
         var menuBarUseThemeColor: Bool = false {
             didSet { writeSetting(newValue: menuBarUseThemeColor, key: Constants.settingsKeyMenuBarUseThemeColor) }
         }
+        var menuBarTextSize: Double = Constants.defaultMenuBarTextSize {
+            didSet { writeSetting(newValue: menuBarTextSize, key: Constants.settingsKeyMenuBarTextSize) }
+        }
         
         static func == (lhs: UserData, rhs: UserData) -> Bool {
             let result = lhs.menuBarUseThemeColor == rhs.menuBarUseThemeColor
@@ -56,6 +60,9 @@ extension AppState {
         }
         
         init() {
+            menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
+            menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize
+            
             let savedIps: [IpInfo]? = readSettingsArray(key: Constants.settingsKeyIps)
             let savedIpApis: [IpApiInfo]? = readSettingsArray(key: Constants.settingsKeyApis)
             let savedMenuBarShownItems: [String]? = readSettingsArray(key: Constants.settingsKeyShownMenuBarItems)

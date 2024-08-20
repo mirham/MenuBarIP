@@ -83,7 +83,7 @@ struct IpApisEditView : View {
     // MARK: Private functions
     
     private func addIpApiClickHandlerAsync() async {
-        let ipAddressResult = await addressesService.getCurrentIpAsync(ipApiUrl: newUrl)
+        let ipAddressResult = await addressesService.getPublicIpAsync(ipApiUrl: newUrl)
         
         guard ipAddressResult.success else {
             isNewUrlInvalid = true

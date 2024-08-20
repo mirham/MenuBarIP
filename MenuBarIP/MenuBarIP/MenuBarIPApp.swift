@@ -17,20 +17,15 @@ struct MenuBarIPApp: App {
     
     var body: some Scene {
         MenuBarExtra {
-            VStack{
-                MenuBarView()
-                    .environmentObject(appState)
-            }
-            .padding(.top, 10)
-            .padding(.bottom, 10)
-            .background(.windowBackground)
+            MenuBarMenuView()
+                .environmentObject(appState)
         } label: {
             HStack {
                 MenuBarStatusView()
                     .environmentObject(appState)
             }
         }
-        .menuBarExtraStyle(.window)
+        .menuBarExtraStyle(.menu)
         
         WindowGroup(id:Constants.windowIdSettings, content: {
             SettingsView()

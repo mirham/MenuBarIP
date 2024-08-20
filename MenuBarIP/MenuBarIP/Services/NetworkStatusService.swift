@@ -71,6 +71,8 @@ class NetworkStatusService: ServiceBase, ApiCallable {
         lock.lock()
         Task {
             do {
+                let localIp = self.ipService.getLocalIp()
+                
                 await MainActor.run { updateStatus(obtainingIp: true) }
                 
                 // Fixes SSL errors after network changes
@@ -79,38 +81,43 @@ class NetworkStatusService: ServiceBase, ApiCallable {
                 var ipNotObtained = true
                 
                 while ipNotObtained && self.appState.userData.ipApis.contains(where: {$0.isActive()}) {
-                    let updatedIpResult = await self.ipService.getCurrentIpAsync()
+                    let updatedIpResult = await self.ipService.getPublicIpAsync()
                     
                     if (updatedIpResult.success) {
                         ipNotObtained = false
-                        await MainActor.run { updateStatus(currentIpInfo: updatedIpResult.result) }
+                        await MainActor.run { updateStatus(publicIpInfo: updatedIpResult.result) }
                     }
                 }
                 
                 if (ipNotObtained) {
-                    await MainActor.run { updateStatus(currentIpInfo: nil, allowCurrentIpInfoNil: true) }
+                    await MainActor.run { updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true) }
                 }
                 
-                await MainActor.run { updateStatus(obtainingIp: false) }
+                await MainActor.run { updateStatus(localIp: localIp, obtainingIp: false) }
             }
         }
         lock.unlock()
     }
     
     private func updateStatus(
-        currentIpInfo: IpInfoBase? = nil,
         currentStatus: NetworkStatusType? = nil,
+        publicIpInfo: IpInfoBase? = nil,
+        localIp: String? = nil,
         activeNetworkInterfaces: [NetworkInterface]? = nil,
         disconnected: Bool? = nil,
         obtainingIp: Bool? = nil,
-        allowCurrentIpInfoNil: Bool = false) {
+        allowPublicIpInfoNil: Bool = false) {
             DispatchQueue.main.async {
                 if (currentStatus != nil) {
                     self.appState.network.status = currentStatus!
                 }
                 
-                if (currentIpInfo != nil || allowCurrentIpInfoNil) {
-                    self.appState.network.currentIpInfo = currentIpInfo ?? nil
+                if (publicIpInfo != nil || allowPublicIpInfoNil) {
+                    self.appState.network.publicIpInfo = publicIpInfo ?? nil
+                }
+                
+                if (localIp != nil) {
+                    self.appState.network.localIp = localIp
                 }
                 
                 if (obtainingIp != nil) {
@@ -123,7 +130,7 @@ class NetworkStatusService: ServiceBase, ApiCallable {
                 }
                 
                 if (disconnected != nil && disconnected!) {
-                    self.appState.network.currentIpInfo = nil
+                    self.appState.network.publicIpInfo = nil
                 }
                 
                 self.appState.objectWillChange.send()
