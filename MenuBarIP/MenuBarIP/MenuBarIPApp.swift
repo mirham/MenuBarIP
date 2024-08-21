@@ -33,5 +33,12 @@ struct MenuBarIPApp: App {
                 .navigationTitle(Constants.settings)
                 .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
         }).windowResizability(.contentSize)
+        
+        WindowGroup(id:Constants.windowIdPublicIpLocation, content: {
+            PublicIpLocationView()
+                .environmentObject(appState)
+                .navigationTitle(Constants.location)
+                .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
+        }).windowResizability(.contentSize)
     }
 }

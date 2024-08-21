@@ -2,36 +2,37 @@
 //  IpInfo.swift
 //  MenuBarIP
 //
-//  Created by UglyGeorge on 03.08.2024.
+//  Created by UglyGeorge on 19.08.2024.
 //
 
 import Foundation
+import Network
 
-struct IpInfo: Codable, Identifiable, Equatable {
-    var id = UUID()
+struct IpInfo: Codable, Equatable {
     var ipVersion: Int
     var ipAddress: String
-    var countryName: String
+    var latitude: Double
+    var longitude: Double
+    var zipCode: String
     var countryCode: String
-    var customText: String
-    var customColor: String
-    
-    init(ipAddress: String,
-         ipAddressInfo: IpInfoBase?,
-         customText: String = String(),
-         customColor: String = String()) {
-        let info = ipAddressInfo ?? IpInfoBase(ipAddress: ipAddress)
-        
-        self.ipVersion = info.ipVersion
-        self.ipAddress = info.ipAddress
-        self.countryName = info.countryName
-        self.countryCode = info.countryCode
-        self.customText = customText
-        self.customColor = customColor
-    }
+    var countryName: String
+    var regionName: String
+    var cityName: String
     
     static func == (lhs: IpInfo, rhs: IpInfo) -> Bool {
         return lhs.ipAddress == rhs.ipAddress
+    }
+    
+    init(ipAddress: String){
+        self.ipVersion = (IPv4Address(ipAddress) != nil) ? Constants.ipV4 : Constants.ipV6
+        self.ipAddress = ipAddress
+        self.latitude = 0.0
+        self.longitude = 0.0
+        self.zipCode = String()
+        self.countryCode = String()
+        self.countryName = String()
+        self.regionName = String()
+        self.cityName = String()
     }
     
     func hash(into hasher: inout Hasher) {

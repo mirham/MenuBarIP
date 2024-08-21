@@ -15,15 +15,17 @@ struct MenuBarMenuView : View {
     
     private var launchAgentService = LaunchAgentService.shared
     
-    @State private var overSettings = false
-    @State private var overQuit = false
-    
     var body: some View {
         VStack {
-            Text(appState.network.publicIpInfo?.ipAddress ?? "...").foregroundStyle(.cyan)
-            Text(appState.network.localIp ?? "...").foregroundStyle(.yellow)
+            Text(appState.network.publicIpInfo?.ipAddress ?? "...")
+                .foregroundStyle(.cyan)
+            Text(appState.network.localIp ?? "...")
+                .foregroundStyle(.yellow)
             Divider()
             Button("Refresh") {}
+            Divider()
+            Button("Public IP location", action: publicIpLocationButtonClickHandler)
+            Divider()
             Button("Copy public IP") {}
             Button("Copy local IP") {}
             Divider()
@@ -35,15 +37,20 @@ struct MenuBarMenuView : View {
     
     // MARK: Private functions
     
-    private func settingsButtonClickHandler(){
-        if(!appState.views.isSettingsViewShown){
+    private func settingsButtonClickHandler() {
+        if(!appState.views.isSettingsViewShown) {
             openWindow(id: Constants.windowIdSettings)
-            AppHelper.activateView(viewId: Constants.windowIdSettings)
-            appState.views.isSettingsViewShown = true
         }
-        else {
-            AppHelper.activateView(viewId: Constants.windowIdSettings)
+        
+        AppHelper.activateView(viewId: Constants.windowIdSettings)
+        dismiss()
+    }
+    
+    private func publicIpLocationButtonClickHandler() {
+        if(!appState.views.isPublicIpLocationViewShown) {
+            openWindow(id: Constants.windowIdPublicIpLocation)
         }
+        AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation)
         dismiss()
     }
     

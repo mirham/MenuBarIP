@@ -18,7 +18,7 @@ class AppState : ObservableObject {
 extension AppState {
     struct Network : Equatable {
         var status: NetworkStatusType = NetworkStatusType.unknown
-        var publicIpInfo: IpInfoBase? = nil
+        var publicIpInfo: IpInfo? = nil
         var localIp: String? = nil
         var obtainingIp = false
         var activeNetworkInterfaces: [NetworkInterface] = [NetworkInterface]()
@@ -28,14 +28,15 @@ extension AppState {
 extension AppState {
     struct Views {
         var isSettingsViewShown = false
+        var isPublicIpLocationViewShown = false
         var isInfoViewShown = false
     }
 }
 
 extension AppState {
     struct UserData : Settable, Equatable {
-        var ips = [IpInfo]() {
-            didSet { writeSettingsArray(newValues: ips, key: Constants.settingsKeyIps) }
+        var ipCustomizations = [IpCustomization]() {
+            didSet { writeSettingsArray(newValues: ipCustomizations, key: Constants.settingsKeyIpCustomizations) }
         }
         var ipApis = [IpApiInfo]() {
             didSet { writeSettingsArray(newValues: ipApis, key: Constants.settingsKeyApis) }
@@ -52,6 +53,9 @@ extension AppState {
         var menuBarTextSize: Double = Constants.defaultMenuBarTextSize {
             didSet { writeSetting(newValue: menuBarTextSize, key: Constants.settingsKeyMenuBarTextSize) }
         }
+        var menuBarSpacing: Double = Constants.defaultMenuBarSpacing {
+            didSet { writeSetting(newValue: menuBarSpacing, key: Constants.settingsElementSpacing) }
+        }
         
         static func == (lhs: UserData, rhs: UserData) -> Bool {
             let result = lhs.menuBarUseThemeColor == rhs.menuBarUseThemeColor
@@ -62,14 +66,15 @@ extension AppState {
         init() {
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize
+            menuBarSpacing = readSetting(key: Constants.settingsKeyMenuBarSpacing) ?? Constants.defaultMenuBarSpacing
             
-            let savedIps: [IpInfo]? = readSettingsArray(key: Constants.settingsKeyIps)
+            let savedIps: [IpCustomization]? = readSettingsArray(key: Constants.settingsKeyIpCustomizations)
             let savedIpApis: [IpApiInfo]? = readSettingsArray(key: Constants.settingsKeyApis)
             let savedMenuBarShownItems: [String]? = readSettingsArray(key: Constants.settingsKeyShownMenuBarItems)
             let savedMenuBarHiddenItems: [String]? = readSettingsArray(key: Constants.settingsKeyHiddenMenuBarItems)
             
             if (savedIps != nil) {
-                ips = savedIps!
+                ipCustomizations = savedIps!
             }
             
             if (savedIpApis == nil) {

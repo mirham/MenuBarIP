@@ -15,7 +15,7 @@
 		3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */; };
 		354032602C5E6706002624D2 /* ApiCallable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325F2C5E6706002624D2 /* ApiCallable.swift */; };
 		354032622C5E6730002624D2 /* Settable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032612C5E6730002624D2 /* Settable.swift */; };
-		354032652C5E67AE002624D2 /* IpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032642C5E67AE002624D2 /* IpInfo.swift */; };
+		354032652C5E67AE002624D2 /* IpCustomization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032642C5E67AE002624D2 /* IpCustomization.swift */; };
 		354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032662C5E682D002624D2 /* IpApiInfo.swift */; };
 		3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326A2C5E6899002624D2 /* CodableIgnored.swift */; };
 		354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326F2C5E69FB002624D2 /* ServiceBase.swift */; };
@@ -47,8 +47,9 @@
 		35980DFB2C736C8A0036AB41 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFA2C736C8A0036AB41 /* GeneralSettingsEditView.swift */; };
 		35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFD2C736CDF0036AB41 /* DropViewDelegate.swift */; };
 		35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */; };
-		35980E022C7374F80036AB41 /* IpsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E012C7374F80036AB41 /* IpsEditView.swift */; };
-		35980E042C7380BC0036AB41 /* IpInfoBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E032C7380BC0036AB41 /* IpInfoBase.swift */; };
+		35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */; };
+		35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E032C7380BC0036AB41 /* IpInfo.swift */; };
+		35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E052C75310B0036AB41 /* PublicIpLocationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,7 +62,7 @@
 		3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusType.swift; sourceTree = "<group>"; };
 		3540325F2C5E6706002624D2 /* ApiCallable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCallable.swift; sourceTree = "<group>"; };
 		354032612C5E6730002624D2 /* Settable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settable.swift; sourceTree = "<group>"; };
-		354032642C5E67AE002624D2 /* IpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfo.swift; sourceTree = "<group>"; };
+		354032642C5E67AE002624D2 /* IpCustomization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpCustomization.swift; sourceTree = "<group>"; };
 		354032662C5E682D002624D2 /* IpApiInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiInfo.swift; sourceTree = "<group>"; };
 		3540326A2C5E6899002624D2 /* CodableIgnored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableIgnored.swift; sourceTree = "<group>"; };
 		3540326F2C5E69FB002624D2 /* ServiceBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceBase.swift; sourceTree = "<group>"; };
@@ -93,8 +94,9 @@
 		35980DFA2C736C8A0036AB41 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
 		35980DFD2C736CDF0036AB41 /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
 		35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApisEditView.swift; sourceTree = "<group>"; };
-		35980E012C7374F80036AB41 /* IpsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpsEditView.swift; sourceTree = "<group>"; };
-		35980E032C7380BC0036AB41 /* IpInfoBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfoBase.swift; sourceTree = "<group>"; };
+		35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpCustomizationsEditView.swift; sourceTree = "<group>"; };
+		35980E032C7380BC0036AB41 /* IpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfo.swift; sourceTree = "<group>"; };
+		35980E052C75310B0036AB41 /* PublicIpLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicIpLocationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,8 +175,8 @@
 		354032632C5E676F002624D2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				35980E032C7380BC0036AB41 /* IpInfoBase.swift */,
-				354032642C5E67AE002624D2 /* IpInfo.swift */,
+				35980E032C7380BC0036AB41 /* IpInfo.swift */,
+				354032642C5E67AE002624D2 /* IpCustomization.swift */,
 				354032662C5E682D002624D2 /* IpApiInfo.swift */,
 				354032752C5E6C3F002624D2 /* NetworkInterface.swift */,
 			);
@@ -234,8 +236,9 @@
 				354032992C5E7A95002624D2 /* MenuBarMenuView.swift */,
 				354032A82C5E8362002624D2 /* SettingsView.swift */,
 				35980DFA2C736C8A0036AB41 /* GeneralSettingsEditView.swift */,
-				35980E012C7374F80036AB41 /* IpsEditView.swift */,
+				35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */,
 				35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */,
+				35980E052C75310B0036AB41 /* PublicIpLocationView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -388,7 +391,7 @@
 				354032842C5E7555002624D2 /* Extensions.swift in Sources */,
 				354032812C5E7338002624D2 /* Constants.swift in Sources */,
 				354032982C5E7A4C002624D2 /* MenuBarElement.swift in Sources */,
-				354032652C5E67AE002624D2 /* IpInfo.swift in Sources */,
+				354032652C5E67AE002624D2 /* IpCustomization.swift in Sources */,
 				35980DFB2C736C8A0036AB41 /* GeneralSettingsEditView.swift in Sources */,
 				3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */,
 				3540325A2C5E64DB002624D2 /* AppState.swift in Sources */,
@@ -398,11 +401,12 @@
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
 				354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */,
-				35980E042C7380BC0036AB41 /* IpInfoBase.swift in Sources */,
+				35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */,
 				354032602C5E6706002624D2 /* ApiCallable.swift in Sources */,
-				35980E022C7374F80036AB41 /* IpsEditView.swift in Sources */,
+				35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */,
 				35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */,
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
+				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
 				35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */,
 				354032962C5E7A13002624D2 /* AsyncButton.swift in Sources */,
 				3540329C2C5E7AEC002624D2 /* LaunchAgentService.swift in Sources */,

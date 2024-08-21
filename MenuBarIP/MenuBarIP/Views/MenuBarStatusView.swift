@@ -5,7 +5,6 @@
 //  Created by UglyGeorge on 03.08.2024.
 //
 
-import Foundation
 import SwiftUI
 
 struct MenuBarStatusView : MenuBarItemsContainerView {
@@ -43,7 +42,7 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
             appState: appState,
             colorScheme: colorScheme)
         
-        HStack(spacing: 5) {
+        HStack(spacing: appState.userData.menuBarSpacing) {
             ForEach(shownItems, id: \.id) { item in
                 Image(nsImage: item.image)
                     .nonAntialiased()

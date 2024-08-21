@@ -1,5 +1,5 @@
 //
-//  IpsEditView.swift
+//  IpCustomizationsEditView.swift
 //  MenuBarIP
 //
 //  Created by UglyGeorge on 19.08.2024.
@@ -8,12 +8,15 @@
 import SwiftUI
 import Network
 
-struct IpsEditView : IpAddressContainerView {
+struct IpCustomizationsEditView : IpAddressContainerView {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var newIp = String()
+    @State private var newCustomText = String()
+    @State private var newLightColor = String()
+    @State private var newDarkColor = String()
     @State private var isNewIpValid = false
     @State private var isNewIpInvalid: Bool = false
     
@@ -36,21 +39,23 @@ struct IpsEditView : IpAddressContainerView {
                     .multilineTextAlignment(.center)
                 NavigationStack() {
                     List {
-                        ForEach(appState.userData.ips, id: \.ipAddress) { ipAddress in
+                        ForEach(appState.userData.ipCustomizations, id: \.id) { ipCustomization in
                             HStack {
-                                Text(ipAddress.ipAddress)
+                                Text(ipCustomization.ipAddress)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Spacer()
-                                Image(nsImage: getCountryFlag(countryCode: ipAddress.countryCode))
-                                Text(ipAddress.countryName)
+                                Text(ipCustomization.customText)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Spacer()
                                 Circle()
-                                    .fill(Color(hex: ipAddress.customColor))
+                                    .fill(Color(hex: ipCustomization.customLightColor))
+                                    .frame(width: 10, height: 10)
+                                Circle()
+                                    .fill(Color(hex: ipCustomization.customDarkColor))
                                     .frame(width: 10, height: 10)
                             }
                             .contextMenu {
-                                Button(action: { deleteIpAddress(ipAddress: ipAddress) }) {
+                                Button(action: { deleteIpCustomization(ipCustomization: ipCustomization) }) {
                                     Text(Constants.delete)
                                 }
                             }
@@ -71,7 +76,7 @@ struct IpsEditView : IpAddressContainerView {
                                     }
                             }
                         }
-                        AsyncButton(Constants.add, action: addIpAddressAsync)
+                        AsyncButton(Constants.add, action: addIpCustomizationAsync)
                             .disabled(!isNewIpValid)
                             .alert(isPresented: $isNewIpInvalid) {
                                 Alert(title: Text(Constants.dialogHeaderIpAddressIsNotValid),
@@ -89,7 +94,7 @@ struct IpsEditView : IpAddressContainerView {
     
     // MARK: Private functions
     
-    private func addIpAddressAsync() async {
+    private func addIpCustomizationAsync() async {
         let ipInfoResult = await ipService.getIpInfoAsync(ip: newIp)
         
         if (ipInfoResult.error != nil) {
@@ -98,31 +103,36 @@ struct IpsEditView : IpAddressContainerView {
             return
         }
         
-        var ipInfo = IpInfo(ipAddress: newIp, ipAddressInfo: ipInfoResult.result!)
-        ipInfo.customText = "sfdf"
-        ipInfo.customColor = "#369300"
+        var ipCustomization = IpCustomization(
+            ipAddress: newIp,
+            customText: newCustomText,
+            customLightColor: newLightColor,
+            customDarkColor: newDarkColor)
         
-        if !appState.userData.ips.contains(ipInfo) {
-            appState.userData.ips.append(ipInfo)
+        if !appState.userData.ipCustomizations.contains(ipCustomization) {
+            appState.userData.ipCustomizations.append(ipCustomization)
         }
         else {
-            if let currentIpIndex = appState.userData.ips.firstIndex(
-                where: {$0.ipAddress == ipInfo.ipAddress}) {
-                appState.userData.ips[currentIpIndex] = ipInfo
+            if let currentIpIndex = appState.userData.ipCustomizations.firstIndex(
+                where: {$0.ipAddress == ipCustomization.ipAddress}) {
+                appState.userData.ipCustomizations[currentIpIndex] = ipCustomization
             }
         }
         
         newIp = String()
+        newCustomText = String()
+        newLightColor = String()
+        newDarkColor = String()
         isNewIpValid = false
         isNewIpInvalid = false
     }
     
-    private func deleteIpAddress(ipAddress: IpInfo) {
-        appState.userData.ips.removeAll(where: {$0 == ipAddress})
+    private func deleteIpCustomization(ipCustomization: IpCustomization) {
+        appState.userData.ipCustomizations.removeAll(where: {$0 == ipCustomization})
     }
 }
 
 #Preview {
-    IpsEditView().environmentObject(AppState())
+    IpCustomizationsEditView().environmentObject(AppState())
 }
 

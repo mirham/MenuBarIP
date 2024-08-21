@@ -10,7 +10,7 @@ import Foundation
 class IpService : ServiceBase, ApiCallable {
     static let shared = IpService()
     
-    func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfoBase> {
+    func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
         var currentIpApiUrl = ipApiUrl
         
         if (currentIpApiUrl == nil) {
@@ -30,31 +30,31 @@ class IpService : ServiceBase, ApiCallable {
             return OperationResult(result: ipWithInfoResult.result! , error: ipWithInfoResult.error)
         }
         
-        return OperationResult(result: IpInfoBase(ipAddress: ipAddressString))
+        return OperationResult(result: IpInfo(ipAddress: ipAddressString))
     }
     
-    func getIpInfoAsync(ip : String) async -> OperationResult<IpInfoBase> {
+    func getIpInfoAsync(ip : String) async -> OperationResult<IpInfo> {
         do {
             // TODO RUSS: Add to Settings, add JSON mapping
             let response = try await callGetApiAsync(apiUrl: "https://freeipapi.com/api/json/\(ip)")
             let jsonData = response.data(using: .utf8)!
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = .useDefaultKeys
-            let info = try decoder.decode(IpInfoBase.self, from: jsonData)
+            let info = try decoder.decode(IpInfo.self, from: jsonData)
             
             return OperationResult(result: info)
         }
         catch {
             if let error = error as? URLError, case .notConnectedToInternet = error.code {
-                return OperationResult(result: IpInfoBase(ipAddress: ip))
+                return OperationResult(result: IpInfo(ipAddress: ip))
             }
             
             if let error = error as? URLError, case .networkConnectionLost = error.code {
-                return OperationResult(result: IpInfoBase(ipAddress: ip))
+                return OperationResult(result: IpInfo(ipAddress: ip))
             }
             
             return OperationResult(
-                result: IpInfoBase(ipAddress: ip),
+                result: IpInfo(ipAddress: ip),
                 error: String(format: Constants.errorWhenCallingIpInfoApi, error.localizedDescription))
         }
     }
@@ -119,7 +119,9 @@ class IpService : ServiceBase, ApiCallable {
             }
             
             if let inactiveApiIndex = self.appState.userData.ipApis.firstIndex(where: { $0.url == ipApiUrl }) {
-                self.appState.userData.ipApis[inactiveApiIndex].active = false
+                DispatchQueue.main.async {
+                    self.appState.userData.ipApis[inactiveApiIndex].active = false
+                }
             }
             
             return OperationResult(error: String(format: Constants.errorWhenCallingIpAddressApi, ipApiUrl, error.localizedDescription))

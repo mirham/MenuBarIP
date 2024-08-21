@@ -18,7 +18,7 @@ struct SettingsView : View {
                 .tabItem {
                     Text(Constants.settingsElementGeneral)
                 }
-            IpsEditView()
+            IpCustomizationsEditView()
                 .tabItem {
                     Text(Constants.settingsElementCustomization)
                 }
@@ -32,6 +32,7 @@ struct SettingsView : View {
             AppHelper.setUpView(
                 viewName: Constants.windowIdSettings,
                 onTop: false)
+            appState.views.isSettingsViewShown = true
         })
         .onDisappear(perform: {
             appState.views.isSettingsViewShown = false

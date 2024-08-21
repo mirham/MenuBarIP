@@ -19,6 +19,7 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
     @State private var hiddenItems = [MenuBarElement]()
     @State private var draggedItem: MenuBarElement?
     @State private var menuBarTextSize: Double = Constants.defaultMenuBarTextSize
+    @State private var menuBarSpacing: Double = Constants.defaultMenuBarSpacing
     
     private let launchAgentService = LaunchAgentService.shared
     
@@ -31,13 +32,11 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
                     .padding(.top)
                     .padding(.trailing)
             }
-            Spacer()
-                .frame(height: 15)
             VStack(alignment: .center) {
                 Text(Constants.settingsElementShownItems)
                     .asCenteredTitle()
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 5) {
+                    LazyHStack(spacing: menuBarSpacing) {
                         ForEach(shownItems, id: \.id) { item in
                             item
                                 .onDrag({
@@ -61,7 +60,7 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
                 Text(Constants.settingsElementHiddenItems)
                     .asCenteredTitle()
                 ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(alignment: .center, spacing: 5) {
+                    LazyHStack(alignment: .center, spacing: menuBarSpacing) {
                         ForEach(hiddenItems, id: \.id) { item in
                             item
                                 .onDrag {
@@ -96,6 +95,17 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
                         .padding(.trailing)
                 }
             }
+            HStack(alignment: .center) {
+                VStack {
+                    Text(Constants.settingsElementSpacing)
+                        .asCenteredTitle()
+                    Slider(value: $menuBarSpacing, in: 1...5)
+                        .onChange(of: menuBarSpacing, saveMenuBarSpacing)
+                        .onChange(of: menuBarSpacing, fillMenuBarElementItems)
+                        .padding(.leading)
+                        .padding(.trailing)
+                }
+            }
             Toggle(Constants.settingsElementThemeColor, isOn: Binding(
                 get: { appState.userData.menuBarUseThemeColor },
                 set: {
@@ -104,7 +114,7 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
             ))
             .withSettingToggleStyle()
             Spacer()
-                .frame(height: 20)
+                .frame(height: 10)
             HStack(alignment: .center) {
                 Toggle(Constants.settingsElementKeepAppRunning, isOn: .init(
                     get: { isKeepRunningOn },
@@ -136,6 +146,7 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
         }
         .onAppear() {
             setMenuBarTextSize()
+            setMenuBarSpacing()
             fillMenuBarElementItems()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -172,6 +183,10 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
         self.menuBarTextSize = appState.userData.menuBarTextSize
     }
     
+    private func setMenuBarSpacing() {
+        self.menuBarSpacing = appState.userData.menuBarSpacing
+    }
+    
     private func saveMenuBarElementItems() {
         appState.userData.menuBarShownItems = self.shownItems.map { $0.key}
         appState.userData.menuBarHiddenItems = self.hiddenItems.map { $0.key}
@@ -179,6 +194,10 @@ struct GeneralSettingsEditView: MenuBarItemsContainerView {
     
     private func saveMenuBarTextSize() {
         appState.userData.menuBarTextSize = self.menuBarTextSize
+    }
+    
+    private func saveMenuBarSpacing() {
+        appState.userData.menuBarSpacing = self.menuBarSpacing
     }
     
     private func renderHelpHint(hint: String) -> some View {
@@ -210,7 +229,7 @@ private extension ScrollView {
 private extension Text {
     func asCenteredTitle() -> some View {
         self.font(.title3)
-            .padding(.top)
+            .padding(.top, 5)
             .padding(.bottom, 5)
     }
 }

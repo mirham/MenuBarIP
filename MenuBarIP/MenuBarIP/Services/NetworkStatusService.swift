@@ -101,7 +101,7 @@ class NetworkStatusService: ServiceBase, ApiCallable {
     
     private func updateStatus(
         currentStatus: NetworkStatusType? = nil,
-        publicIpInfo: IpInfoBase? = nil,
+        publicIpInfo: IpInfo? = nil,
         localIp: String? = nil,
         activeNetworkInterfaces: [NetworkInterface]? = nil,
         disconnected: Bool? = nil,

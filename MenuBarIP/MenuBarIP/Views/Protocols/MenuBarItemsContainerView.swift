@@ -98,6 +98,15 @@ extension MenuBarItemsContainerView {
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: countryFlag, key: key)
                         result.append(menuBarItem)
+                    case Constants.mbItemKeyBigCountryFlag:
+                        let countryFlag = getCountryFlagItem(
+                            countryCode: appState.network.publicIpInfo == nil
+                            ? String()
+                            : appState.network.publicIpInfo!.countryCode,
+                            exampleAllowed: exampleAllowed,
+                            scalable: false)
+                        let menuBarItem = MenuBarElement(image: countryFlag, key: key)
+                        result.append(menuBarItem)
                     case Constants.mbItemKeySeparatorBullet:
                         let bullet = getBulletItem(
                             color: baseColor,
@@ -175,13 +184,13 @@ extension MenuBarItemsContainerView {
                 color: colorUpper,
                 exampleAllowed: exampleAllowed,
                 isPublic: isPublicUpper,
-                textSize: 10)
+                textSize: 9)
             let lowerItem = getIpAddressItem(
                 ipAddress: ipAddressLower,
                 color: colorLower,
                 exampleAllowed: exampleAllowed,
                 isPublic: !isPublicUpper,
-                textSize: 10)
+                textSize: 9)
             
             let result = VStack(alignment: .leading) {
                 upperItem
@@ -207,8 +216,9 @@ extension MenuBarItemsContainerView {
     private func getCountryFlagItem(
         countryCode: String,
         exampleAllowed: Bool,
-        textSize: Double = Constants.defaultMenuBarTextSize) -> NSImage {
-        let scale = 0.9
+        textSize: Double = Constants.defaultMenuBarTextSize,
+        scalable: Bool = true) -> NSImage {
+            let scale = scalable ? 0.9 * textSize / 16 :  0.9
         let effectiveCountryCode = countryCode.isEmpty && exampleAllowed ? Constants.defaultCountryCode : countryCode
         let result = getCountryFlag(countryCode: effectiveCountryCode)
         result.size.width = result.size.width * scale

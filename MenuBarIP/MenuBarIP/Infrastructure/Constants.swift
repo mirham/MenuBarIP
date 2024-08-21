@@ -24,6 +24,7 @@ struct Constants{
     static let menuBarItemTimeToleranceInSeconds: Int = 1
     static let physicalNetworkInterfacePrefix = "en"
     static let defaultMenuBarTextSize: Double = 10.0
+    static let defaultMenuBarSpacing: Double = 4.0
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -45,18 +46,21 @@ struct Constants{
     
     // MARK: Window IDs
     static let windowIdSettings = "settings-view"
+    static let windowIdPublicIpLocation = "public-ip-location-view"
     static let windowIdInfo = "info-view"
     
     // MARK:  Settings key names
-    static let settingsKeyIps = "ips"
+    static let settingsKeyIpCustomizations = "ip-customizations"
     static let settingsKeyApis = "apis"
     static let settingsKeyShownMenuBarItems = "shown-menubar-items"
     static let settingsKeyHiddenMenuBarItems = "hidden-menubar-items"
     static let settingsKeyMenuBarUseThemeColor = "menubar-use-theme-color"
     static let settingsKeyMenuBarTextSize = "menubar-text-size"
+    static let settingsKeyMenuBarSpacing = "menubar-spacing"
     
     // MARK: Elements names
     static let settings = "Settings"
+    static let location = "Location"
     static let info = "Info"
     static let show = "Show"
     static let quit = "Quit"
@@ -77,17 +81,11 @@ struct Constants{
     static let apiUrl = "API URL"
     static let safety = "Safety"
     static let network = "Network"
-    static let monitoring = "Monitoring"
     static let applications = "Applications"
     static let clickToClose = "Click to close"
-    static let activeConnections = "Active connections"
-    static let safetyDescriprion = "%1$@ safety"
-    static let disableLocationServices = "(disable location services)"
     static let publicIp = "Public IP"
     static let enabled = "enabled"
     static let disabled = "disabled"
-    static let physical = "physical"
-    static let virtual = "virtual"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
@@ -96,6 +94,7 @@ struct Constants{
     static let settingsElementShownItems = "Shown menu bar items"
     static let settingsElementHiddenItems = "Hidden menu bar items"
     static let settingsElementItemsSize = "Items size"
+    static let settingsElementSpacing = "Spacing"
     static let settingsElementKeepAppRunning = "Keep application running"
     static let settingsElementIps = "IP adresses customization"
     static let settingsElementIpAddressApis = "IP APIs"
@@ -124,6 +123,7 @@ struct Constants{
     static let mbItemKeyBothIpAddressesPublicLower = "both-ips-public-lower"
     static let mbItemKeyCountryCode = "country-code"
     static let mbItemKeyCountryFlag = "country-flag"
+    static let mbItemKeyBigCountryFlag = "big-country-flag"
     static let mbItemKeyCustomText = "custom-text"
     static let mbItemKeySeparatorBullet = "separator-bullet"
     static let mbItemKeySeparatorBigBullet = "separator-big-bullet"
@@ -174,12 +174,13 @@ struct Constants{
     
     static let defaultShownMenuBarItems = [
         mbItemKeyPublicIpAddress,
-        mbItemKeySeparatorBigBullet,
+        mbItemKeySeparatorBullet,
         mbItemKeyCountryFlag,
         mbItemKeyCountryCode
     ]
     
     static let defaultHiddenMenuBarItems = [
+        mbItemKeyBigCountryFlag,
         mbItemKeyBothIpAddressesPublicUpper,
         mbItemKeyBothIpAddressesPublicLower,
         mbItemKeyLocalIpAddress,
