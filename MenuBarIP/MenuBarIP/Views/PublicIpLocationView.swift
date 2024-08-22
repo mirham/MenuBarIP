@@ -51,6 +51,9 @@ struct PublicIpLocationView : View {
             MapZoomStepper()
             MapPitchSlider()
         }
+        .onAppear() {
+            cameraPosition = .region(region)
+        }
         .onChange(of: appState.network.publicIpInfo) {
             withAnimation(.smooth(duration:  3.5)) {
                 location = CLLocationCoordinate2D(

@@ -21,4 +21,26 @@ extension Color {
         
         self.init(red: redValue, green: greenValue, blue: blueValue)
     }
+    
+    func toHex() -> String? {
+        let nsColor = NSColor(self)
+        
+        guard let components = nsColor.cgColor.components, components.count >= 3 else {
+            return nil
+        }
+        let r = Float(components[0])
+        let g = Float(components[1])
+        let b = Float(components[2])
+        var a = Float(1.0)
+        
+        if components.count >= 4 {
+            a = Float(components[3])
+        }
+        
+        let result = a == Float(1.0)
+            ? String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
+            : String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
+        
+        return result
+    }
 }

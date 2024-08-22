@@ -8,11 +8,31 @@
 import Foundation
 
 class AppState : ObservableObject {
-    @Published var network = Network()
+    @Published var current = Current()
     @Published var views = Views()
-    @Published var userData = UserData()
+    @Published var network = Network() { didSet { setCurrentState() } }
+    @Published var userData = UserData()  { didSet { setCurrentState() } }
     
     static let shared = AppState()
+    
+    private func setCurrentState() {
+        guard network.publicIpInfo != nil else { return }
+        
+        current.ipCustomization = userData.ipCustomizations
+            .first(where: {$0.ipAddress == network.publicIpInfo!.ipAddress})
+    }
+}
+
+extension AppState {
+    struct Current : Equatable {
+        var ipCustomization: IpCustomization? = nil
+        
+        static func == (lhs: Current, rhs: Current) -> Bool {
+            let result = lhs.ipCustomization == rhs.ipCustomization
+            
+            return result
+        }
+    }
 }
 
 extension AppState {

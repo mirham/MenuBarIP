@@ -25,6 +25,7 @@ struct Constants{
     static let physicalNetworkInterfacePrefix = "en"
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
+    static let maxCustomTextSymbols: Int = 20
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -60,14 +61,16 @@ struct Constants{
     
     // MARK: Elements names
     static let settings = "Settings"
-    static let location = "Location"
+    static let location = "Public IP location"
     static let info = "Info"
     static let show = "Show"
+    static let save = "Save"
     static let quit = "Quit"
     static let none = "..."
     static let on = "On"
     static let off = "Off"
     static let add = "Add"
+    static let edit = "Edit"
     static let delete = "Delete"
     static let enable = "Enable"
     static let cancel = "Cancel"
@@ -79,7 +82,11 @@ struct Constants{
     static let later = "Later"
     static let ip = "IP"
     static let apiUrl = "API URL"
-    static let safety = "Safety"
+    static let customText = "Custom text"
+    static let lightColor = "Light theme color"
+    static let light = "Light"
+    static let darkColor = "Dark theme color"
+    static let dark = "Dark"
     static let network = "Network"
     static let applications = "Applications"
     static let clickToClose = "Click to close"
@@ -110,17 +117,18 @@ struct Constants{
     static let hintApiIsActive = "API is active and in use"
     static let hintApiIsInactive = "API is not active and not in use"
     static let hintNewVaildIpAddress = "A new valid IP address"
+    static let hintNewCustomText = "A new custom text"
     static let hintNewVaildApiUrl = "A new valid API URL"
     static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed."
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want"
-    static let hintIps = "Add an IP address customization with desired custom color and text\nRight click on the address to display the context menu"
+    static let hintIps = "Add an IP address customization with desired custom text and custom color for light and dark theme\nRight click on the customization to display the context menu"
     static let hintIpApis = "Add an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
     
     // MARK: Menubar item keys
     static let mbItemKeyPublicIpAddress = "public-ip-address"
+    static let mbItemKeyPublicIpAddressWithCustomText = "public-ip-address-with-custom-text"
     static let mbItemKeyLocalIpAddress = "local-ip-address"
     static let mbItemKeyBothIpAddressesPublicUpper = "both-ips-public-upper"
-    static let mbItemKeyBothIpAddressesPublicLower = "both-ips-public-lower"
     static let mbItemKeyCountryCode = "country-code"
     static let mbItemKeyCountryFlag = "country-flag"
     static let mbItemKeyBigCountryFlag = "big-country-flag"
@@ -181,8 +189,8 @@ struct Constants{
     
     static let defaultHiddenMenuBarItems = [
         mbItemKeyBigCountryFlag,
+        mbItemKeyPublicIpAddressWithCustomText,
         mbItemKeyBothIpAddressesPublicUpper,
-        mbItemKeyBothIpAddressesPublicLower,
         mbItemKeyLocalIpAddress,
         mbItemKeyCustomText,
         mbItemKeySeparatorBullet,

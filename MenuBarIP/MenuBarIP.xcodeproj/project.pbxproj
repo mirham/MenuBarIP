@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */; };
 		354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032472C5E626D002624D2 /* MenuBarIPApp.swift */; };
 		3540324C2C5E6270002624D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324B2C5E6270002624D2 /* Assets.xcassets */; };
 		3540324F2C5E6270002624D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324E2C5E6270002624D2 /* Preview Assets.xcassets */; };
@@ -53,6 +54,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverColorPicker.swift; sourceTree = "<group>"; };
 		354032442C5E626D002624D2 /* MenuBarIP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MenuBarIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		354032472C5E626D002624D2 /* MenuBarIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIPApp.swift; sourceTree = "<group>"; };
 		3540324B2C5E6270002624D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				354032952C5E7A13002624D2 /* AsyncButton.swift */,
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
 				35980DF42C736B040036AB41 /* NoInsetHostingView.swift */,
+				352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				354032A92C5E8362002624D2 /* SettingsView.swift in Sources */,
 				3540329E2C5E7B51002624D2 /* ShellAccessible.swift in Sources */,
 				354032872C5E77A9002624D2 /* ViewExtensions.swift in Sources */,
+				352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */,
 				354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */,
 				3540327B2C5E6CE7002624D2 /* NWInterfaceExtension.swift in Sources */,
 				354032622C5E6730002624D2 /* Settable.swift in Sources */,
@@ -561,6 +565,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Menu Bar IP";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -591,6 +596,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Menu Bar IP";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
