@@ -12,7 +12,7 @@ struct MenuBarIPApp: App {
     let appState = AppState.shared
     
     init() {
-        _ = NetworkStatusService()
+        _ = NetworkService()
     }
     
     var body: some Scene {
@@ -30,15 +30,16 @@ struct MenuBarIPApp: App {
         WindowGroup(id:Constants.windowIdSettings, content: {
             SettingsView()
                 .environmentObject(appState)
-                .navigationTitle(Constants.settings)
+                .navigationTitle(Constants.menuItemSettings)
                 .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
         }).windowResizability(.contentSize)
         
         WindowGroup(id:Constants.windowIdPublicIpLocation, content: {
             PublicIpLocationView()
                 .environmentObject(appState)
-                .navigationTitle(Constants.location)
+                .navigationTitle(Constants.wnidowTitlePublicIplocation)
                 .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
         }).windowResizability(.contentSize)
     }
+
 }

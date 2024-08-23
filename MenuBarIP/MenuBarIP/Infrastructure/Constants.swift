@@ -26,6 +26,7 @@ struct Constants{
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
+    static let defaultCheckConnectionHealthInterval: Int = 10
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -38,6 +39,8 @@ struct Constants{
     static let iconSettings = "gearshape.2"
     static let iconInfo = "info.circle.fill"
     static let iconQuit = "xmark.circle"
+    static let iconObtaining = "network"
+    static let iconNotConnected = "network.slash"
     
     // MARK: Symbols
     static let bullet = "•"
@@ -60,39 +63,23 @@ struct Constants{
     static let settingsKeyMenuBarSpacing = "menubar-spacing"
     
     // MARK: Elements names
-    static let settings = "Settings"
-    static let location = "Public IP location"
     static let info = "Info"
-    static let show = "Show"
     static let save = "Save"
-    static let quit = "Quit"
     static let none = "..."
-    static let on = "On"
-    static let off = "Off"
     static let add = "Add"
     static let edit = "Edit"
     static let delete = "Delete"
-    static let enable = "Enable"
-    static let cancel = "Cancel"
-    static let close = "Close"
-    static let yes = "Yes"
-    static let no = "No"
     static let ok = "OK"
-    static let na = "N/A"
-    static let later = "Later"
     static let ip = "IP"
     static let apiUrl = "API URL"
     static let customText = "Custom text"
-    static let lightColor = "Light theme color"
     static let light = "Light"
-    static let darkColor = "Dark theme color"
     static let dark = "Dark"
-    static let network = "Network"
-    static let applications = "Applications"
-    static let clickToClose = "Click to close"
     static let publicIp = "Public IP"
-    static let enabled = "enabled"
-    static let disabled = "disabled"
+    static let localIp = "Local IP"
+    static let obtainingIp = "Obtaining IP..."
+    static let offline = "Offline"
+    static let noInternet = "No internet"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
@@ -119,6 +106,8 @@ struct Constants{
     static let hintNewVaildIpAddress = "A new valid IP address"
     static let hintNewCustomText = "A new custom text"
     static let hintNewVaildApiUrl = "A new valid API URL"
+    static let hintLightColor = "Light theme color"
+    static let hintDarkColor = "Dark theme color"
     static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed."
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want"
     static let hintIps = "Add an IP address customization with desired custom text and custom color for light and dark theme\nRight click on the customization to display the context menu"
@@ -139,8 +128,15 @@ struct Constants{
     static let mbItemKeySeparatorLeftBracket = "separator-left-bracket"
     static let mbItemKeySeparatorRightBracket = "separator-right-bracket"
     
+    // MARK: Window titles
+    static let wnidowTitlePublicIplocation = "Public IP location"
+    
     // MARK: Menu items
     static let menuItemCopy = "Copy"
+    static let menuItemShowOnMap = "Show on map"
+    static let menuItemSettings = "Settings"
+    static let menuItemRefresh = "Refresh"
+    static let menuItemQuit = "Quit"
     
     // MARK: Error messages
     static let errorNoActiveIpApiFound = "Not possible to obtain IP, try to add a new IP API in the Settings to proceed work or check DNS availability"

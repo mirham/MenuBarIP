@@ -1,5 +1,5 @@
 //
-//  NetworkStatusService.swift
+//  NetworkService.swift
 //  MenuBarIP
 //
 //  Created by UglyGeorge on 03.08.2024.
@@ -8,12 +8,15 @@
 import Foundation
 import Network
 
-class NetworkStatusService: ServiceBase, ApiCallable {
+class NetworkService: ServiceBase, ApiCallable {
+    static let shared = NetworkService()
+    
     private let ipService = IpService.shared
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
     
+    private var currentTimer: Timer? = nil
     private let lock = NSLock()
     
     override init() {
@@ -59,15 +62,10 @@ class NetworkStatusService: ServiceBase, ApiCallable {
         }
         
         monitor.start(queue: queue)
+        startConnectionHealthMonitoring()
     }
     
-    deinit {
-        monitor.cancel()
-    }
-    
-    // MARK: Private functions
-    
-    private func getCurrentIp() {
+    func getCurrentIp() {
         lock.lock()
         Task {
             do {
@@ -99,6 +97,51 @@ class NetworkStatusService: ServiceBase, ApiCallable {
         lock.unlock()
     }
     
+    deinit {
+        monitor.cancel()
+        currentTimer?.invalidate()
+    }
+    
+    // MARK: Private functions
+    
+    private func startConnectionHealthMonitoring() {
+        currentTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(Constants.defaultCheckConnectionHealthInterval), repeats: true) {
+            timer in
+            Task {
+                guard self.appState.network.status == .on else { return }
+                
+                do {
+                    let internetAccess = try await self.isUrlReachableAsync(url: "https://google.com")
+                    self.updateStatus(internetAccess: internetAccess)
+                    
+                    if(!internetAccess) {
+                        self.updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true)
+                    }
+                }
+                catch {
+                    self.updateStatus(publicIpInfo: nil, internetAccess: false, allowPublicIpInfoNil: true)
+                }
+            }
+        }
+    }
+    
+    private func isUrlReachableAsync(url : String) async throws -> Bool {
+        do {
+            let url = URL(string: url)!
+            var request = URLRequest(url: url)
+            request.httpMethod = "HEAD"
+            
+            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            guard (response as? HTTPURLResponse)?
+                .statusCode == 200 else {
+                return false
+            }
+            
+            return true
+        }
+    }
+    
     private func updateStatus(
         currentStatus: NetworkStatusType? = nil,
         publicIpInfo: IpInfo? = nil,
@@ -106,10 +149,15 @@ class NetworkStatusService: ServiceBase, ApiCallable {
         activeNetworkInterfaces: [NetworkInterface]? = nil,
         disconnected: Bool? = nil,
         obtainingIp: Bool? = nil,
+        internetAccess: Bool? = nil,
         allowPublicIpInfoNil: Bool = false) {
             DispatchQueue.main.async {
                 if (currentStatus != nil) {
                     self.appState.network.status = currentStatus!
+                    
+                    for index in 0...self.appState.userData.ipApis.count - 1 {
+                        self.appState.userData.ipApis[index].active = true
+                    }
                 }
                 
                 if (publicIpInfo != nil || allowPublicIpInfoNil) {
@@ -124,6 +172,9 @@ class NetworkStatusService: ServiceBase, ApiCallable {
                     self.appState.network.obtainingIp = obtainingIp!
                 }
                 
+                if (internetAccess != nil) {
+                    self.appState.network.internetAccess = internetAccess!
+                }
                 
                 if (activeNetworkInterfaces != nil) {
                     self.appState.network.activeNetworkInterfaces = activeNetworkInterfaces!

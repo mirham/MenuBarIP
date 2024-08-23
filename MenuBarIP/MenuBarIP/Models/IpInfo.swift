@@ -38,4 +38,10 @@ struct IpInfo: Codable, Equatable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(ipAddress)
     }
+    
+    func asAddressString() -> String {
+        let result = "\(zipCode), \(countryName),\n\(regionName), \(cityName)"
+        
+        return result
+    }
 }

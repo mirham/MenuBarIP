@@ -20,7 +20,7 @@
 		354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032662C5E682D002624D2 /* IpApiInfo.swift */; };
 		3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326A2C5E6899002624D2 /* CodableIgnored.swift */; };
 		354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326F2C5E69FB002624D2 /* ServiceBase.swift */; };
-		354032722C5E6A44002624D2 /* NetworkStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032712C5E6A44002624D2 /* NetworkStatusService.swift */; };
+		354032722C5E6A44002624D2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032712C5E6A44002624D2 /* NetworkService.swift */; };
 		354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032752C5E6C3F002624D2 /* NetworkInterface.swift */; };
 		354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */; };
 		3540327B2C5E6CE7002624D2 /* NWInterfaceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */; };
@@ -68,7 +68,7 @@
 		354032662C5E682D002624D2 /* IpApiInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiInfo.swift; sourceTree = "<group>"; };
 		3540326A2C5E6899002624D2 /* CodableIgnored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableIgnored.swift; sourceTree = "<group>"; };
 		3540326F2C5E69FB002624D2 /* ServiceBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceBase.swift; sourceTree = "<group>"; };
-		354032712C5E6A44002624D2 /* NetworkStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusService.swift; sourceTree = "<group>"; };
+		354032712C5E6A44002624D2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		354032752C5E6C3F002624D2 /* NetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterface.swift; sourceTree = "<group>"; };
 		354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterfaceType.swift; sourceTree = "<group>"; };
 		3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWInterfaceExtension.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 			children = (
 				354032792C5E6CCF002624D2 /* Extensions */,
 				3540326F2C5E69FB002624D2 /* ServiceBase.swift */,
-				354032712C5E6A44002624D2 /* NetworkStatusService.swift */,
+				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
 				3540329B2C5E7AEC002624D2 /* LaunchAgentService.swift */,
 			);
@@ -423,7 +423,7 @@
 				354032A32C5E7E81002624D2 /* IpAddressContainerView.swift in Sources */,
 				3540328A2C5E7860002624D2 /* AppHelper.swift in Sources */,
 				354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */,
-				354032722C5E6A44002624D2 /* NetworkStatusService.swift in Sources */,
+				354032722C5E6A44002624D2 /* NetworkService.swift in Sources */,
 				354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

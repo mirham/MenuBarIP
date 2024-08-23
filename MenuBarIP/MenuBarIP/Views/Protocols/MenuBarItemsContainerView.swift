@@ -42,6 +42,7 @@ extension MenuBarItemsContainerView {
                             color: ipMainColor,
                             exampleAllowed: exampleAllowed,
                             isPublic: true,
+                            networkAccess: appState.network.internetAccess,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: publicIpAddress), key: key)
                         result.append(menuBarItem)
@@ -53,6 +54,7 @@ extension MenuBarItemsContainerView {
                             color: baseColor,
                             exampleAllowed: exampleAllowed,
                             isPublic: false,
+                            networkAccess: true,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: localIpAddress), key: key)
                         result.append(menuBarItem)
@@ -67,7 +69,8 @@ extension MenuBarItemsContainerView {
                             colorUpper: ipMainColor,
                             colorLower: baseColor,
                             exampleAllowed: exampleAllowed,
-                            isPublicUpper: true)
+                            isPublicUpper: true,
+                            networkAccess: appState.network.internetAccess)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCustomText:
@@ -85,6 +88,8 @@ extension MenuBarItemsContainerView {
                             customText: appState.current.ipCustomization?.customText ?? String(),
                             color: ipMainColor,
                             customTextColor: customTextMainColor,
+                            networkAccess: appState.network.internetAccess,
+                            textSize: appState.userData.menuBarTextSize,
                             exampleAllowed: exampleAllowed)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
@@ -168,6 +173,7 @@ extension MenuBarItemsContainerView {
         color: Color,
         exampleAllowed: Bool,
         isPublic: Bool,
+        networkAccess: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
         let effectiveIpAddress = (ipAddress.isEmpty || ipAddress == Constants.none) && exampleAllowed
             ? isPublic
@@ -175,10 +181,16 @@ extension MenuBarItemsContainerView {
                 : Constants.defaultLocalIpAddress
             : ipAddress
         
-        let result = Text(effectiveIpAddress.uppercased())
-            .asMenuBarItem(color: color, textSize: textSize)
-        
-        return result
+        if (networkAccess || exampleAllowed) {
+            let result = Text(effectiveIpAddress.uppercased())
+                .asMenuBarItem(color: color, textSize: textSize)
+            return result
+        }
+        else {
+            let result = Text(Constants.noInternet.uppercased())
+                .asMenuBarItem(color: .red, textSize: textSize)
+            return result
+        }
     }
     
     private func getCustomTextItem(
@@ -202,18 +214,21 @@ extension MenuBarItemsContainerView {
         colorUpper: Color,
         colorLower: Color,
         exampleAllowed: Bool,
-        isPublicUpper: Bool) -> some View {
+        isPublicUpper: Bool,
+        networkAccess: Bool) -> some View {
         let upperItem = getIpAddressItem(
             ipAddress: ipAddressUpper,
             color: colorUpper,
             exampleAllowed: exampleAllowed,
             isPublic: isPublicUpper,
+            networkAccess: networkAccess,
             textSize: 9)
         let lowerItem = getIpAddressItem(
             ipAddress: ipAddressLower,
             color: colorLower,
             exampleAllowed: exampleAllowed,
             isPublic: !isPublicUpper,
+            networkAccess: true,
             textSize: 9)
             
             let result = VStack(alignment: .leading, spacing: -2) {
@@ -229,13 +244,17 @@ extension MenuBarItemsContainerView {
         customText: String,
         color: Color,
         customTextColor: Color,
+        networkAccess: Bool,
+        textSize: Double = Constants.defaultMenuBarTextSize,
         exampleAllowed: Bool) -> any View {
             if (!exampleAllowed && customText.isEmpty) {
                 return getIpAddressItem(
                     ipAddress: ipAddress,
                     color: color,
                     exampleAllowed: exampleAllowed,
-                    isPublic: true)
+                    isPublic: true,
+                    networkAccess: networkAccess,
+                    textSize: textSize)
             }
             
             let upperItem = getCustomTextItem(
@@ -248,6 +267,7 @@ extension MenuBarItemsContainerView {
                 color: color,
                 exampleAllowed: exampleAllowed,
                 isPublic: true,
+                networkAccess: networkAccess,
                 textSize: 12)
             
             let result = VStack(alignment: .leading, spacing: -3) {

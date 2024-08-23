@@ -51,11 +51,11 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                                 Circle()
                                     .fill(Color(hex: ipCustomization.customLightColor))
                                     .frame(width: 15, height: 15)
-                                    .help(Constants.lightColor)
+                                    .help(Constants.hintLightColor)
                                 Circle()
                                     .fill(Color(hex: ipCustomization.customDarkColor))
                                     .frame(width: 15, height: 15)
-                                    .help(Constants.darkColor)
+                                    .help(Constants.hintDarkColor)
                                 Spacer()
                                     .frame(width: 70)
                                 Text(ipCustomization.customText)
@@ -63,11 +63,11 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                                 Circle()
                                     .fill(Color(hex: ipCustomization.customTextLightColor))
                                     .frame(width: 15, height: 15)
-                                    .help(Constants.lightColor)
+                                    .help(Constants.hintLightColor)
                                 Circle()
                                     .fill(Color(hex: ipCustomization.customTextDarkColor))
                                     .frame(width: 15, height: 15)
-                                    .help(Constants.darkColor)
+                                    .help(Constants.hintDarkColor)
                             }
                             .contextMenu {
                                 Button(action: { editIpCustomization(ipCustomization: ipCustomization) }) {

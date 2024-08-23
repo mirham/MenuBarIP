@@ -22,6 +22,12 @@ struct MenuBarStatusView : MenuBarItemsContainerView {
                 .nonAntialiased()
                 .scaledToFit()
         }
+        .onAppear(){
+            appState.current.colorScheme = colorScheme
+        }
+        .onChange(of: colorScheme) {
+            appState.current.colorScheme = colorScheme
+        }
     }
 }
 
@@ -37,15 +43,32 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     }
     
     var body: some View {
-        let shownItems = getMenuBarElements(
-            keys: appState.userData.menuBarShownItems,
-            appState: appState,
-            colorScheme: colorScheme)
-        
-        HStack(spacing: appState.userData.menuBarSpacing) {
-            ForEach(shownItems, id: \.id) { item in
-                Image(nsImage: item.image)
-                    .nonAntialiased()
+        if (appState.network.status != .on) {
+            HStack(spacing: appState.userData.menuBarSpacing) {
+                Image(systemName: Constants.iconNotConnected)
+                Text(Constants.offline.uppercased())
+                    .font(.system(size: appState.userData.menuBarTextSize))
+            }
+            .foregroundStyle(.red)
+        }
+        else if (appState.network.publicIpInfo == nil && appState.network.obtainingIp) {
+            HStack(spacing: appState.userData.menuBarSpacing) {
+                Image(systemName: Constants.iconObtaining)
+                Text(Constants.obtainingIp.uppercased())
+                    .font(.system(size: appState.userData.menuBarTextSize))
+            }
+        }
+        else {
+            let shownItems = getMenuBarElements(
+                keys: appState.userData.menuBarShownItems,
+                appState: appState,
+                colorScheme: colorScheme)
+            
+            HStack(spacing: appState.userData.menuBarSpacing) {
+                ForEach(shownItems, id: \.id) { item in
+                    Image(nsImage: item.image)
+                        .nonAntialiased()
+                }
             }
         }
     }

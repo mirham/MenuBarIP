@@ -5,7 +5,7 @@
 //  Created by UglyGeorge on 03.08.2024.
 //
 
-import Foundation
+import SwiftUI
 
 class AppState : ObservableObject {
     @Published var current = Current()
@@ -16,7 +16,10 @@ class AppState : ObservableObject {
     static let shared = AppState()
     
     private func setCurrentState() {
-        guard network.publicIpInfo != nil else { return }
+        guard network.publicIpInfo != nil else {
+            current.ipCustomization = nil
+            return
+        }
         
         current.ipCustomization = userData.ipCustomizations
             .first(where: {$0.ipAddress == network.publicIpInfo!.ipAddress})
@@ -26,6 +29,7 @@ class AppState : ObservableObject {
 extension AppState {
     struct Current : Equatable {
         var ipCustomization: IpCustomization? = nil
+        var colorScheme: ColorScheme = .light
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
@@ -41,6 +45,7 @@ extension AppState {
         var publicIpInfo: IpInfo? = nil
         var localIp: String? = nil
         var obtainingIp = false
+        var internetAccess = true
         var activeNetworkInterfaces: [NetworkInterface] = [NetworkInterface]()
     }
 }
