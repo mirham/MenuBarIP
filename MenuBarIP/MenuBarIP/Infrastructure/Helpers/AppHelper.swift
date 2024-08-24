@@ -20,12 +20,22 @@ class AppHelper {
         }
     }
     
-    static func activateView(viewId: String) {
+    static func activateView(viewId: String, simple: Bool = true) {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
             
             if(windowId.starts(with: viewId)) {
-                window.makeKeyAndOrderFront(window)
+                if (simple) {
+                    window.makeKeyAndOrderFront(window)
+                }
+                else {
+                    let prevLevel = window.level
+                    window.level = .floating
+                    NSApp.activate()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        window.level = prevLevel
+                    }
+                }
             }
         }
     }

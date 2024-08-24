@@ -33,10 +33,10 @@ struct SettingsView : View {
                 }
         }
         .onAppear(perform: {
+            appState.views.isSettingsViewShown = true
             AppHelper.setUpView(
                 viewName: Constants.windowIdSettings,
-                onTop: false)
-            appState.views.isSettingsViewShown = true
+                onTop: true)
         })
         .onDisappear(perform: {
             appState.views.isSettingsViewShown = false
