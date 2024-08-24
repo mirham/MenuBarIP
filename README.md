@@ -17,7 +17,7 @@
 ## Introduction
 MirHam MenuBarIP is a macOS menu bar application designed to display your public and local IP addresses with various customization options.
 
-## Why I made it
+## Why
 I was surprised to find that all similar applications in the App Store are paid and offer limited customization. Creating my own was not a big challenge, so now I’m sharing it with everyone.
 
 ## Features
