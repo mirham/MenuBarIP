@@ -25,6 +25,11 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/MenuBarView.png">
 </p>
 
+### Map
+<p align="left">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/MapView.png" width="800">
+</p>
+
 ### Settings
 <p align="left">
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings1.png" width="400">
