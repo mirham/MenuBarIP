@@ -26,7 +26,7 @@ struct Constants{
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
-    static let defaultCheckConnectionHealthInterval: Int = 10
+    static let defaultCheckConnectionHealthInterval: Int = 5
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl = "https://google.com"
@@ -148,6 +148,7 @@ struct Constants{
     static let menuItemShowOnMap = "Show on map"
     static let menuItemSettings = "Settings"
     static let menuItemRefresh = "Refresh"
+    static let menuItemAbout = "About"
     static let menuItemQuit = "Quit"
     
     // MARK: Error messages
@@ -160,6 +161,18 @@ struct Constants{
     static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"
     static let shCommandEnableLaunchAgent = "launchctl enable %1$@"
     static let shCommandRemoveLaunchAgent = "launchctl remove %1$@"
+    
+    // MARK: About
+    static let aboutSupportMail = "bWlyaGFtQGFidi5iZw=="
+    static let aboutGitHubLink = "https://github.com/mirham/MenuBarIP"
+    
+    static let aboutBackground = "AppInfo"
+    
+    static let aboutVersionKey = "CFBundleShortVersionString"
+    static let aboutGetSupport = "Get support:"
+    static let aboutVersion = "Version: %1$@"
+    static let aboutMailTo = "mailto:%1$@"
+    static let aboutGitHub = "GitHub"
     
     // MARK: Static data
     static let ipApiUrls = [

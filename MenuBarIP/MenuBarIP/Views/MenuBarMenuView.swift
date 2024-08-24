@@ -54,6 +54,8 @@ struct MenuBarMenuView : IpAddressContainerView {
             Divider()
             Button(Constants.menuItemSettings, action: settingsButtonClickHandler)
             Divider()
+            Button(Constants.menuItemAbout, action: aboutButtonClickHandler)
+            Divider()
             Button(Constants.menuItemQuit, action: quitButtonClickHandler)
         }
     }
@@ -67,6 +69,16 @@ struct MenuBarMenuView : IpAddressContainerView {
         
         AppHelper.activateView(viewId: Constants.windowIdSettings)
         dismiss()
+    }
+    
+    private func aboutButtonClickHandler() {
+        if (!appState.views.isInfoViewShown){
+            openWindow(id: Constants.windowIdInfo)
+            AppHelper.activateView(viewId: Constants.windowIdInfo)
+        }
+        else {
+            AppHelper.activateView(viewId: Constants.windowIdInfo)
+        }
     }
     
     private func publicIpLocationButtonClickHandler() {
