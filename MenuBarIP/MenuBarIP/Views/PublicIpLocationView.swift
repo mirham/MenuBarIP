@@ -49,6 +49,7 @@ struct PublicIpLocationView : View {
             MapPitchSlider()
         }
         .onAppear() {
+            appState.views.isPublicIpLocationViewShown = true
             cameraPosition = .region(region)
         }
         .onChange(of: appState.network.publicIpInfo) {
@@ -60,6 +61,9 @@ struct PublicIpLocationView : View {
                 region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta:  0.3, longitudeDelta:  0.3))
                 cameraPosition = .region(region)
             }
+        }
+        .onDisappear() {
+            appState.views.isPublicIpLocationViewShown = false
         }
         .animation(.easeInOut(duration: 0.5), value: appState.network.publicIpInfo)
         .ignoresSafeArea()

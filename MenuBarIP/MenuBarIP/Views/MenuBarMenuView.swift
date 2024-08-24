@@ -65,27 +65,36 @@ struct MenuBarMenuView : IpAddressContainerView {
     private func settingsButtonClickHandler() {
         if(!appState.views.isSettingsViewShown) {
             openWindow(id: Constants.windowIdSettings)
+            AppHelper.activateView(viewId: Constants.windowIdSettings, simple: false)
+        }
+        else {
+            AppHelper.activateView(viewId: Constants.windowIdSettings, simple: false)
         }
         
-        AppHelper.activateView(viewId: Constants.windowIdSettings)
+        dismiss()
+    }
+    
+    private func publicIpLocationButtonClickHandler() {
+        if(!appState.views.isPublicIpLocationViewShown) {
+            openWindow(id: Constants.windowIdPublicIpLocation)
+            AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation, simple: false)
+        }
+        else {
+            AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation, simple: false)
+        }
+        
         dismiss()
     }
     
     private func aboutButtonClickHandler() {
         if (!appState.views.isInfoViewShown){
             openWindow(id: Constants.windowIdInfo)
-            AppHelper.activateView(viewId: Constants.windowIdInfo)
+            AppHelper.activateView(viewId: Constants.windowIdInfo, simple: false)
         }
         else {
-            AppHelper.activateView(viewId: Constants.windowIdInfo)
+            AppHelper.activateView(viewId: Constants.windowIdInfo, simple: false)
         }
-    }
-    
-    private func publicIpLocationButtonClickHandler() {
-        if(!appState.views.isPublicIpLocationViewShown) {
-            openWindow(id: Constants.windowIdPublicIpLocation)
-        }
-        AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation)
+        
         dismiss()
     }
     
