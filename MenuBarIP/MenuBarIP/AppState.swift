@@ -60,11 +60,8 @@ extension AppState {
 
 extension AppState {
     struct UserData : Settable, Equatable {
-        var ipCustomizations = [IpCustomization]() {
-            didSet { writeSettingsArray(newValues: ipCustomizations, key: Constants.settingsKeyIpCustomizations) }
-        }
-        var ipApis = [IpApiInfo]() {
-            didSet { writeSettingsArray(newValues: ipApis, key: Constants.settingsKeyApis) }
+        var internetCheckUrl: String = Constants.defaultInternetCheckUrl {
+            didSet { writeSetting(newValue: internetCheckUrl, key: Constants.settingsKeyInternetCheckUrl) }
         }
         var menuBarShownItems = Constants.defaultShownMenuBarItems {
             didSet { writeSettingsArray(newValues: menuBarShownItems, key: Constants.settingsKeyShownMenuBarItems) }
@@ -72,14 +69,20 @@ extension AppState {
         var menuBarHiddenItems = Constants.defaultHiddenMenuBarItems {
             didSet { writeSettingsArray(newValues: menuBarHiddenItems, key: Constants.settingsKeyHiddenMenuBarItems) }
         }
-        var menuBarUseThemeColor: Bool = false {
-            didSet { writeSetting(newValue: menuBarUseThemeColor, key: Constants.settingsKeyMenuBarUseThemeColor) }
-        }
         var menuBarTextSize: Double = Constants.defaultMenuBarTextSize {
             didSet { writeSetting(newValue: menuBarTextSize, key: Constants.settingsKeyMenuBarTextSize) }
         }
         var menuBarSpacing: Double = Constants.defaultMenuBarSpacing {
             didSet { writeSetting(newValue: menuBarSpacing, key: Constants.settingsElementSpacing) }
+        }
+        var menuBarUseThemeColor: Bool = false {
+            didSet { writeSetting(newValue: menuBarUseThemeColor, key: Constants.settingsKeyMenuBarUseThemeColor) }
+        }
+        var ipCustomizations = [IpCustomization]() {
+            didSet { writeSettingsArray(newValues: ipCustomizations, key: Constants.settingsKeyIpCustomizations) }
+        }
+        var ipApis = [IpApiInfo]() {
+            didSet { writeSettingsArray(newValues: ipApis, key: Constants.settingsKeyApis) }
         }
         
         static func == (lhs: UserData, rhs: UserData) -> Bool {
@@ -89,6 +92,7 @@ extension AppState {
         }
         
         init() {
+            internetCheckUrl = readSetting(key: Constants.settingsKeyInternetCheckUrl) ?? Constants.defaultInternetCheckUrl
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize
             menuBarSpacing = readSetting(key: Constants.settingsKeyMenuBarSpacing) ?? Constants.defaultMenuBarSpacing

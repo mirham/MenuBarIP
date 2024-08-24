@@ -49,25 +49,17 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                                 Text(ipCustomization.ipAddress)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Circle()
-                                    .fill(Color(hex: ipCustomization.customLightColor))
-                                    .frame(width: 15, height: 15)
-                                    .help(Constants.hintLightColor)
+                                    .asSelectedColor(colorHex: ipCustomization.customLightColor, hint: Constants.hintLightColor)
                                 Circle()
-                                    .fill(Color(hex: ipCustomization.customDarkColor))
-                                    .frame(width: 15, height: 15)
-                                    .help(Constants.hintDarkColor)
+                                    .asSelectedColor(colorHex: ipCustomization.customDarkColor, hint: Constants.hintDarkColor)
                                 Spacer()
                                     .frame(width: 70)
                                 Text(ipCustomization.customText)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Circle()
-                                    .fill(Color(hex: ipCustomization.customTextLightColor))
-                                    .frame(width: 15, height: 15)
-                                    .help(Constants.hintLightColor)
+                                    .asSelectedColor(colorHex: ipCustomization.customTextLightColor, hint: Constants.hintLightColor)
                                 Circle()
-                                    .fill(Color(hex: ipCustomization.customTextDarkColor))
-                                    .frame(width: 15, height: 15)
-                                    .help(Constants.hintDarkColor)
+                                    .asSelectedColor(colorHex: ipCustomization.customTextDarkColor, hint: Constants.hintDarkColor)
                             }
                             .contextMenu {
                                 Button(action: { editIpCustomization(ipCustomization: ipCustomization) }) {
@@ -92,10 +84,12 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                                     .onChange(of: newIp) {
                                         isNewIpValid = newIp.isValidIp()
                                     }
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                                 TextField(Constants.hintNewCustomText, text: $newCustomText)
                                     .onChange(of: newCustomText) {
                                         newCustomText = escapeCustomText(text: newCustomText as NSString)
                                     }
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
                             .padding(.trailing, 10)
                             VStack(alignment: .leading, spacing: 15) {
@@ -104,23 +98,9 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                             }
                             VStack(alignment: .leading, spacing: 12) {
                                 PopoverColorPicker(color: $newIpLightColor)
-                                    .fixedSize()
-                                    .frame(width: 20, height: 20)
-                                    .clipShape(Circle())
-                                    .overlay(content: {
-                                        Circle()
-                                            .stroke(Color.primary, lineWidth: 1.5)
-                                            .padding(1)
-                                    })
+                                    .asCircle()
                                 PopoverColorPicker(color: $newCustomTextLightColor)
-                                    .fixedSize()
-                                    .frame(width: 20, height: 20)
-                                    .clipShape(Circle())
-                                    .overlay(content: {
-                                        Circle()
-                                            .stroke(Color.primary, lineWidth: 1.5)
-                                            .padding(1)
-                                    })
+                                    .asCircle()
                             }
                             VStack(alignment: .leading, spacing: 15) {
                                 Text("\(Constants.dark):")
@@ -128,23 +108,9 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                             }
                             VStack(alignment: .leading, spacing: 12) {
                                 PopoverColorPicker(color: $newIpDarkColor)
-                                    .fixedSize()
-                                    .frame(width: 20, height: 20)
-                                    .clipShape(Circle())
-                                    .overlay(content: {
-                                        Circle()
-                                            .stroke(Color.primary, lineWidth: 1.5)
-                                            .padding(1)
-                                    })
+                                    .asCircle()
                                 PopoverColorPicker(color: $newCustomTextDarkColor)
-                                    .fixedSize()
-                                    .frame(width: 20, height: 20)
-                                    .clipShape(Circle())
-                                    .overlay(content: {
-                                        Circle()
-                                            .stroke(Color.primary, lineWidth: 1.5)
-                                            .padding(1)
-                                    })
+                                    .asCircle()
                             }
                         }
                         AsyncButton(
@@ -228,6 +194,27 @@ struct IpCustomizationsEditView : IpAddressContainerView {
         result = String(result.prefix(Constants.maxCustomTextSymbols))
         
         return result
+    }
+}
+
+private extension PopoverColorPicker {
+    func asCircle() -> some View {
+        self.fixedSize()
+            .frame(width: 20, height: 20)
+            .clipShape(Circle())
+            .overlay(content: {
+                Circle()
+                    .stroke(Color.primary, lineWidth: 1.5)
+                    .padding(1)
+            })
+    }
+}
+
+private extension Circle {
+    func asSelectedColor(colorHex: String, hint: String) -> some View {
+        self.fill(Color(hex: colorHex))
+            .frame(width: 15, height: 15)
+            .help(hint)
     }
 }
 

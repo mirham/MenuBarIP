@@ -38,7 +38,7 @@ struct MenuBarIPApp: App {
             PublicIpLocationView()
                 .environmentObject(appState)
                 .navigationTitle(Constants.wnidowTitlePublicIplocation)
-                .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
+                .frame(minWidth: 500, minHeight: 500)
         }).windowResizability(.contentSize)
     }
 

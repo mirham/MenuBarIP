@@ -118,13 +118,20 @@ class IpService : ServiceBase, ApiCallable {
                 return OperationResult(result: String())
             }
             
-            if let inactiveApiIndex = self.appState.userData.ipApis.firstIndex(where: { $0.url == ipApiUrl }) {
-                DispatchQueue.main.async {
-                    self.appState.userData.ipApis[inactiveApiIndex].active = false
-                }
-            }
+            deactivateIpApi(ipApiUrl: ipApiUrl)
             
             return OperationResult(error: String(format: Constants.errorWhenCallingIpAddressApi, ipApiUrl, error.localizedDescription))
+        }
+    }
+    
+    private func deactivateIpApi(ipApiUrl: String) {
+        guard self.appState.network.status == .on && self.appState.network.internetAccess
+            else { return }
+        
+        if let inactiveApiIndex = self.appState.userData.ipApis.firstIndex(where: { $0.url == ipApiUrl }) {
+            DispatchQueue.main.async {
+                self.appState.userData.ipApis[inactiveApiIndex].active = false
+            }
         }
     }
 }

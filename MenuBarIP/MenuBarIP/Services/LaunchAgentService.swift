@@ -33,7 +33,8 @@ class LaunchAgentService : ServiceBase, ShellAccessible {
             try xmlContent.write(toFile: plistFilePath, atomically: true, encoding: String.Encoding.utf8)
             
             return true
-        } catch {
+        }
+        catch {
             return false
         }
     }

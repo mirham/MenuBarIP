@@ -97,6 +97,23 @@ class NetworkService: ServiceBase, ApiCallable {
         lock.unlock()
     }
     
+    func isUrlReachableAsync(url : String) async throws -> Bool {
+        do {
+            let url = URL(string: url)!
+            var request = URLRequest(url: url)
+            request.httpMethod = "HEAD"
+            
+            let (_, response) = try await URLSession.shared.data(for: request)
+            
+            guard (response as? HTTPURLResponse)?
+                .statusCode == 200 else {
+                return false
+            }
+            
+            return true
+        }
+    }
+    
     deinit {
         monitor.cancel()
         currentTimer?.invalidate()
@@ -125,20 +142,9 @@ class NetworkService: ServiceBase, ApiCallable {
         }
     }
     
-    private func isUrlReachableAsync(url : String) async throws -> Bool {
-        do {
-            let url = URL(string: url)!
-            var request = URLRequest(url: url)
-            request.httpMethod = "HEAD"
-            
-            let (_, response) = try await URLSession.shared.data(for: request)
-            
-            guard (response as? HTTPURLResponse)?
-                .statusCode == 200 else {
-                return false
-            }
-            
-            return true
+    private func activateIpApis() {
+        for index in 0...self.appState.userData.ipApis.count - 1 {
+            self.appState.userData.ipApis[index].active = true
         }
     }
     
@@ -151,40 +157,37 @@ class NetworkService: ServiceBase, ApiCallable {
         obtainingIp: Bool? = nil,
         internetAccess: Bool? = nil,
         allowPublicIpInfoNil: Bool = false) {
-            DispatchQueue.main.async {
-                if (currentStatus != nil) {
-                    self.appState.network.status = currentStatus!
-                    
-                    for index in 0...self.appState.userData.ipApis.count - 1 {
-                        self.appState.userData.ipApis[index].active = true
-                    }
-                }
-                
-                if (publicIpInfo != nil || allowPublicIpInfoNil) {
-                    self.appState.network.publicIpInfo = publicIpInfo ?? nil
-                }
-                
-                if (localIp != nil) {
-                    self.appState.network.localIp = localIp
-                }
-                
-                if (obtainingIp != nil) {
-                    self.appState.network.obtainingIp = obtainingIp!
-                }
-                
-                if (internetAccess != nil) {
-                    self.appState.network.internetAccess = internetAccess!
-                }
-                
-                if (activeNetworkInterfaces != nil) {
-                    self.appState.network.activeNetworkInterfaces = activeNetworkInterfaces!
-                }
-                
-                if (disconnected != nil && disconnected!) {
-                    self.appState.network.publicIpInfo = nil
-                }
-                
-                self.appState.objectWillChange.send()
+        DispatchQueue.main.async {
+            if (currentStatus != nil) {
+                self.appState.network.status = currentStatus!
+                self.activateIpApis()
             }
+                
+            if (publicIpInfo != nil || allowPublicIpInfoNil) {
+                self.appState.network.publicIpInfo = publicIpInfo ?? nil
+            }
+            
+            if (localIp != nil) {
+                self.appState.network.localIp = localIp
+            }
+                
+            if (obtainingIp != nil) {
+                self.appState.network.obtainingIp = obtainingIp!
+            }
+            
+            if (internetAccess != nil) {
+                self.appState.network.internetAccess = internetAccess!
+            }
+            
+            if (activeNetworkInterfaces != nil) {
+                self.appState.network.activeNetworkInterfaces = activeNetworkInterfaces!
+            }
+            
+            if (disconnected != nil && disconnected!) {
+                self.appState.network.publicIpInfo = nil
+            }
+            
+            self.appState.objectWillChange.send()
         }
+    }
 }

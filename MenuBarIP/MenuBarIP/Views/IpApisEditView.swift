@@ -10,7 +10,7 @@ import SwiftUI
 struct IpApisEditView : View {
     @EnvironmentObject var appState: AppState
     
-    private let addressesService = IpService.shared
+    private let ipService = IpService.shared
     
     @State private var newUrl = String()
     @State private var isNewUrlValid = false
@@ -62,6 +62,7 @@ struct IpApisEditView : View {
                                     .onChange(of: newUrl) {
                                         isNewUrlValid = newUrl.isValidUrl()
                                     }
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
                         }
                         AsyncButton(Constants.add, action: addIpApiClickHandlerAsync)
@@ -83,7 +84,7 @@ struct IpApisEditView : View {
     // MARK: Private functions
     
     private func addIpApiClickHandlerAsync() async {
-        let ipAddressResult = await addressesService.getPublicIpAsync(ipApiUrl: newUrl)
+        let ipAddressResult = await ipService.getPublicIpAsync(ipApiUrl: newUrl)
         
         guard ipAddressResult.success else {
             isNewUrlInvalid = true

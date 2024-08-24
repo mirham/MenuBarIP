@@ -19,15 +19,13 @@ struct MenuBarMenuView : IpAddressContainerView {
     var body: some View {
         VStack {
             Text(Constants.publicIp.uppercased())
-                .font(.system(size: 12))
-                .foregroundStyle(.gray)
+                .asMenuItemHeader()
             Text(appState.network.publicIpInfo?.ipAddress ?? Constants.none)
-                .font(.system(size: 18))
-                .bold()
-                .foregroundStyle(getIpMainColor(
+                .foregroundStyle(getIpColor(
                     colorScheme: appState.current.colorScheme,
                     currentIpCustomization: appState.current.ipCustomization,
                     forMenu: true))
+                .asMenuItemIp()
             VStack {
                 Text(appState.network.publicIpInfo?.asAddressString() ?? String())
                     .font(.system(size: 10))
@@ -41,12 +39,10 @@ struct MenuBarMenuView : IpAddressContainerView {
             .isHidden(hidden: appState.network.publicIpInfo == nil, remove: true)
             Divider()
             Text(Constants.localIp.uppercased())
-                .font(.system(size: 12))
-                .foregroundStyle(.gray)
+                .asMenuItemHeader()
             Text(appState.network.localIp ?? Constants.none)
-                .font(.system(size: 18))
                 .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                .bold()
+                .asMenuItemIp()
             Button(Constants.menuItemCopy) {
                 AppHelper.copyTextToClipboard(text: appState.network.localIp ?? String())
             }
@@ -84,6 +80,18 @@ struct MenuBarMenuView : IpAddressContainerView {
     private func quitButtonClickHandler() {
         launchAgentService.apply()
         NSApplication.shared.terminate(nil)
+    }
+}
+
+private extension Text {
+    func asMenuItemHeader() -> some View {
+        self.font(.system(size: 12))
+            .foregroundStyle(.gray)
+    }
+    
+    func asMenuItemIp() -> some View {
+        self.font(.system(size: 18))
+            .bold()
     }
 }
 

@@ -27,6 +27,9 @@ struct Constants{
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
     static let defaultCheckConnectionHealthInterval: Int = 10
+    static let defaultLightColor = "#FEFFFF"
+    static let defaultDarkColor = "#000001"
+    static let defaultInternetCheckUrl = "https://google.com"
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -41,6 +44,9 @@ struct Constants{
     static let iconQuit = "xmark.circle"
     static let iconObtaining = "network"
     static let iconNotConnected = "network.slash"
+    static let iconIpPoint = "ippoint"
+    static let iconEdit = "pencil.line"
+    static let iconSave = "chevron.down"
     
     // MARK: Symbols
     static let bullet = "•"
@@ -61,6 +67,7 @@ struct Constants{
     static let settingsKeyMenuBarUseThemeColor = "menubar-use-theme-color"
     static let settingsKeyMenuBarTextSize = "menubar-text-size"
     static let settingsKeyMenuBarSpacing = "menubar-spacing"
+    static let settingsKeyInternetCheckUrl = "internet-check-url"
     
     // MARK: Elements names
     static let info = "Info"
@@ -71,7 +78,8 @@ struct Constants{
     static let delete = "Delete"
     static let ok = "OK"
     static let ip = "IP"
-    static let apiUrl = "API URL"
+    static let apiUrl = "API address"
+    static let internetCheckUrl = "Check if internet access using address"
     static let customText = "Custom text"
     static let light = "Light"
     static let dark = "Dark"
@@ -99,12 +107,15 @@ struct Constants{
     static let dialogBodyIpAddressIsNotValid = "IP Address seems to not be valid and cannot be added."
     static let dialogHeaderApiIsNotValid = "API for getting IP Address is not valid"
     static let dialogBodyApiIsNotValid = "API doesn't return a valid IP address as a plain text and cannot be added."
+    static let dialogHeaderUrlIsNotValid = "Address for checking Internet access is not applicable"
+    static let dialogBodyUrlIsNotValid = "The address for checking Internet access does not return correct data and cannot be used."
     
     // MARK: Hints
     static let hintApiIsActive = "API is active and in use"
     static let hintApiIsInactive = "API is not active and not in use"
     static let hintNewVaildIpAddress = "A new valid IP address"
     static let hintNewCustomText = "A new custom text"
+    static let hintNewVaildUrl = "A new valid URL"
     static let hintNewVaildApiUrl = "A new valid API URL"
     static let hintLightColor = "Light theme color"
     static let hintDarkColor = "Dark theme color"
@@ -120,6 +131,7 @@ struct Constants{
     static let mbItemKeyBothIpAddressesPublicUpper = "both-ips-public-upper"
     static let mbItemKeyCountryCode = "country-code"
     static let mbItemKeyCountryFlag = "country-flag"
+    static let mbItemKeyInternetStatus = "internet-status"
     static let mbItemKeyBigCountryFlag = "big-country-flag"
     static let mbItemKeyCustomText = "custom-text"
     static let mbItemKeySeparatorBullet = "separator-bullet"
@@ -184,6 +196,7 @@ struct Constants{
     ]
     
     static let defaultHiddenMenuBarItems = [
+        mbItemKeyInternetStatus,
         mbItemKeyBigCountryFlag,
         mbItemKeyPublicIpAddressWithCustomText,
         mbItemKeyBothIpAddressesPublicUpper,

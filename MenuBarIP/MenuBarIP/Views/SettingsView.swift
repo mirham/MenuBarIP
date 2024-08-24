@@ -18,6 +18,10 @@ struct SettingsView : View {
                 .tabItem {
                     Text(Constants.settingsElementGeneral)
                 }
+            MenuBarStatusEditView()
+                .tabItem {
+                    Text(Constants.settingsElementMenubar)
+                }
             IpCustomizationsEditView()
                 .tabItem {
                     Text(Constants.settingsElementCustomization)

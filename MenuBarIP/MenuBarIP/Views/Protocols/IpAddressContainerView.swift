@@ -16,16 +16,16 @@ extension IpAddressContainerView {
         forMenu: Bool = false) -> Color {
         let result: Color = colorScheme == .dark
             ? forMenu
-                ? Color(hex: "#FEFFFF")
+                ? Color(hex: Constants.defaultLightColor)
                 : .white
             : forMenu
-                ? Color(hex: "#000001")
+                ? Color(hex: Constants.defaultDarkColor)
                 : .black
             
         return result
     }
     
-    func getIpMainColor(
+    func getIpColor(
         colorScheme: ColorScheme,
         currentIpCustomization: IpCustomization?,
         forMenu: Bool = false) -> Color {
@@ -40,10 +40,10 @@ extension IpAddressContainerView {
             return result
         }
     
-    func getCustomTextMainColor(
+    func getCustomTextColor(
         colorScheme: ColorScheme,
         currentIpCustomization: IpCustomization?) -> Color {
-            var result: Color = colorScheme == .dark ? .white : .black
+            var result: Color = getBaseColor(colorScheme: colorScheme)
             
             guard currentIpCustomization != nil else { return result }
             

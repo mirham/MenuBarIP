@@ -44,31 +44,46 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     
     var body: some View {
         if (appState.network.status != .on) {
-            HStack(spacing: appState.userData.menuBarSpacing) {
-                Image(systemName: Constants.iconNotConnected)
-                Text(Constants.offline.uppercased())
-                    .font(.system(size: appState.userData.menuBarTextSize))
-            }
-            .foregroundStyle(.red)
+            makeOfflineView()
         }
         else if (appState.network.publicIpInfo == nil && appState.network.obtainingIp) {
-            HStack(spacing: appState.userData.menuBarSpacing) {
-                Image(systemName: Constants.iconObtaining)
-                Text(Constants.obtainingIp.uppercased())
-                    .font(.system(size: appState.userData.menuBarTextSize))
-            }
+            makeObtainingIpView()
         }
         else {
-            let shownItems = getMenuBarElements(
-                keys: appState.userData.menuBarShownItems,
-                appState: appState,
-                colorScheme: colorScheme)
-            
-            HStack(spacing: appState.userData.menuBarSpacing) {
-                ForEach(shownItems, id: \.id) { item in
-                    Image(nsImage: item.image)
-                        .nonAntialiased()
-                }
+            makeDefaultView(appState: appState, colorScheme: colorScheme)
+        }
+    }
+    
+    // MARK: Private functions
+    
+    private func makeOfflineView() -> some View {
+        HStack(spacing: appState.userData.menuBarSpacing) {
+            Image(systemName: Constants.iconNotConnected)
+            Text(Constants.offline.uppercased())
+                .font(.system(size: appState.userData.menuBarTextSize))
+        }
+        .foregroundStyle(.red)
+    }
+    
+    private func makeObtainingIpView() -> some View {
+        HStack(spacing: appState.userData.menuBarSpacing) {
+            Image(systemName: Constants.iconObtaining)
+            Text(Constants.obtainingIp.uppercased())
+                .font(.system(size: appState.userData.menuBarTextSize))
+        }
+    }
+    
+    @MainActor
+    private func makeDefaultView(appState: AppState, colorScheme: ColorScheme) -> some View {
+        let shownItems = getMenuBarElements(
+            keys: appState.userData.menuBarShownItems,
+            appState: appState,
+            colorScheme: colorScheme)
+        
+        return HStack(spacing: appState.userData.menuBarSpacing) {
+            ForEach(shownItems, id: \.id) { item in
+                Image(nsImage: item.image)
+                    .nonAntialiased()
             }
         }
     }

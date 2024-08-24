@@ -24,22 +24,28 @@ extension MenuBarItemsContainerView {
         exampleAllowed: Bool = false) -> [MenuBarElement] {
             var result = [MenuBarElement]()
             
-            let baseColor = colorScheme == .dark ? Color.white : Color.black
-            let ipMainColor = getIpMainColor(
-                colorScheme: colorScheme,
-                currentIpCustomization: appState.current.ipCustomization)
-            let customTextMainColor = getCustomTextMainColor(
-                colorScheme: colorScheme,
-                currentIpCustomization: appState.current.ipCustomization)
+            let baseColor = getBaseColor(colorScheme: colorScheme)
+            let ipColor = appState.userData.menuBarUseThemeColor
+                ? baseColor
+                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
+            let customTextColor = appState.userData.menuBarUseThemeColor
+                ? baseColor
+                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
             
             for key in keys {
                 switch key {
+                    case Constants.mbItemKeyInternetStatus:
+                        let internetAccess = getInternetStatusItem(
+                            internetAccess: appState.network.internetAccess,
+                            textSize: appState.userData.menuBarTextSize)
+                        let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: internetAccess), key: key)
+                        result.append(menuBarItem)
                     case Constants.mbItemKeyPublicIpAddress:
                         let publicIpAddress = getIpAddressItem(
                             ipAddress: appState.network.publicIpInfo == nil
                                 ? Constants.none
                                 : appState.network.publicIpInfo!.ipAddress,
-                            color: ipMainColor,
+                            color: ipColor,
                             exampleAllowed: exampleAllowed,
                             isPublic: true,
                             networkAccess: appState.network.internetAccess,
@@ -66,7 +72,7 @@ extension MenuBarItemsContainerView {
                             ipAddressLower: appState.network.localIp == nil
                                 ? Constants.none
                                 : appState.network.localIp!,
-                            colorUpper: ipMainColor,
+                            colorUpper: ipColor,
                             colorLower: baseColor,
                             exampleAllowed: exampleAllowed,
                             isPublicUpper: true,
@@ -76,7 +82,7 @@ extension MenuBarItemsContainerView {
                     case Constants.mbItemKeyCustomText:
                         let view = getCustomTextItem(
                             customText: appState.current.ipCustomization?.customText ?? String(),
-                            color: customTextMainColor,
+                            color: customTextColor,
                             exampleAllowed: exampleAllowed)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
@@ -86,8 +92,8 @@ extension MenuBarItemsContainerView {
                                 ? Constants.none
                                 : appState.network.publicIpInfo!.ipAddress,
                             customText: appState.current.ipCustomization?.customText ?? String(),
-                            color: ipMainColor,
-                            customTextColor: customTextMainColor,
+                            color: ipColor,
+                            customTextColor: customTextColor,
                             networkAccess: appState.network.internetAccess,
                             textSize: appState.userData.menuBarTextSize,
                             exampleAllowed: exampleAllowed)
@@ -98,7 +104,7 @@ extension MenuBarItemsContainerView {
                             countryCode: appState.network.publicIpInfo == nil
                             ? String()
                             : appState.network.publicIpInfo!.countryCode,
-                            color: ipMainColor,
+                            color: ipColor,
                             exampleAllowed: exampleAllowed,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: countryCode), key: key)
@@ -296,7 +302,7 @@ extension MenuBarItemsContainerView {
         exampleAllowed: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize,
         scalable: Bool = true) -> NSImage {
-            let scale = scalable ? 0.9 * textSize / 16 :  0.9
+        let scale = scalable ? 0.9 * textSize / 16 :  0.9
         let effectiveCountryCode = countryCode.isEmpty && exampleAllowed ? Constants.defaultCountryCode : countryCode
         let result = getCountryFlag(countryCode: effectiveCountryCode)
         result.size.width = result.size.width * scale
@@ -304,6 +310,23 @@ extension MenuBarItemsContainerView {
         
         return result
     }
+    
+    private func getInternetStatusItem(
+        internetAccess: Bool,
+        textSize: Double = Constants.defaultMenuBarTextSize) -> some View {
+            let scale = 1 * textSize / 16
+            let result = Circle()
+                .fill(internetAccess ? .green : .red)
+                .frame(width: 20, height: 20)
+                .overlay(content: {
+                    Circle()
+                        .stroke(Color.primary, lineWidth: 1)
+                        .padding(1)
+                })
+                .scaleEffect(scale)
+            
+            return result
+        }
     
     private func getBulletItem(
         color: Color,

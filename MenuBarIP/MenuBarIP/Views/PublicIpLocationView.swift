@@ -29,13 +29,10 @@ struct PublicIpLocationView : View {
                 String(),
                 coordinate: location) {
                 VStack {
-                    Image("ippoint")
+                    Image(Constants.iconIpPoint)
                         .resizable()
                         .frame(width: 50, height: 50)
-                    Text("\(appState.network.publicIpInfo?.zipCode ?? String())"
-                         + ",\n\(appState.network.publicIpInfo?.countryName ?? String())"
-                         + ",\n\(appState.network.publicIpInfo?.regionName ?? String())"
-                         + ",\n\(appState.network.publicIpInfo?.cityName ?? String())")
+                    Text(appState.network.publicIpInfo?.asAddressString() ?? String())
                     .font(.system(size: 16))
                     .bold()
                     .multilineTextAlignment(.center)
