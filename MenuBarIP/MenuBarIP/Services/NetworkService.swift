@@ -128,7 +128,7 @@ class NetworkService: ServiceBase, ApiCallable {
                 guard self.appState.network.status == .on else { return }
                 
                 do {
-                    let internetAccess = try await self.isUrlReachableAsync(url: "https://google.com")
+                    let internetAccess = try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
                     self.updateStatus(internetAccess: internetAccess)
                     
                     if(!internetAccess) {
