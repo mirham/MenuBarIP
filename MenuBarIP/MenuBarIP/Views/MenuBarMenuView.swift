@@ -63,39 +63,22 @@ struct MenuBarMenuView : IpAddressContainerView {
     // MARK: Private functions
     
     private func settingsButtonClickHandler() {
-        if(!appState.views.isSettingsViewShown) {
-            openWindow(id: Constants.windowIdSettings)
-            AppHelper.activateView(viewId: Constants.windowIdSettings, simple: false)
-        }
-        else {
-            AppHelper.activateView(viewId: Constants.windowIdSettings, simple: false)
-        }
-        
-        dismiss()
+        openWindowWithId(id: Constants.windowIdSettings)
     }
     
     private func publicIpLocationButtonClickHandler() {
-        if(!appState.views.isPublicIpLocationViewShown) {
-            openWindow(id: Constants.windowIdPublicIpLocation)
-            AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation, simple: false)
-        }
-        else {
-            AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation, simple: false)
-        }
-        
-        dismiss()
+        openWindowWithId(id: Constants.windowIdPublicIpLocation)
     }
     
     private func aboutButtonClickHandler() {
-        if (!appState.views.isInfoViewShown){
-            openWindow(id: Constants.windowIdInfo)
-            AppHelper.activateView(viewId: Constants.windowIdInfo, simple: false)
+        openWindowWithId(id: Constants.windowIdInfo)
+    }
+    
+    private func openWindowWithId (id: String) {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        if (!appState.views.shownWindows.contains(where: {$0 == id})){
+            openWindow(id: id)
         }
-        else {
-            AppHelper.activateView(viewId: Constants.windowIdInfo, simple: false)
-        }
-        
-        dismiss()
     }
     
     private func quitButtonClickHandler() {

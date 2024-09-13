@@ -9,7 +9,7 @@ import SwiftUI
 
 class AppState : ObservableObject {
     @Published var current = Current()
-    @Published var views = Views()
+    @Published var views = Views(shownWindows: [String()])
     @Published var network = Network() { didSet { setCurrentState() } }
     @Published var userData = UserData()  { didSet { setCurrentState() } }
     
@@ -52,9 +52,7 @@ extension AppState {
 
 extension AppState {
     struct Views {
-        var isSettingsViewShown = false
-        var isPublicIpLocationViewShown = false
-        var isInfoViewShown = false
+        var shownWindows: [String]
     }
 }
 

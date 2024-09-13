@@ -7,6 +7,7 @@
 
 import Foundation
 import Network
+import AppKit
 
 class NetworkService: ServiceBase, ApiCallable {
     static let shared = NetworkService()
@@ -63,6 +64,7 @@ class NetworkService: ServiceBase, ApiCallable {
         
         monitor.start(queue: queue)
         startConnectionHealthMonitoring()
+        addSystemDidWakeHandler()
     }
     
     func getCurrentIp() {
@@ -117,6 +119,7 @@ class NetworkService: ServiceBase, ApiCallable {
     deinit {
         monitor.cancel()
         currentTimer?.invalidate()
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
     // MARK: Private functions
@@ -145,6 +148,21 @@ class NetworkService: ServiceBase, ApiCallable {
     private func activateIpApis() {
         for index in 0...self.appState.userData.ipApis.count - 1 {
             self.appState.userData.ipApis[index].active = true
+        }
+    }
+    
+    private func addSystemDidWakeHandler() {
+        let center = NSWorkspace.shared.notificationCenter
+        
+        center.addObserver(self,
+                           selector: #selector(systemDidWake),
+                           name: NSWorkspace.didWakeNotification,
+                           object: nil)
+    }
+    
+    @objc private func systemDidWake() {
+        if (appState.network.publicIpInfo == nil) {
+            getCurrentIp()
         }
     }
     
