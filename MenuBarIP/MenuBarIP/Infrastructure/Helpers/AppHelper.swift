@@ -20,22 +20,14 @@ class AppHelper {
         }
     }
     
-    static func activateView(viewId: String, simple: Bool = true) {
+    static func activateView(viewId: String) {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
             
             if(windowId.starts(with: viewId)) {
-                if (simple) {
-                    window.makeKeyAndOrderFront(window)
-                }
-                else {
-                    let prevLevel = window.level
-                    window.level = .floating
-                    NSApp.activate()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        window.level = prevLevel
-                    }
-                }
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                //window.makeKeyAndOrderFront(nil)
+                //window.orderFrontRegardless()
             }
         }
     }

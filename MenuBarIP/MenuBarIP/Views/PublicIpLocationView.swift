@@ -49,7 +49,10 @@ struct PublicIpLocationView : View {
             MapPitchSlider()
         }
         .onAppear() {
-            appState.views.isPublicIpLocationViewShown = true
+            appState.views.shownWindows.append(Constants.windowIdPublicIpLocation)
+            AppHelper.setUpView(
+                viewName: Constants.windowIdPublicIpLocation,
+                onTop: true)
             cameraPosition = .region(region)
         }
         .onChange(of: appState.network.publicIpInfo) {
@@ -63,7 +66,7 @@ struct PublicIpLocationView : View {
             }
         }
         .onDisappear() {
-            appState.views.isPublicIpLocationViewShown = false
+            appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdPublicIpLocation})
         }
         .animation(.easeInOut(duration: 0.5), value: appState.network.publicIpInfo)
         .ignoresSafeArea()
