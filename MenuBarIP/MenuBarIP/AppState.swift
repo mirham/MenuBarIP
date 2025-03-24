@@ -44,8 +44,8 @@ extension AppState {
         var status: NetworkStatusType = NetworkStatusType.unknown
         var publicIpInfo: IpInfo? = nil
         var localIp: String? = nil
-        var obtainingIp = false
-        var internetAccess = true
+        var isObtainingIp = false
+        var hasInternetAccess = true
         var activeNetworkInterfaces: [NetworkInterface] = [NetworkInterface]()
     }
 }

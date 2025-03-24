@@ -10,16 +10,18 @@ import Foundation
 class IpService : ServiceBase, ApiCallable {
     static let shared = IpService()
     
+    private let ipApiService = IpApiService.shared
+    
     func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
         var currentIpApiUrl = ipApiUrl
         
         if (currentIpApiUrl == nil) {
-            let randomIpApi = getRandomActiveIpApi()
+            let randomIpApi = ipApiService.getRandomActiveIpApi()
             currentIpApiUrl = randomIpApi?.url
         }
         
         guard currentIpApiUrl != nil else { return OperationResult(error: Constants.errorNoActiveIpApiFound) }
-        let ipAddressResult = await callIpApiAsync(ipApiUrl: currentIpApiUrl!)
+        let ipAddressResult = await ipApiService.callIpApiAsync(ipApiUrl: currentIpApiUrl!)
         guard ipAddressResult.success else { return OperationResult(error: ipAddressResult.error!) }
         let ipAddressString = ipAddressResult.result!.trimmingCharacters(in: .whitespacesAndNewlines)
         guard ipAddressString.isValidIp() else { return OperationResult(error: Constants.errorIpApiResponseIsInvalid) }
@@ -92,46 +94,5 @@ class IpService : ServiceBase, ApiCallable {
         freeifaddrs(ifaddr)
         
         return result
-    }
-
-    
-    // MARK: Private functions
-    
-    private func getRandomActiveIpApi() -> IpApiInfo? {
-        let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
-        
-        return result
-    }
-    
-    private func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String> {
-        do {
-            let response = try await callGetApiAsync(apiUrl: ipApiUrl)
-            
-            return OperationResult(result: response)
-        }
-        catch {
-            if let error = error as? URLError, case .notConnectedToInternet = error.code {
-                return OperationResult(result: String())
-            }
-            
-            if let error = error as? URLError, case .networkConnectionLost = error.code {
-                return OperationResult(result: String())
-            }
-            
-            deactivateIpApi(ipApiUrl: ipApiUrl)
-            
-            return OperationResult(error: String(format: Constants.errorWhenCallingIpAddressApi, ipApiUrl, error.localizedDescription))
-        }
-    }
-    
-    private func deactivateIpApi(ipApiUrl: String) {
-        guard self.appState.network.status == .on && self.appState.network.internetAccess
-            else { return }
-        
-        if let inactiveApiIndex = self.appState.userData.ipApis.firstIndex(where: { $0.url == ipApiUrl }) {
-            DispatchQueue.main.async {
-                self.appState.userData.ipApis[inactiveApiIndex].active = false
-            }
-        }
     }
 }

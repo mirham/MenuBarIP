@@ -13,6 +13,7 @@ class NetworkService: ServiceBase, ApiCallable {
     static let shared = NetworkService()
     
     private let ipService = IpService.shared
+    private let ipApiService = IpApiService.shared
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
@@ -43,7 +44,8 @@ class NetworkService: ServiceBase, ApiCallable {
                     newStatus = NetworkStatusType.off
             }
             
-            if (self.appState.network.status != newStatus || self.appState.network.activeNetworkInterfaces != newNetworkInterfaces) {
+            if (self.appState.network.status != newStatus
+                || self.appState.network.activeNetworkInterfaces != newNetworkInterfaces) {
                 let updatedStatus = newStatus
                 let updatedNetworkInterfaces = newNetworkInterfaces
                 
@@ -56,7 +58,7 @@ class NetworkService: ServiceBase, ApiCallable {
                         self.updateStatus(
                             currentStatus: updatedStatus,
                             activeNetworkInterfaces: updatedNetworkInterfaces,
-                            disconnected: updatedStatus != .on)
+                            isDisconnected: updatedStatus != .on)
                     }
                 }
             }
@@ -73,27 +75,27 @@ class NetworkService: ServiceBase, ApiCallable {
             do {
                 let localIp = self.ipService.getLocalIp()
                 
-                await MainActor.run { updateStatus(obtainingIp: true) }
+                await MainActor.run { updateStatus(isObtainingIp: true) }
                 
                 // Fixes SSL errors after network changes
                 try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
                 
-                var ipNotObtained = true
+                var isIpObtained = false
                 
-                while ipNotObtained && self.appState.userData.ipApis.contains(where: {$0.isActive()}) {
+                while !isIpObtained && self.appState.userData.ipApis.contains(where: {$0.isActive()}) {
                     let updatedIpResult = await self.ipService.getPublicIpAsync()
                     
                     if (updatedIpResult.success) {
-                        ipNotObtained = false
+                        isIpObtained = true
                         await MainActor.run { updateStatus(publicIpInfo: updatedIpResult.result) }
                     }
                 }
                 
-                if (ipNotObtained) {
+                if (!isIpObtained) {
                     await MainActor.run { updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true) }
                 }
                 
-                await MainActor.run { updateStatus(localIp: localIp, obtainingIp: false) }
+                await MainActor.run { updateStatus(localIp: localIp, isObtainingIp: false) }
             }
         }
         lock.unlock()
@@ -131,15 +133,21 @@ class NetworkService: ServiceBase, ApiCallable {
                 guard self.appState.network.status == .on else { return }
                 
                 do {
-                    let internetAccess = try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
-                    self.updateStatus(internetAccess: internetAccess)
+                    let prevHasInternetAccess = self.appState.network.hasInternetAccess
+                    let currentHasInternetAccess = try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
                     
-                    if(!internetAccess) {
+                    if (!currentHasInternetAccess) {
                         self.updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true)
                     }
+                    else if (self.appState.network.publicIpInfo == nil) {
+                        self.ipApiService.reactivateIpApis()
+                        self.getCurrentIp()
+                    }
+                    
+                    self.updateStatus(hasInternetAccess: currentHasInternetAccess)
                 }
                 catch {
-                    self.updateStatus(publicIpInfo: nil, internetAccess: false, allowPublicIpInfoNil: true)
+                    self.updateStatus(publicIpInfo: nil, hasInternetAccess: false, allowPublicIpInfoNil: true)
                 }
             }
         }
@@ -171,9 +179,9 @@ class NetworkService: ServiceBase, ApiCallable {
         publicIpInfo: IpInfo? = nil,
         localIp: String? = nil,
         activeNetworkInterfaces: [NetworkInterface]? = nil,
-        disconnected: Bool? = nil,
-        obtainingIp: Bool? = nil,
-        internetAccess: Bool? = nil,
+        isDisconnected: Bool? = nil,
+        isObtainingIp: Bool? = nil,
+        hasInternetAccess: Bool? = nil,
         allowPublicIpInfoNil: Bool = false) {
         DispatchQueue.main.async {
             if (currentStatus != nil) {
@@ -189,19 +197,19 @@ class NetworkService: ServiceBase, ApiCallable {
                 self.appState.network.localIp = localIp
             }
                 
-            if (obtainingIp != nil) {
-                self.appState.network.obtainingIp = obtainingIp!
+            if (isObtainingIp != nil) {
+                self.appState.network.isObtainingIp = isObtainingIp!
             }
             
-            if (internetAccess != nil) {
-                self.appState.network.internetAccess = internetAccess!
+            if (hasInternetAccess != nil) {
+                self.appState.network.hasInternetAccess = hasInternetAccess!
             }
             
             if (activeNetworkInterfaces != nil) {
                 self.appState.network.activeNetworkInterfaces = activeNetworkInterfaces!
             }
             
-            if (disconnected != nil && disconnected!) {
+            if (isDisconnected != nil && isDisconnected!) {
                 self.appState.network.publicIpInfo = nil
             }
             

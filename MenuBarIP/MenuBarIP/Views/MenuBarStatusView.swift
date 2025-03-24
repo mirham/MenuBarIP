@@ -46,7 +46,7 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
         if (appState.network.status != .on) {
             makeOfflineView()
         }
-        else if (appState.network.publicIpInfo == nil && appState.network.obtainingIp) {
+        else if (appState.network.isObtainingIp) {
             makeObtainingIpView()
         }
         else {
