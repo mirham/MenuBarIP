@@ -53,6 +53,7 @@
 		35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */; };
 		35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E032C7380BC0036AB41 /* IpInfo.swift */; };
 		35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E052C75310B0036AB41 /* PublicIpLocationView.swift */; };
+		35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C7192D91C17B0014EB04 /* IpApiService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -103,6 +104,7 @@
 		35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpCustomizationsEditView.swift; sourceTree = "<group>"; };
 		35980E032C7380BC0036AB41 /* IpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfo.swift; sourceTree = "<group>"; };
 		35980E052C75310B0036AB41 /* PublicIpLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicIpLocationView.swift; sourceTree = "<group>"; };
+		35E1C7192D91C17B0014EB04 /* IpApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 				3540326F2C5E69FB002624D2 /* ServiceBase.swift */,
 				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
+				35E1C7192D91C17B0014EB04 /* IpApiService.swift */,
 				3540329B2C5E7AEC002624D2 /* LaunchAgentService.swift */,
 			);
 			path = Services;
@@ -390,6 +393,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */,
 				35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */,
 				3540327F2C5E72DD002624D2 /* OperationResult.swift in Sources */,
 				354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */,
@@ -580,7 +584,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -611,7 +615,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.3;
+				MARKETING_VERSION = 1.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

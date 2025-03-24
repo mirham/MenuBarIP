@@ -36,7 +36,7 @@ extension MenuBarItemsContainerView {
                 switch key {
                     case Constants.mbItemKeyInternetStatus:
                         let internetAccess = getInternetStatusItem(
-                            internetAccess: appState.network.internetAccess,
+                            internetAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: internetAccess), key: key)
                         result.append(menuBarItem)
@@ -48,7 +48,7 @@ extension MenuBarItemsContainerView {
                             color: ipColor,
                             exampleAllowed: exampleAllowed,
                             isPublic: true,
-                            networkAccess: appState.network.internetAccess,
+                            networkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: publicIpAddress), key: key)
                         result.append(menuBarItem)
@@ -76,7 +76,7 @@ extension MenuBarItemsContainerView {
                             colorLower: baseColor,
                             exampleAllowed: exampleAllowed,
                             isPublicUpper: true,
-                            networkAccess: appState.network.internetAccess)
+                            networkAccess: appState.network.hasInternetAccess)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCustomText:
@@ -94,7 +94,7 @@ extension MenuBarItemsContainerView {
                             customText: appState.current.ipCustomization?.customText ?? String(),
                             color: ipColor,
                             customTextColor: customTextColor,
-                            networkAccess: appState.network.internetAccess,
+                            networkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize,
                             exampleAllowed: exampleAllowed)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
