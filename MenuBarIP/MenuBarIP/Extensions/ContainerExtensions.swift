@@ -26,5 +26,6 @@ extension Container {
     
     var launchAgentService: Factory<LaunchAgentServiceType> {
         Factory(self) { LaunchAgentService() }
+            .singleton
     }
 }
