@@ -7,9 +7,7 @@
 
 import Foundation
 
-class IpApiService : ServiceBase, ApiCallable {
-    static let shared = IpApiService()
-    
+class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {    
     func getRandomActiveIpApi() -> IpApiInfo? {
         let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
         

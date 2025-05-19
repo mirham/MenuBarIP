@@ -7,10 +7,8 @@
 
 import Foundation
 
-class LaunchAgentService : ServiceBase, ShellAccessible {
-    var isLaunchAgentInstalled = false
-    
-    static let shared = LaunchAgentService()
+class LaunchAgentService : ServiceBase, ShellAccessible, LaunchAgentServiceType {
+    var isInstalled: Bool = false
     
     override init() {
         super.init()
@@ -19,14 +17,13 @@ class LaunchAgentService : ServiceBase, ShellAccessible {
         let plistFilePath = getPlistFilePath()
         
         if(fileManager.fileExists(atPath: plistFilePath)) {
-            isLaunchAgentInstalled = true
+            isInstalled = true
         }
     }
     
     func create() -> Bool {
         let appPath = Bundle.main.executablePath
         let plistFilePath = getPlistFilePath()
-        
         let xmlContent = String(format: Constants.launchAgentXmlContent, appPath!)
         
         do {
@@ -39,6 +36,22 @@ class LaunchAgentService : ServiceBase, ShellAccessible {
         }
     }
     
+    func setState(isInstalled: Bool) {
+        self.isInstalled = isInstalled
+    }
+    
+    func apply() {
+        do {
+            if(self.isInstalled){
+                try safeShell(String(format: Constants.shCommandLoadLaunchAgent, Constants.launchAgentsFolderPath, Constants.launchAgentPlistName))
+            }
+            else{
+                try safeShell(String(format: Constants.shCommandRemoveLaunchAgent, Constants.launchAgentName))
+            }
+        }
+        catch {}
+    }
+    
     func delete() -> Bool {
         do {
             let fileManager = FileManager.default
@@ -48,21 +61,8 @@ class LaunchAgentService : ServiceBase, ShellAccessible {
             return true
         }
         catch {
-            
             return false
         }
-    }
-    
-    func apply() {
-        do {
-            if(isLaunchAgentInstalled){
-                try safeShell(String(format: Constants.shCommandLoadLaunchAgent, Constants.launchAgentsFolderPath, Constants.launchAgentPlistName))
-            }
-            else{
-                try safeShell(String(format: Constants.shCommandRemoveLaunchAgent, Constants.launchAgentName))
-            }
-        }
-        catch {}
     }
     
     // MARK: Private functions

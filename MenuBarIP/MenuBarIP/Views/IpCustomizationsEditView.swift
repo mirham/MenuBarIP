@@ -8,12 +8,15 @@
 import SwiftUI
 import Network
 import RegexBuilder
+import Factory
 
 struct IpCustomizationsEditView : IpAddressContainerView {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.controlActiveState) private var controlActiveState
     @Environment(\.colorScheme) private var colorScheme
+    
+    @Injected(\.ipService) private var ipService
     
     @State private var customizationId: UUID?
     @State private var newIp = String()
@@ -24,8 +27,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     @State private var newCustomTextDarkColor = Color.white
     @State private var isNewIpValid = false
     @State private var isNewIpInvalid: Bool = false
-    
-    private let ipService = IpService.shared
+    @State private var isHovered = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -72,6 +74,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                         }
                     }
                 }
+                .padding(.bottom, 15)
                 .safeAreaInset(edge: .bottom) {
                     VStack {
                         HStack {
@@ -125,7 +128,6 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                             .bold()
                             .pointerOnHover()
                     }
-                    .padding()
                 }
             }
         }
@@ -201,6 +203,8 @@ private extension PopoverColorPicker {
     func asCircle() -> some View {
         self.fixedSize()
             .frame(width: 20, height: 20)
+            .offset(x: -7.5)
+            .scaleEffect(1.2)
             .clipShape(Circle())
             .overlay(content: {
                 Circle()

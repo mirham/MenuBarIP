@@ -6,11 +6,10 @@
 //
 
 import Foundation
+import Factory
 
-class IpService : ServiceBase, ApiCallable {
-    static let shared = IpService()
-    
-    private let ipApiService = IpApiService.shared
+class IpService : ServiceBase, ApiCallable, IpServiceType {
+    @Injected(\.ipApiService) private var ipApiService
     
     func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
         var currentIpApiUrl = ipApiUrl
@@ -35,7 +34,7 @@ class IpService : ServiceBase, ApiCallable {
         return OperationResult(result: IpInfo(ipAddress: ipAddressString))
     }
     
-    func getIpInfoAsync(ip : String) async -> OperationResult<IpInfo> {
+    func getIpInfoAsync(ip: String) async -> OperationResult<IpInfo> {
         do {
             // TODO RUSS: Add to Settings, add JSON mapping
             let response = try await callGetApiAsync(apiUrl: "https://freeipapi.com/api/json/\(ip)")

@@ -8,12 +8,11 @@
 import Foundation
 import Network
 import AppKit
+import Factory
 
-class NetworkService: ServiceBase, ApiCallable {
-    static let shared = NetworkService()
-    
-    private let ipService = IpService.shared
-    private let ipApiService = IpApiService.shared
+class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
+    @Injected(\.ipService) private var ipService
+    @Injected(\.ipApiService) private var ipApiService
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
@@ -83,7 +82,8 @@ class NetworkService: ServiceBase, ApiCallable {
                 var isIpObtained = false
                 
                 while !isIpObtained && self.appState.userData.ipApis.contains(where: {$0.isActive()}) {
-                    let updatedIpResult = await self.ipService.getPublicIpAsync()
+                    let updatedIpResult = await self.ipService.getPublicIpAsync(
+                        ipApiUrl: nil, withInfo: true)
                     
                     if (updatedIpResult.success) {
                         isIpObtained = true
@@ -133,7 +133,6 @@ class NetworkService: ServiceBase, ApiCallable {
                 guard self.appState.network.status == .on else { return }
                 
                 do {
-                    let prevHasInternetAccess = self.appState.network.hasInternetAccess
                     let currentHasInternetAccess = try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
                     
                     if (!currentHasInternetAccess) {
