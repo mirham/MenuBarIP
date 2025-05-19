@@ -18,7 +18,7 @@ struct CheckToggleStyle: ToggleStyle {
             } icon: {
                 Image(systemName: configuration.isOn ? Constants.iconCheckmark : Constants.iconCircle)
                     .foregroundStyle(configuration.isOn ? Color.accentColor : .secondary)
-                    .accessibility(label: Text(configuration.isOn ? "Checked" : "Unchecked"))
+                    .accessibility(label: Text(configuration.isOn ? Constants.checked : Constants.unchecked))
                     .imageScale(.large)
             }
         }

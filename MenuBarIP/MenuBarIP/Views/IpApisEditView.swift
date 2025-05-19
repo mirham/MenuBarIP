@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 struct IpApisEditView : View {
     @EnvironmentObject var appState: AppState
     
-    private let ipService = IpService.shared
+    @Injected(\.ipService) private var ipService
     
     @State private var newUrl = String()
     @State private var isNewUrlValid = false
@@ -44,12 +45,16 @@ struct IpApisEditView : View {
                             }
                             .help(api.isActive() ? Constants.hintApiIsActive : Constants.hintApiIsInactive)
                             .contextMenu {
+                                Button(action: { String.copyToClipboard(input: api.url) } ) {
+                                    Text(Constants.copy)
+                                }
                                 Button(action: { appState.userData.ipApis.removeAll(where: {$0 == api})}) {
                                     Text(Constants.delete)
                                 }
                             }
                         }
                     }
+                    .padding(.bottom, 15)
                 }
                 .safeAreaInset(edge: .bottom) {
                     VStack {
@@ -75,7 +80,6 @@ struct IpApisEditView : View {
                             .pointerOnHover()
                             .bold()
                     }
-                    .padding()
                 }
             }
         }
@@ -84,7 +88,7 @@ struct IpApisEditView : View {
     // MARK: Private functions
     
     private func addIpApiClickHandlerAsync() async {
-        let ipAddressResult = await ipService.getPublicIpAsync(ipApiUrl: newUrl)
+        let ipAddressResult = await ipService.getPublicIpAsync(ipApiUrl: newUrl, withInfo: true)
         
         guard ipAddressResult.success else {
             isNewUrlInvalid = true

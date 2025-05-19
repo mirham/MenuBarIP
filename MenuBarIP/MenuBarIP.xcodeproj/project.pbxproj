@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		351458EF2DDB469700E11326 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = 351458EE2DDB469700E11326 /* Factory */; };
+		351458F22DDB46AF00E11326 /* FlagKit in Frameworks */ = {isa = PBXBuildFile; productRef = 351458F12DDB46AF00E11326 /* FlagKit */; };
 		352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */; };
 		354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032472C5E626D002624D2 /* MenuBarIPApp.swift */; };
 		3540324C2C5E6270002624D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324B2C5E6270002624D2 /* Assets.xcassets */; };
 		3540324F2C5E6270002624D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324E2C5E6270002624D2 /* Preview Assets.xcassets */; };
-		354032582C5E6306002624D2 /* FlagKit in Frameworks */ = {isa = PBXBuildFile; productRef = 354032572C5E6306002624D2 /* FlagKit */; };
 		3540325A2C5E64DB002624D2 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032592C5E64DB002624D2 /* AppState.swift */; };
 		3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */; };
 		354032602C5E6706002624D2 /* ApiCallable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325F2C5E6706002624D2 /* ApiCallable.swift */; };
@@ -27,7 +28,6 @@
 		3540327D2C5E71F2002624D2 /* IpService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540327C2C5E71F2002624D2 /* IpService.swift */; };
 		3540327F2C5E72DD002624D2 /* OperationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540327E2C5E72DD002624D2 /* OperationResult.swift */; };
 		354032812C5E7338002624D2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032802C5E7338002624D2 /* Constants.swift */; };
-		354032842C5E7555002624D2 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032832C5E7555002624D2 /* Extensions.swift */; };
 		354032872C5E77A9002624D2 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032862C5E77A9002624D2 /* ViewExtensions.swift */; };
 		3540328A2C5E7860002624D2 /* AppHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032892C5E7860002624D2 /* AppHelper.swift */; };
 		3540328E2C5E78F7002624D2 /* IsHiddenModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540328D2C5E78F7002624D2 /* IsHiddenModifier.swift */; };
@@ -44,6 +44,14 @@
 		354032A92C5E8362002624D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A82C5E8362002624D2 /* SettingsView.swift */; };
 		35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */; };
 		35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8C2C7A2D3F00935C82 /* InfoView.swift */; };
+		3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */; };
+		3575CCA42DD7660100102D4E /* IpServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCA32DD765FD00102D4E /* IpServiceType.swift */; };
+		3575CCA62DD766A400102D4E /* IpApiServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCA52DD766A100102D4E /* IpApiServiceType.swift */; };
+		3575CCA82DD7672C00102D4E /* LaunchAgentServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCA72DD7672A00102D4E /* LaunchAgentServiceType.swift */; };
+		3575CCAB2DD768D100102D4E /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAA2DD768CB00102D4E /* StringExtensions.swift */; };
+		3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */; };
+		3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */; };
+		3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */; };
 		35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF42C736B040036AB41 /* NoInsetHostingView.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
@@ -78,7 +86,6 @@
 		3540327C2C5E71F2002624D2 /* IpService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpService.swift; sourceTree = "<group>"; };
 		3540327E2C5E72DD002624D2 /* OperationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationResult.swift; sourceTree = "<group>"; };
 		354032802C5E7338002624D2 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		354032832C5E7555002624D2 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		354032862C5E77A9002624D2 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		354032892C5E7860002624D2 /* AppHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHelper.swift; sourceTree = "<group>"; };
 		3540328D2C5E78F7002624D2 /* IsHiddenModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IsHiddenModifier.swift; sourceTree = "<group>"; };
@@ -95,6 +102,14 @@
 		354032A82C5E8362002624D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
 		35747A8C2C7A2D3F00935C82 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
+		3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceType.swift; sourceTree = "<group>"; };
+		3575CCA32DD765FD00102D4E /* IpServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpServiceType.swift; sourceTree = "<group>"; };
+		3575CCA52DD766A100102D4E /* IpApiServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiServiceType.swift; sourceTree = "<group>"; };
+		3575CCA72DD7672A00102D4E /* LaunchAgentServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAgentServiceType.swift; sourceTree = "<group>"; };
+		3575CCAA2DD768CB00102D4E /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedContainerExtensions.swift; sourceTree = "<group>"; };
+		3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExtensions.swift; sourceTree = "<group>"; };
+		3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerExtensions.swift; sourceTree = "<group>"; };
 		35980DF42C736B040036AB41 /* NoInsetHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoInsetHostingView.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
@@ -112,7 +127,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				354032582C5E6306002624D2 /* FlagKit in Frameworks */,
+				351458EF2DDB469700E11326 /* Factory in Frameworks */,
+				351458F22DDB46AF00E11326 /* FlagKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,10 +155,10 @@
 			isa = PBXGroup;
 			children = (
 				354032472C5E626D002624D2 /* MenuBarIPApp.swift */,
-				354032592C5E64DB002624D2 /* AppState.swift */,
 				3540324B2C5E6270002624D2 /* Assets.xcassets */,
 				354032502C5E6270002624D2 /* MenuBarIP.entitlements */,
 				354032682C5E6855002624D2 /* Infrastructure */,
+				3575CCA92DD7686200102D4E /* Extensions */,
 				3540325B2C5E65D4002624D2 /* Enums */,
 				3540325E2C5E66DF002624D2 /* Protocols */,
 				354032632C5E676F002624D2 /* Models */,
@@ -176,6 +192,7 @@
 				3540325F2C5E6706002624D2 /* ApiCallable.swift */,
 				354032612C5E6730002624D2 /* Settable.swift */,
 				3540329D2C5E7B51002624D2 /* ShellAccessible.swift */,
+				3575CCA02DD7648F00102D4E /* Services */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -195,10 +212,10 @@
 			isa = PBXGroup;
 			children = (
 				354032802C5E7338002624D2 /* Constants.swift */,
+				354032592C5E64DB002624D2 /* AppState.swift */,
+				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
 				354032692C5E687A002624D2 /* Attributes */,
 				354032882C5E7841002624D2 /* Helpers */,
-				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
-				354032832C5E7555002624D2 /* Extensions.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -214,7 +231,6 @@
 		3540326E2C5E69C8002624D2 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				354032792C5E6CCF002624D2 /* Extensions */,
 				3540326F2C5E69FB002624D2 /* ServiceBase.swift */,
 				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
@@ -222,14 +238,6 @@
 				3540329B2C5E7AEC002624D2 /* LaunchAgentService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		354032792C5E6CCF002624D2 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		354032852C5E7773002624D2 /* Views */ = {
@@ -309,6 +317,29 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		3575CCA02DD7648F00102D4E /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */,
+				3575CCA32DD765FD00102D4E /* IpServiceType.swift */,
+				3575CCA52DD766A100102D4E /* IpApiServiceType.swift */,
+				3575CCA72DD7672A00102D4E /* LaunchAgentServiceType.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		3575CCA92DD7686200102D4E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */,
+				3575CCAA2DD768CB00102D4E /* StringExtensions.swift */,
+				3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */,
+				3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */,
+				3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		35980DFC2C736CC90036AB41 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
@@ -334,7 +365,8 @@
 			);
 			name = MenuBarIP;
 			packageProductDependencies = (
-				354032572C5E6306002624D2 /* FlagKit */,
+				351458EE2DDB469700E11326 /* Factory */,
+				351458F12DDB46AF00E11326 /* FlagKit */,
 			);
 			productName = MenuBarIP;
 			productReference = 354032442C5E626D002624D2 /* MenuBarIP.app */;
@@ -365,7 +397,8 @@
 			);
 			mainGroup = 3540323B2C5E626D002624D2;
 			packageReferences = (
-				354032562C5E6306002624D2 /* XCRemoteSwiftPackageReference "FlagKit" */,
+				351458ED2DDB469700E11326 /* XCRemoteSwiftPackageReference "Factory" */,
+				351458F02DDB46AF00E11326 /* XCRemoteSwiftPackageReference "FlagKit" */,
 			);
 			productRefGroup = 354032452C5E626D002624D2 /* Products */;
 			projectDirPath = "";
@@ -396,21 +429,25 @@
 				35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */,
 				35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */,
 				3540327F2C5E72DD002624D2 /* OperationResult.swift in Sources */,
+				3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */,
 				354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */,
 				35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */,
 				3540329A2C5E7A95002624D2 /* MenuBarMenuView.swift in Sources */,
 				3540328E2C5E78F7002624D2 /* IsHiddenModifier.swift in Sources */,
 				354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */,
+				3575CCA42DD7660100102D4E /* IpServiceType.swift in Sources */,
 				354032932C5E795C002624D2 /* CheckToggleStyle.swift in Sources */,
-				354032842C5E7555002624D2 /* Extensions.swift in Sources */,
 				354032812C5E7338002624D2 /* Constants.swift in Sources */,
 				354032982C5E7A4C002624D2 /* MenuBarElement.swift in Sources */,
 				354032652C5E67AE002624D2 /* IpCustomization.swift in Sources */,
+				3575CCA82DD7672C00102D4E /* LaunchAgentServiceType.swift in Sources */,
 				35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */,
 				3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */,
 				3540325A2C5E64DB002624D2 /* AppState.swift in Sources */,
 				3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */,
 				35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */,
+				3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */,
+				3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */,
 				354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */,
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
@@ -431,12 +468,15 @@
 				352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */,
 				354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */,
 				3540327B2C5E6CE7002624D2 /* NWInterfaceExtension.swift in Sources */,
+				3575CCA62DD766A400102D4E /* IpApiServiceType.swift in Sources */,
 				354032622C5E6730002624D2 /* Settable.swift in Sources */,
 				354032A32C5E7E81002624D2 /* IpAddressContainerView.swift in Sources */,
 				3540328A2C5E7860002624D2 /* AppHelper.swift in Sources */,
+				3575CCAB2DD768D100102D4E /* StringExtensions.swift in Sources */,
 				354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */,
 				354032722C5E6A44002624D2 /* NetworkService.swift in Sources */,
 				354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */,
+				3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -584,7 +624,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -615,7 +655,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -647,7 +687,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		354032562C5E6306002624D2 /* XCRemoteSwiftPackageReference "FlagKit" */ = {
+		351458ED2DDB469700E11326 /* XCRemoteSwiftPackageReference "Factory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hmlongco/Factory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+		351458F02DDB46AF00E11326 /* XCRemoteSwiftPackageReference "FlagKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/madebybowtie/FlagKit";
 			requirement = {
@@ -658,9 +706,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		354032572C5E6306002624D2 /* FlagKit */ = {
+		351458EE2DDB469700E11326 /* Factory */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 354032562C5E6306002624D2 /* XCRemoteSwiftPackageReference "FlagKit" */;
+			package = 351458ED2DDB469700E11326 /* XCRemoteSwiftPackageReference "Factory" */;
+			productName = Factory;
+		};
+		351458F12DDB46AF00E11326 /* FlagKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 351458F02DDB46AF00E11326 /* XCRemoteSwiftPackageReference "FlagKit" */;
 			productName = FlagKit;
 		};
 /* End XCSwiftPackageProductDependency section */

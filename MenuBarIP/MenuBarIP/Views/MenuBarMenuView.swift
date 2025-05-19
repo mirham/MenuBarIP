@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Factory
 
 struct MenuBarMenuView : IpAddressContainerView {
     @EnvironmentObject var appState: AppState
@@ -13,8 +14,8 @@ struct MenuBarMenuView : IpAddressContainerView {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) var dismiss
     
-    private var networkStatusService = NetworkService.shared
-    private var launchAgentService = LaunchAgentService.shared
+    @Injected(\.networkService) private var networkService
+    @Injected(\.launchAgentService) private var launchAgentService
     
     var body: some View {
         VStack {
@@ -49,7 +50,7 @@ struct MenuBarMenuView : IpAddressContainerView {
             .isHidden(hidden: appState.network.localIp == nil, remove: true)
             Divider()
             Button(Constants.menuItemRefresh) {
-                networkStatusService.getCurrentIp()
+                networkService.getCurrentIp()
             }
             Divider()
             Button(Constants.menuItemSettings, action: settingsButtonClickHandler)
@@ -76,6 +77,7 @@ struct MenuBarMenuView : IpAddressContainerView {
     
     private func openWindowWithId (id: String) {
         NSApplication.shared.activate(ignoringOtherApps: true)
+        
         if (!appState.views.shownWindows.contains(where: {$0 == id})){
             openWindow(id: id)
         }

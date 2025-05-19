@@ -76,6 +76,7 @@ struct Constants{
     static let add = "Add"
     static let edit = "Edit"
     static let delete = "Delete"
+    static let copy = "Copy"
     static let ok = "OK"
     static let ip = "IP"
     static let apiUrl = "API address"
@@ -88,6 +89,8 @@ struct Constants{
     static let obtainingIp = "Obtaining IP..."
     static let offline = "Offline"
     static let noInternet = "No internet"
+    static let checked = "Checked"
+    static let unchecked = "Unchecked"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
@@ -183,7 +186,13 @@ struct Constants{
         "https://checkip.amazonaws.com",
         "http://whatismyip.akamai.com",
         "https://api.seeip.org",
-        "https://ipapi.co/ip"
+        "https://ipapi.co/ip",
+        "https://4.ident.me/",
+        "https://www.myexternalip.com/raw",
+        "https://l2.io/ip",
+        "https://api.ip.sb/ip",
+        "https://ipv4.ddnspod.com/",
+        "https://api.ip.lk/"
     ]
     
     static let launchAgentXmlContent =

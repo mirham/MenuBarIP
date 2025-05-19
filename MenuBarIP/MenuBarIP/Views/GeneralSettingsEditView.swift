@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import Factory
 
 struct GeneralSettingsEditView: View {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.controlActiveState) var controlActiveState
+    
+    @Injected(\.networkService) private var networkService
+    @Injected(\.launchAgentService) private var launchAgentService
     
     @State private var isKeepRunningOn = false
     @State private var showOverKeepApplicationRunning = false
@@ -19,9 +23,6 @@ struct GeneralSettingsEditView: View {
     @State private var isNewUrlInvalid: Bool = false
     @State private var isUrlEditMode: Bool = false
     
-    private let launchAgentService = LaunchAgentService.shared
-    private let networkService = NetworkService.shared
-    
     var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .center) {
@@ -29,16 +30,16 @@ struct GeneralSettingsEditView: View {
                     get: { isKeepRunningOn },
                     set: { _, _ in if isKeepRunningOn {
                         isKeepRunningOn = !launchAgentService.delete()
-                        launchAgentService.isLaunchAgentInstalled = false
+                        launchAgentService.setState(isInstalled: false)
                     }
                         else {
                             isKeepRunningOn = launchAgentService.create()
-                            launchAgentService.isLaunchAgentInstalled = true
+                            launchAgentService.setState(isInstalled: true)
                         }
                     }))
                 .withSettingToggleStyle()
                 .onAppear {
-                    let initState = launchAgentService.isLaunchAgentInstalled
+                    let initState = launchAgentService.isInstalled
                     isKeepRunningOn = initState
                 }
                 Spacer()

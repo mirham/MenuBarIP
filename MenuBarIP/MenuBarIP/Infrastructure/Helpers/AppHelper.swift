@@ -26,8 +26,6 @@ class AppHelper {
             
             if(windowId.starts(with: viewId)) {
                 NSApplication.shared.activate(ignoringOtherApps: true)
-                //window.makeKeyAndOrderFront(nil)
-                //window.orderFrontRegardless()
             }
         }
     }
