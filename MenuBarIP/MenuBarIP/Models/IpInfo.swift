@@ -40,8 +40,19 @@ struct IpInfo: Codable, Equatable {
     }
     
     func asAddressString() -> String {
-        let result = "\(zipCode), \(countryName),\n\(regionName), \(cityName)"
+        guard hasLocation() else { return String() }
         
-        return result
+        return "\(zipCode), \(countryName),\n\(regionName), \(cityName)"
+    }
+    
+    // MARK: Private functions
+    
+    private func hasLocation() -> Bool {
+        let emptyString = String()
+        
+        return zipCode != emptyString
+            || countryName != emptyString
+            || regionName != emptyString
+            || cityName != emptyString
     }
 }

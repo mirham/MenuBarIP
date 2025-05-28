@@ -15,14 +15,49 @@ class AppState : ObservableObject {
     
     static let shared = AppState()
     
+    func applyNetworkUpdate(_ update: NetworkStateUpdate) {
+        var updatedNetwork = Network()
+        
+        if update.status != nil {
+            updatedNetwork.status = update.status!
+            
+            if network.status != .on && update.status == .on {
+                reactivateIpApis()
+            }
+        }
+        else {
+            updatedNetwork.status = network.status
+        }
+        
+        updatedNetwork.publicIp = update.forceUpdatePublicIp ? update.publicIp : network.publicIp
+        updatedNetwork.localIp = update.localIp ?? network.localIp
+        updatedNetwork.activeNetworkInterfaces = update.activeNetworkInterfaces ?? network.activeNetworkInterfaces
+        updatedNetwork.isObtainingIp = update.isObtainingIp ?? network.isObtainingIp
+        updatedNetwork.hasInternetAccess = update.hasInternetAccess ?? network.hasInternetAccess
+        
+        if network != updatedNetwork {
+            network = updatedNetwork
+        }
+    }
+    
+    // MARK: Private functions
+    
     private func setCurrentState() {
-        guard network.publicIpInfo != nil else {
+        guard network.publicIp != nil else {
             current.ipCustomization = nil
             return
         }
         
         current.ipCustomization = userData.ipCustomizations
-            .first(where: {$0.ipAddress == network.publicIpInfo!.ipAddress})
+            .first(where: {$0.ipAddress == network.publicIp!.ipAddress})
+    }
+    
+    private func reactivateIpApis() {
+        for index in 0..<userData.ipApis.count {
+            if !userData.ipApis[index].isActive() {
+                userData.ipApis[index].active = true
+            }
+        }
     }
 }
 
@@ -42,11 +77,28 @@ extension AppState {
 extension AppState {
     struct Network : Equatable {
         var status: NetworkStatusType = NetworkStatusType.unknown
-        var publicIpInfo: IpInfo? = nil
+        var publicIp: IpInfo? = nil
         var localIp: String? = nil
         var isObtainingIp = false
         var hasInternetAccess = true
         var activeNetworkInterfaces: [NetworkInterface] = [NetworkInterface]()
+        
+        func isConnectionChanged (
+            status: NetworkStatusType,
+            activeNetworkInterfaces: [NetworkInterface]) -> Bool {
+                let result = self.status != status || self.activeNetworkInterfaces != activeNetworkInterfaces
+                return result
+        }
+        
+        static func == (lhs: Network, rhs: Network) -> Bool {
+            let result = lhs.status == rhs.status
+            && lhs.publicIp == rhs.publicIp
+            && lhs.isObtainingIp == rhs.isObtainingIp
+            && lhs.hasInternetAccess == rhs.hasInternetAccess
+            && lhs.activeNetworkInterfaces == rhs.activeNetworkInterfaces
+            
+            return result
+        }
     }
 }
 

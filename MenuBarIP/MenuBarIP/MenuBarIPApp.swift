@@ -11,10 +11,6 @@ import SwiftUI
 struct MenuBarIPApp: App {
     let appState = AppState.shared
     
-    init() {
-        _ = NetworkService()
-    }
-    
     var body: some Scene {
         MenuBarExtra {
             MenuBarMenuView()

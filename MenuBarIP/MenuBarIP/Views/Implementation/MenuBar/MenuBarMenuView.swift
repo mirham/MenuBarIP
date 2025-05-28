@@ -21,23 +21,23 @@ struct MenuBarMenuView : IpAddressContainerView {
         VStack {
             Text(Constants.publicIp.uppercased())
                 .asMenuItemHeader()
-            Text(appState.network.publicIpInfo?.ipAddress ?? Constants.none)
+            Text(appState.network.publicIp?.ipAddress ?? Constants.none)
                 .foregroundStyle(getIpColor(
                     colorScheme: appState.current.colorScheme,
                     currentIpCustomization: appState.current.ipCustomization,
                     forMenu: true))
                 .asMenuItemIp()
             VStack {
-                Text(appState.network.publicIpInfo?.asAddressString() ?? String())
+                Text(appState.network.publicIp?.asAddressString() ?? String())
                     .font(.system(size: 10))
                     .bold()
                     .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
                 Button(Constants.menuItemShowOnMap, action: publicIpLocationButtonClickHandler)
                 Button(Constants.menuItemCopy) {
-                    AppHelper.copyTextToClipboard(text: appState.network.publicIpInfo?.ipAddress ?? String())
+                    AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
                 }
             }
-            .isHidden(hidden: appState.network.publicIpInfo == nil, remove: true)
+            .isHidden(hidden: appState.network.publicIp == nil, remove: true)
             Divider()
             Text(Constants.localIp.uppercased())
                 .asMenuItemHeader()
@@ -49,9 +49,7 @@ struct MenuBarMenuView : IpAddressContainerView {
             }
             .isHidden(hidden: appState.network.localIp == nil, remove: true)
             Divider()
-            Button(Constants.menuItemRefresh) {
-                networkService.getCurrentIp()
-            }
+            AsyncButton(Constants.menuItemRefresh, action: networkService.refreshIpAddressesAsync)
             Divider()
             Button(Constants.menuItemSettings, action: settingsButtonClickHandler)
             Divider()

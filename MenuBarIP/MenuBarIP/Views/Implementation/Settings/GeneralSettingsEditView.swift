@@ -112,9 +112,7 @@ struct GeneralSettingsEditView: View {
             return
         }
         
-        guard isNewUrlValid else {
-            return
-        }
+        guard isNewUrlValid else { return }
         
         appState.userData.internetCheckUrl = newUrl
         

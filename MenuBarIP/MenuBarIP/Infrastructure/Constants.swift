@@ -13,6 +13,7 @@ struct Constants{
     static let defaultPublicIpAddress = "1.1.1.1"
     static let defaultLocalIpAddress = "192.168.1.2"
     static let zshPath = "/bin/zsh"
+    static let headHttpMethod = "HEAD"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
     static let launchAgents = "LaunchAgents"
@@ -26,7 +27,8 @@ struct Constants{
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
-    static let defaultCheckConnectionHealthInterval: Int = 5
+    static let defaultCheckConnectionHealthIntervalSeconds: Int = 5
+    static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds * 1_000_000_000)
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl = "https://google.com"

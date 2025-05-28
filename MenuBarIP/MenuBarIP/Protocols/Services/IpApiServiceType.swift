@@ -8,5 +8,4 @@
 protocol IpApiServiceType {
     func getRandomActiveIpApi() -> IpApiInfo?
     func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String>
-    func reactivateIpApis()
 }

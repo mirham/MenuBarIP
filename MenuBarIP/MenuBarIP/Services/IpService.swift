@@ -25,7 +25,7 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         let ipAddressString = ipAddressResult.result!.trimmingCharacters(in: .whitespacesAndNewlines)
         guard ipAddressString.isValidIp() else { return OperationResult(error: Constants.errorIpApiResponseIsInvalid) }
         
-        if (withInfo) {
+        if withInfo {
             let ipWithInfoResult = await getIpInfoAsync(ip: ipAddressString)
             
             return OperationResult(result: ipWithInfoResult.result! , error: ipWithInfoResult.error)

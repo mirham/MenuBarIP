@@ -42,10 +42,10 @@ class LaunchAgentService : ServiceBase, ShellAccessible, LaunchAgentServiceType 
     
     func apply() {
         do {
-            if(self.isInstalled){
+            if self.isInstalled {
                 try safeShell(String(format: Constants.shCommandLoadLaunchAgent, Constants.launchAgentsFolderPath, Constants.launchAgentPlistName))
             }
-            else{
+            else {
                 try safeShell(String(format: Constants.shCommandRemoveLaunchAgent, Constants.launchAgentName))
             }
         }
