@@ -16,146 +16,136 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
-    
-    private var currentTimer: Timer? = nil
-    private let lock = NSLock()
+    private var monitoringTask: Task<Void, Never>?
     
     override init() {
         super.init()
         
-        monitor.pathUpdateHandler = { path in
-            var newStatus = NetworkStatusType.unknown
-            var newNetworkInterfaces = [NetworkInterface]()
-            
-            for networkInterface in path.availableInterfaces {
-                let networkInterfaceInfo = networkInterface.asNetworkInterface()
-                newNetworkInterfaces.append(networkInterfaceInfo)
-            }
-            
-            switch path.status {
-                case .satisfied:
-                    newStatus = newNetworkInterfaces.contains(where: {$0.isPhysical})
-                    ? NetworkStatusType.on
-                    : NetworkStatusType.wait
-                case .requiresConnection:
-                    newStatus = NetworkStatusType.wait
-                default:
-                    newStatus = NetworkStatusType.off
-            }
-            
-            if (self.appState.network.status != newStatus
-                || self.appState.network.activeNetworkInterfaces != newNetworkInterfaces) {
-                let updatedStatus = newStatus
-                let updatedNetworkInterfaces = newNetworkInterfaces
-                
-                if (newStatus == .on) {
-                    self.getCurrentIp()
-                }
-                
-                Task {
-                    await MainActor.run {
-                        self.updateStatus(
-                            currentStatus: updatedStatus,
-                            activeNetworkInterfaces: updatedNetworkInterfaces,
-                            isDisconnected: updatedStatus != .on)
-                    }
-                }
-            }
-        }
-        
-        monitor.start(queue: queue)
+        startNetworkMonitoring()
         startConnectionHealthMonitoring()
         addSystemDidWakeHandler()
     }
     
-    func getCurrentIp() {
-        lock.lock()
-        Task {
-            do {
-                let localIp = self.ipService.getLocalIp()
-                
-                await MainActor.run { updateStatus(isObtainingIp: true) }
-                
-                // Fixes SSL errors after network changes
-                try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                
-                var isIpObtained = false
-                
-                while !isIpObtained && self.appState.userData.ipApis.contains(where: {$0.isActive()}) {
-                    let updatedIpResult = await self.ipService.getPublicIpAsync(
-                        ipApiUrl: nil, withInfo: true)
-                    
-                    if (updatedIpResult.success) {
-                        isIpObtained = true
-                        await MainActor.run { updateStatus(publicIpInfo: updatedIpResult.result) }
-                    }
-                }
-                
-                if (!isIpObtained) {
-                    await MainActor.run { updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true) }
-                }
-                
-                await MainActor.run { updateStatus(localIp: localIp, isObtainingIp: false) }
-            }
-        }
-        lock.unlock()
+    deinit {
+        monitor.cancel()
+        monitoringTask?.cancel()
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
     func isUrlReachableAsync(url : String) async throws -> Bool {
         do {
             let url = URL(string: url)!
             var request = URLRequest(url: url)
-            request.httpMethod = "HEAD"
+            request.httpMethod = Constants.headHttpMethod
             
             let (_, response) = try await URLSession.shared.data(for: request)
             
-            guard (response as? HTTPURLResponse)?
-                .statusCode == 200 else {
-                return false
-            }
+            let result = (response as? HTTPURLResponse)?.statusCode == 200
             
-            return true
+            return result
         }
     }
     
-    deinit {
-        monitor.cancel()
-        currentTimer?.invalidate()
-        NSWorkspace.shared.notificationCenter.removeObserver(self)
+    func refreshIpAddressesAsync() async {
+        await updateStatusAsync(update: NetworkStateUpdateBuilder()
+            .withIsObtainingIp(true)
+            .build())
+        
+        let localIp = ipService.getLocalIp()
+        let publicIp = await fetchPublicIpAsync()
+        
+        await updateStatusAsync(update: NetworkStateUpdateBuilder()
+            .withIsObtainingIp(false)
+            .withPublicIp(publicIp)
+            .withLocalIp(localIp)
+            .build())
     }
     
     // MARK: Private functions
     
+    private func startNetworkMonitoring() {
+        monitor.pathUpdateHandler = { path in
+            let networkInterfaces = self.determineNetworkInterfaces(path: path)
+            let status = self.determineNetworkStatusType(path: path, networkInterfaces: networkInterfaces)
+            
+            if (self.appState.network.isConnectionChanged (
+                status: status,
+                activeNetworkInterfaces: networkInterfaces)) {
+                let updatedStatus = status
+                let updatedNetworkInterfaces = networkInterfaces
+                
+                Task {
+                    await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
+                        .withStatus(updatedStatus)
+                        .withActiveNetworkInterfaces(updatedNetworkInterfaces)
+                        .withIsDisconnected(updatedStatus != .on)
+                        .build())
+                    
+                    if status == .on {
+                        try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
+                        await self.refreshIpAddressesAsync()
+                    }
+                }
+            }
+        }
+        
+        monitor.start(queue: queue)
+    }
+    
     private func startConnectionHealthMonitoring() {
-        currentTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(Constants.defaultCheckConnectionHealthInterval), repeats: true) {
-            timer in
-            Task {
-                guard self.appState.network.status == .on else { return }
+        monitoringTask = Task {
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: Constants.defaultCheckConnectionHealthIntervalNanoseconds)
+                
+                guard self.appState.network.status == .on else {
+                    continue
+                }
+                
+                let builder = NetworkStateUpdateBuilder()
                 
                 do {
-                    let currentHasInternetAccess = try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
+                    let hasInternetAccess = try await isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
+                    builder.withHasInternetAccess(hasInternetAccess)
                     
-                    if (!currentHasInternetAccess) {
-                        self.updateStatus(publicIpInfo: nil, allowPublicIpInfoNil: true)
-                    }
-                    else if (self.appState.network.publicIpInfo == nil) {
-                        self.ipApiService.reactivateIpApis()
-                        self.getCurrentIp()
+                    if !hasInternetAccess {
+                        builder.withPublicIp(nil)
                     }
                     
-                    self.updateStatus(hasInternetAccess: currentHasInternetAccess)
-                }
-                catch {
-                    self.updateStatus(publicIpInfo: nil, hasInternetAccess: false, allowPublicIpInfoNil: true)
+                    await updateStatusAsync(update: builder.build())
+                } catch {
+                    await updateStatusAsync(update: builder
+                        .withHasInternetAccess(false)
+                        .withPublicIp(nil)
+                        .build())
                 }
             }
         }
     }
     
-    private func activateIpApis() {
-        for index in 0...self.appState.userData.ipApis.count - 1 {
-            self.appState.userData.ipApis[index].active = true
+    private func determineNetworkStatusType(
+        path: NWPath,
+        networkInterfaces: [NetworkInterface]) -> NetworkStatusType {
+        switch path.status {
+            case .satisfied:
+                return networkInterfaces.contains(where: {$0.isPhysical})
+                ? NetworkStatusType.on
+                : NetworkStatusType.wait
+            case .requiresConnection:
+                return NetworkStatusType.wait
+            default:
+                return NetworkStatusType.off
         }
+    }
+    
+    private func determineNetworkInterfaces(path: NWPath) -> [NetworkInterface] {
+        var result = [NetworkInterface]()
+        
+        for networkInterface in path.availableInterfaces {
+            let networkInterfaceInfo = networkInterface.asNetworkInterface()
+            result.append(networkInterfaceInfo)
+        }
+        
+        return result
     }
     
     private func addSystemDidWakeHandler() {
@@ -167,52 +157,30 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                            object: nil)
     }
     
+    private func fetchPublicIpAsync() async -> IpInfo? {
+        while appState.network.hasInternetAccess && appState.userData.ipApis.contains(where: { $0.isActive() }) {
+            let result = await ipService.getPublicIpAsync(ipApiUrl: nil, withInfo: true)
+            
+            if result.success {
+                return result.result
+            }
+        }
+        
+        return nil
+    }
+    
     @objc private func systemDidWake() {
-        if (appState.network.publicIpInfo == nil) {
-            getCurrentIp()
+        if (appState.network.publicIp == nil) {
+            Task {
+                await refreshIpAddressesAsync()
+            }
         }
     }
     
-    private func updateStatus(
-        currentStatus: NetworkStatusType? = nil,
-        publicIpInfo: IpInfo? = nil,
-        localIp: String? = nil,
-        activeNetworkInterfaces: [NetworkInterface]? = nil,
-        isDisconnected: Bool? = nil,
-        isObtainingIp: Bool? = nil,
-        hasInternetAccess: Bool? = nil,
-        allowPublicIpInfoNil: Bool = false) {
-        DispatchQueue.main.async {
-            if (currentStatus != nil) {
-                self.appState.network.status = currentStatus!
-                self.activateIpApis()
-            }
-                
-            if (publicIpInfo != nil || allowPublicIpInfoNil) {
-                self.appState.network.publicIpInfo = publicIpInfo ?? nil
-            }
-            
-            if (localIp != nil) {
-                self.appState.network.localIp = localIp
-            }
-                
-            if (isObtainingIp != nil) {
-                self.appState.network.isObtainingIp = isObtainingIp!
-            }
-            
-            if (hasInternetAccess != nil) {
-                self.appState.network.hasInternetAccess = hasInternetAccess!
-            }
-            
-            if (activeNetworkInterfaces != nil) {
-                self.appState.network.activeNetworkInterfaces = activeNetworkInterfaces!
-            }
-            
-            if (isDisconnected != nil && isDisconnected!) {
-                self.appState.network.publicIpInfo = nil
-            }
-            
-            self.appState.objectWillChange.send()
+    private func updateStatusAsync(update: NetworkStateUpdate) async {
+        await MainActor.run {
+            appState.applyNetworkUpdate(update)
+            appState.objectWillChange.send()
         }
     }
 }

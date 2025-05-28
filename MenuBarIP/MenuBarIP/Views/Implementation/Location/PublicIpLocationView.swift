@@ -17,8 +17,8 @@ struct PublicIpLocationView : View {
     
     var body: some View {
         @State var location: CLLocationCoordinate2D = CLLocationCoordinate2D(
-            latitude: appState.network.publicIpInfo?.latitude ?? 0,
-            longitude: appState.network.publicIpInfo?.longitude ?? 0)
+            latitude: appState.network.publicIp?.latitude ?? 0,
+            longitude: appState.network.publicIp?.longitude ?? 0)
         
         @State var region: MKCoordinateRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.3, longitudeDelta: 0.3))
         
@@ -32,14 +32,14 @@ struct PublicIpLocationView : View {
                     Image(Constants.iconIpPoint)
                         .resizable()
                         .frame(width: 50, height: 50)
-                    Text(appState.network.publicIpInfo?.asAddressString() ?? String())
+                    Text(appState.network.publicIp?.asAddressString() ?? String())
                     .font(.system(size: 16))
                     .bold()
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(10)
                 }
-                .isHidden(hidden: appState.network.publicIpInfo == nil)
+                .isHidden(hidden: appState.network.publicIp == nil)
             }
         }
         .mapControls {
@@ -55,11 +55,11 @@ struct PublicIpLocationView : View {
                 onTop: true)
             cameraPosition = .region(region)
         }
-        .onChange(of: appState.network.publicIpInfo) {
+        .onChange(of: appState.network.publicIp) {
             withAnimation(.smooth(duration:  3.5)) {
                 location = CLLocationCoordinate2D(
-                    latitude: appState.network.publicIpInfo?.latitude ?? 0,
-                    longitude: appState.network.publicIpInfo?.longitude ?? 0)
+                    latitude: appState.network.publicIp?.latitude ?? 0,
+                    longitude: appState.network.publicIp?.longitude ?? 0)
                 
                 region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta:  0.3, longitudeDelta:  0.3))
                 cameraPosition = .region(region)
@@ -68,7 +68,7 @@ struct PublicIpLocationView : View {
         .onDisappear() {
             appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdPublicIpLocation})
         }
-        .animation(.easeInOut(duration: 0.5), value: appState.network.publicIpInfo)
+        .animation(.easeInOut(duration: 0.5), value: appState.network.publicIp)
         .ignoresSafeArea()
     }
 }

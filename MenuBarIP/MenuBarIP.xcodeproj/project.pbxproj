@@ -42,6 +42,8 @@
 		354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */; };
 		354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */; };
 		354032A92C5E8362002624D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A82C5E8362002624D2 /* SettingsView.swift */; };
+		356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63962DE093830073DA39 /* NetworkStateUpdate.swift */; };
+		356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */; };
 		35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */; };
 		35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8C2C7A2D3F00935C82 /* InfoView.swift */; };
 		3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */; };
@@ -100,6 +102,8 @@
 		354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusView.swift; sourceTree = "<group>"; };
 		354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemsContainerView.swift; sourceTree = "<group>"; };
 		354032A82C5E8362002624D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		356A63962DE093830073DA39 /* NetworkStateUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdate.swift; sourceTree = "<group>"; };
+		356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdateBuilder.swift; sourceTree = "<group>"; };
 		35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
 		35747A8C2C7A2D3F00935C82 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServiceType.swift; sourceTree = "<group>"; };
@@ -204,6 +208,7 @@
 				354032642C5E67AE002624D2 /* IpCustomization.swift */,
 				354032662C5E682D002624D2 /* IpApiInfo.swift */,
 				354032752C5E6C3F002624D2 /* NetworkInterface.swift */,
+				356A63962DE093830073DA39 /* NetworkStateUpdate.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -236,6 +241,7 @@
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
 				35E1C7192D91C17B0014EB04 /* IpApiService.swift */,
 				3540329B2C5E7AEC002624D2 /* LaunchAgentService.swift */,
+				356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -249,15 +255,7 @@
 				3540328C2C5E78D8002624D2 /* Modifiers */,
 				3540328B2C5E78CB002624D2 /* Extensions */,
 				354032942C5E79E4002624D2 /* Controls */,
-				354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */,
-				354032992C5E7A95002624D2 /* MenuBarMenuView.swift */,
-				354032A82C5E8362002624D2 /* SettingsView.swift */,
-				35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */,
-				35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */,
-				35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */,
-				35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */,
-				35980E052C75310B0036AB41 /* PublicIpLocationView.swift */,
-				35747A8C2C7A2D3F00935C82 /* InfoView.swift */,
+				356A63912DE04F5B0073DA39 /* Implementation */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -315,6 +313,54 @@
 				354032A22C5E7E81002624D2 /* IpAddressContainerView.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		356A63912DE04F5B0073DA39 /* Implementation */ = {
+			isa = PBXGroup;
+			children = (
+				356A63942DE04FD50073DA39 /* Location */,
+				356A63922DE04F840073DA39 /* MenuBar */,
+				356A63932DE04F970073DA39 /* Settings */,
+				356A63952DE04FE10073DA39 /* Info */,
+			);
+			path = Implementation;
+			sourceTree = "<group>";
+		};
+		356A63922DE04F840073DA39 /* MenuBar */ = {
+			isa = PBXGroup;
+			children = (
+				354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */,
+				354032992C5E7A95002624D2 /* MenuBarMenuView.swift */,
+			);
+			path = MenuBar;
+			sourceTree = "<group>";
+		};
+		356A63932DE04F970073DA39 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				354032A82C5E8362002624D2 /* SettingsView.swift */,
+				35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */,
+				35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */,
+				35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */,
+				35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		356A63942DE04FD50073DA39 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				35980E052C75310B0036AB41 /* PublicIpLocationView.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		356A63952DE04FE10073DA39 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				35747A8C2C7A2D3F00935C82 /* InfoView.swift */,
+			);
+			path = Info;
 			sourceTree = "<group>";
 		};
 		3575CCA02DD7648F00102D4E /* Services */ = {
@@ -427,8 +473,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */,
+				356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */,
 				35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */,
 				3540327F2C5E72DD002624D2 /* OperationResult.swift in Sources */,
+				356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */,
 				3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */,
 				354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */,
 				35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */,
