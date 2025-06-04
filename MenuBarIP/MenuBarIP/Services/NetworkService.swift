@@ -107,10 +107,14 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                     let hasInternetAccess = try await isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
                     builder.withHasInternetAccess(hasInternetAccess)
                     
+                    if hasInternetAccess && appState.network.publicIp == nil {
+                        await refreshIpAddressesAsync()
+                    }
+                    
                     if !hasInternetAccess {
                         builder.withPublicIp(nil)
                     }
-                    
+
                     await updateStatusAsync(update: builder.build())
                 } catch {
                     await updateStatusAsync(update: builder
