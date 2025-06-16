@@ -77,6 +77,7 @@ extension AppState {
 extension AppState {
     struct Network : Equatable {
         var status: NetworkStatusType = NetworkStatusType.unknown
+        var prevPublicIp: IpInfo? = nil
         var publicIp: IpInfo? = nil
         var localIp: String? = nil
         var isObtainingIp = false
@@ -110,6 +111,18 @@ extension AppState {
 
 extension AppState {
     struct UserData : Settable, Equatable {
+        var enableLogging: Bool = false {
+            didSet { writeSetting(newValue: enableLogging, key: Constants.settingsKeyEnableLogging) }
+        }
+        var logFileLimit: Int = Constants.defaultLogFileLimit {
+            didSet { writeSetting(newValue: logFileLimit, key: Constants.settingsKeyLogFileLimit) }
+        }
+        var runScript: Bool = false {
+            didSet { writeSetting(newValue: runScript, key: Constants.settingsKeyRunScript) }
+        }
+        var scriptPath: String = String() {
+            didSet { writeSetting(newValue: scriptPath, key: Constants.settingsKeyScriptPath) }
+        }
         var internetCheckUrl: String = Constants.defaultInternetCheckUrl {
             didSet { writeSetting(newValue: internetCheckUrl, key: Constants.settingsKeyInternetCheckUrl) }
         }
@@ -142,6 +155,10 @@ extension AppState {
         }
         
         init() {
+            enableLogging = readSetting(key: Constants.settingsKeyEnableLogging) ?? false
+            logFileLimit = readSetting(key: Constants.settingsKeyLogFileLimit) ?? Constants.defaultLogFileLimit
+            runScript = readSetting(key: Constants.settingsKeyRunScript) ?? false
+            scriptPath = readSetting(key: Constants.settingsKeyScriptPath) ?? String()
             internetCheckUrl = readSetting(key: Constants.settingsKeyInternetCheckUrl) ?? Constants.defaultInternetCheckUrl
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize

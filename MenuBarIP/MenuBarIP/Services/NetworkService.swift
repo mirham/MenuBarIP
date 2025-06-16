@@ -13,6 +13,8 @@ import Factory
 class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     @Injected(\.ipService) private var ipService
     @Injected(\.ipApiService) private var ipApiService
+    @Injected(\.executiveService) private var executiveService
+    @Injected(\.loggingService) private var loggingSerevice
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
@@ -51,6 +53,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             .withIsObtainingIp(true)
             .build())
         
+        let prevPublicIp = appState.network.publicIp
         let localIp = ipService.getLocalIp()
         let publicIp = await fetchPublicIpAsync()
         
@@ -59,6 +62,9 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             .withPublicIp(publicIp)
             .withLocalIp(localIp)
             .build())
+        
+        writeLog(publicIp: publicIp)
+        executeScript(prevPublicIp: prevPublicIp, publicIp: publicIp)
     }
     
     // MARK: Private functions
@@ -186,5 +192,20 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             appState.applyNetworkUpdate(update)
             appState.objectWillChange.send()
         }
+    }
+    
+    private func writeLog(publicIp: IpInfo?) {
+        guard appState.userData.enableLogging else { return }
+        guard let ip = publicIp?.ipAddress else { return }
+        
+        loggingSerevice.info(ip, LogDestination.file)
+    }
+    
+    private func executeScript(prevPublicIp: IpInfo?, publicIp: IpInfo?) {
+        guard appState.userData.runScript else { return }
+        guard let ip = publicIp?.ipAddress else { return }
+        guard publicIp?.ipAddress != prevPublicIp?.ipAddress && publicIp != nil else { return }
+        
+        executiveService.executeScript(publicIp: ip)
     }
 }

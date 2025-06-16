@@ -54,6 +54,13 @@
 		3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */; };
 		3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */; };
 		3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */; };
+		358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA182E001D27002DF782 /* LoggingServiceType.swift */; };
+		358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1A2E001D7C002DF782 /* LoggingService.swift */; };
+		358DDA1E2E004F10002DF782 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1D2E004F02002DF782 /* LogView.swift */; };
+		358DDA202E00715B002DF782 /* LogEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1F2E007159002DF782 /* LogEntry.swift */; };
+		358DDA222E00A331002DF782 /* ExecutiveServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA212E00A31F002DF782 /* ExecutiveServiceType.swift */; };
+		358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA232E00A3A6002DF782 /* ExecutiveService.swift */; };
+		358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA252E00A6D6002DF782 /* LogDestination.swift */; };
 		35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF42C736B040036AB41 /* NoInsetHostingView.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
@@ -114,6 +121,13 @@
 		3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedContainerExtensions.swift; sourceTree = "<group>"; };
 		3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExtensions.swift; sourceTree = "<group>"; };
 		3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerExtensions.swift; sourceTree = "<group>"; };
+		358DDA182E001D27002DF782 /* LoggingServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingServiceType.swift; sourceTree = "<group>"; };
+		358DDA1A2E001D7C002DF782 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
+		358DDA1D2E004F02002DF782 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
+		358DDA1F2E007159002DF782 /* LogEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEntry.swift; sourceTree = "<group>"; };
+		358DDA212E00A31F002DF782 /* ExecutiveServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveServiceType.swift; sourceTree = "<group>"; };
+		358DDA232E00A3A6002DF782 /* ExecutiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveService.swift; sourceTree = "<group>"; };
+		358DDA252E00A6D6002DF782 /* LogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		35980DF42C736B040036AB41 /* NoInsetHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoInsetHostingView.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
@@ -186,6 +200,7 @@
 			children = (
 				3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */,
 				354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */,
+				358DDA252E00A6D6002DF782 /* LogDestination.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -209,6 +224,7 @@
 				354032662C5E682D002624D2 /* IpApiInfo.swift */,
 				354032752C5E6C3F002624D2 /* NetworkInterface.swift */,
 				356A63962DE093830073DA39 /* NetworkStateUpdate.swift */,
+				358DDA1F2E007159002DF782 /* LogEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -240,6 +256,8 @@
 				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
 				35E1C7192D91C17B0014EB04 /* IpApiService.swift */,
+				358DDA232E00A3A6002DF782 /* ExecutiveService.swift */,
+				358DDA1A2E001D7C002DF782 /* LoggingService.swift */,
 				3540329B2C5E7AEC002624D2 /* LaunchAgentService.swift */,
 				356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */,
 			);
@@ -318,9 +336,10 @@
 		356A63912DE04F5B0073DA39 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
-				356A63942DE04FD50073DA39 /* Location */,
 				356A63922DE04F840073DA39 /* MenuBar */,
 				356A63932DE04F970073DA39 /* Settings */,
+				356A63942DE04FD50073DA39 /* Location */,
+				358DDA1C2E004EC1002DF782 /* Log */,
 				356A63952DE04FE10073DA39 /* Info */,
 			);
 			path = Implementation;
@@ -369,6 +388,8 @@
 				3575CCA12DD7657E00102D4E /* NetworkServiceType.swift */,
 				3575CCA32DD765FD00102D4E /* IpServiceType.swift */,
 				3575CCA52DD766A100102D4E /* IpApiServiceType.swift */,
+				358DDA212E00A31F002DF782 /* ExecutiveServiceType.swift */,
+				358DDA182E001D27002DF782 /* LoggingServiceType.swift */,
 				3575CCA72DD7672A00102D4E /* LaunchAgentServiceType.swift */,
 			);
 			path = Services;
@@ -384,6 +405,14 @@
 				3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		358DDA1C2E004EC1002DF782 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				358DDA1D2E004F02002DF782 /* LogView.swift */,
+			);
+			path = Log;
 			sourceTree = "<group>";
 		};
 		35980DFC2C736CC90036AB41 /* Delegates */ = {
@@ -472,6 +501,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				358DDA222E00A331002DF782 /* ExecutiveServiceType.swift in Sources */,
 				35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */,
 				356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */,
 				35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */,
@@ -479,11 +509,13 @@
 				356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */,
 				3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */,
 				354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */,
+				358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */,
 				35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */,
 				3540329A2C5E7A95002624D2 /* MenuBarMenuView.swift in Sources */,
 				3540328E2C5E78F7002624D2 /* IsHiddenModifier.swift in Sources */,
 				354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */,
 				3575CCA42DD7660100102D4E /* IpServiceType.swift in Sources */,
+				358DDA1E2E004F10002DF782 /* LogView.swift in Sources */,
 				354032932C5E795C002624D2 /* CheckToggleStyle.swift in Sources */,
 				354032812C5E7338002624D2 /* Constants.swift in Sources */,
 				354032982C5E7A4C002624D2 /* MenuBarElement.swift in Sources */,
@@ -495,7 +527,9 @@
 				3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */,
 				35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */,
 				3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */,
+				358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */,
 				3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */,
+				358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */,
 				354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */,
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
@@ -504,12 +538,14 @@
 				354032602C5E6706002624D2 /* ApiCallable.swift in Sources */,
 				35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */,
 				35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */,
+				358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */,
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
 				35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */,
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
 				35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */,
 				354032962C5E7A13002624D2 /* AsyncButton.swift in Sources */,
 				3540329C2C5E7AEC002624D2 /* LaunchAgentService.swift in Sources */,
+				358DDA202E00715B002DF782 /* LogEntry.swift in Sources */,
 				354032A92C5E8362002624D2 /* SettingsView.swift in Sources */,
 				3540329E2C5E7B51002624D2 /* ShellAccessible.swift in Sources */,
 				354032872C5E77A9002624D2 /* ViewExtensions.swift in Sources */,

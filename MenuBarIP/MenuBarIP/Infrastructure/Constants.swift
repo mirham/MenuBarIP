@@ -9,6 +9,7 @@ import Foundation
 
 struct Constants{
     // MARK: Default values
+    static let defaultAppBundleName = "com.mirham.MenuBarIP"
     static let defaultCountryCode = "US"
     static let defaultPublicIpAddress = "1.1.1.1"
     static let defaultLocalIpAddress = "192.168.1.2"
@@ -16,6 +17,9 @@ struct Constants{
     static let headHttpMethod = "HEAD"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
+    static let logFileName = "public_ip.log"
+    static let loggerQueueLabel = "\(Bundle.main.bundleIdentifier!).logger"
+    static let scriptingQueueLabel = "\(Bundle.main.bundleIdentifier!).scripting"
     static let launchAgents = "LaunchAgents"
     static let launchAgentsFolderPath = "~/Library/LaunchAgents/"
     static let networkMonitorQueryLabel = "MBIPNetworkMonitor"
@@ -32,9 +36,21 @@ struct Constants{
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl = "https://google.com"
+    static let defaultLogFileLimit: Int = 1000
+    static let minLogFileLimit: Int = 10
+    static let maxLogFileLimit: Int = 10000
+    static let newLine: String = "\n"
+    static let loggerDomainName = "Logger"
+    static let levelDebug = "Debug"
+    static let levelInfo = "Info"
+    static let levelError = "Error"
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
+    
+    // MARK: Masks
+    static let logEntryDateTimeMask = "yyyy-MM-dd @ HH:mm:ss"
+    static let logConsoleMessageMask: StaticString = "%{public}s"
     
     // MARK: Icons
     static let iconApp = "AppIcon"
@@ -59,9 +75,14 @@ struct Constants{
     // MARK: Window IDs
     static let windowIdSettings = "settings-view"
     static let windowIdPublicIpLocation = "public-ip-location-view"
+    static let windowIdLog = "log-view"
     static let windowIdInfo = "info-view"
     
     // MARK:  Settings key names
+    static let settingsKeyEnableLogging = "enable-logging"
+    static let settingsKeyLogFileLimit = "log-file-limit"
+    static let settingsKeyRunScript = "run-script"
+    static let settingsKeyScriptPath = "script-path"
     static let settingsKeyIpCustomizations = "ip-customizations"
     static let settingsKeyApis = "apis"
     static let settingsKeyShownMenuBarItems = "shown-menubar-items"
@@ -93,16 +114,22 @@ struct Constants{
     static let noInternet = "No internet"
     static let checked = "Checked"
     static let unchecked = "Unchecked"
+    static let clearLog = "Clear"
+    static let showLogInFolder = "Show in folder"
+    static let choose = "Choose"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
     static let settingsElementMenubar = "Menu bar"
+    static let settingsElementKeepAppRunning = "Keep application running"
+    static let settingsElementEnableLogging = "Enable public IP address logging"
+    static let settingsElementRunScript = "Run shell script when public IP address changes"
+    static let settingsElementLogFileLimit = "Log file lines limit"
     static let settingsElementCustomization = "Customization"
     static let settingsElementShownItems = "Shown menu bar items"
     static let settingsElementHiddenItems = "Hidden menu bar items"
     static let settingsElementItemsSize = "Items size"
     static let settingsElementSpacing = "Spacing"
-    static let settingsElementKeepAppRunning = "Keep application running"
     static let settingsElementIps = "IP adresses customization"
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
@@ -114,20 +141,26 @@ struct Constants{
     static let dialogBodyApiIsNotValid = "API doesn't return a valid IP address as a plain text and cannot be added."
     static let dialogHeaderUrlIsNotValid = "Address for checking Internet access is not applicable"
     static let dialogBodyUrlIsNotValid = "The address for checking Internet access does not return correct data and cannot be used."
+    static let dialogHeaderWrongScriptFile = "Input shell script file is not found or wrong one"
+    static let dialogBodyWrongScriptFile = "Select a valid shell script file."
     
     // MARK: Hints
+    static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
+    static let hintRunScript = "Run a custom shell script when the public address changes, the new public IP address will be passed as the first argument as a string"
     static let hintApiIsActive = "API is active and in use"
     static let hintApiIsInactive = "API is not active and not in use"
     static let hintNewVaildIpAddress = "A new valid IP address"
     static let hintNewCustomText = "A new custom text"
     static let hintNewVaildUrl = "A new valid URL"
     static let hintNewVaildApiUrl = "A new valid API URL"
+    static let hintNewVaildScriptPath = "A new valid shell script path"
     static let hintLightColor = "Light theme color"
     static let hintDarkColor = "Dark theme color"
-    static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed."
+    static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed"
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want"
     static let hintIps = "Add an IP address customization with desired custom text and custom color for light and dark theme\nRight click on the customization to display the context menu"
     static let hintIpApis = "Add an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
+    static let hintNotSet = "Not set yet"
     
     // MARK: Menubar item keys
     static let mbItemKeyPublicIpAddress = "public-ip-address"
@@ -146,11 +179,13 @@ struct Constants{
     static let mbItemKeySeparatorRightBracket = "separator-right-bracket"
     
     // MARK: Window titles
-    static let wnidowTitlePublicIplocation = "Public IP location"
+    static let wnidowTitlePublicIplocation = "Public IP address location"
+    static let wnidowTitlePublicIpLog = "Public IP address log"
     
     // MARK: Menu items
     static let menuItemCopy = "Copy"
     static let menuItemShowOnMap = "Show on map"
+    static let menuItemShowLog = "Show log"
     static let menuItemSettings = "Settings"
     static let menuItemRefresh = "Refresh"
     static let menuItemAbout = "About"
@@ -161,6 +196,17 @@ struct Constants{
     static let errorWhenCallingIpAddressApi = "Error when called IP address API '%1$@': '%2$@', API marked as inactive and will be skipped until next application run"
     static let errorIpApiResponseIsInvalid = "IP address API returned invalid IP address"
     static let errorWhenCallingIpInfoApi = "Error when called IP info API: %1$@"
+    static let errorFailedToCreateAppSupportFolder: StaticString = "Failed to get Application Support folder"
+    static let errorFailedToCreateAppFolder: StaticString = "Failed to create app folder: %{public}s"
+    static let errorInvalidLogFileUrl: StaticString = "Invalid log file URL"
+    static let errorFailedToCreateLogFile: StaticString = "Failed to create log file: %{public}s"
+    static let errorFailedToWriteLogFile: StaticString = "Failed to write to log file: %{public}s"
+    static let errorFailedToCreateInputStreamForLogFile: StaticString = "Failed to create input stream for log file"
+    static let errorFailedToTrimLogFile: StaticString = "Failed to trim log file: %{public}s"
+    static let errorFailedToClearLogFile: StaticString = "Failed to clear log file: %{public}s"
+    static let errorReadingLogFile: String = "Error reading log file: %1$@"
+    static let errorScriptFailed: String = "Script failed with status: %1$@"
+    static let errorScriptCannotBeExecuted: String = "Failed to execute script: %1$@"
     
     // MARK: Shell commands
     static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"

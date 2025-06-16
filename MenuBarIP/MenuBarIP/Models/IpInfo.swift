@@ -13,11 +13,23 @@ struct IpInfo: Codable, Equatable {
     var ipAddress: String
     var latitude: Double
     var longitude: Double
-    var zipCode: String
+    var zipCode: String?
     var countryCode: String
     var countryName: String
     var regionName: String
     var cityName: String
+    
+    enum CodingKeys: String, CodingKey {
+        case ipVersion
+        case ipAddress
+        case latitude
+        case longitude
+        case zipCode
+        case countryCode
+        case countryName
+        case regionName
+        case cityName
+    }
     
     static func == (lhs: IpInfo, rhs: IpInfo) -> Bool {
         return lhs.ipAddress == rhs.ipAddress
@@ -42,17 +54,16 @@ struct IpInfo: Codable, Equatable {
     func asAddressString() -> String {
         guard hasLocation() else { return String() }
         
-        return "\(zipCode), \(countryName),\n\(regionName), \(cityName)"
+        return zipCode == nil
+            ? "\(countryName),\n\(regionName), \(cityName)"
+            : "\(String(describing: zipCode)), \(countryName),\n\(regionName), \(cityName)"
     }
     
-    // MARK: Private functions
-    
-    private func hasLocation() -> Bool {
+    func hasLocation() -> Bool {
         let emptyString = String()
         
-        return zipCode != emptyString
-            || countryName != emptyString
-            || regionName != emptyString
-            || cityName != emptyString
+        return countryName != emptyString
+        || regionName != emptyString
+        || cityName != emptyString
     }
 }

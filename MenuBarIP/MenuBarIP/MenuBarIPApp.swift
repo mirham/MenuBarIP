@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Factory
 
 @main
 struct MenuBarIPApp: App {
@@ -35,6 +36,13 @@ struct MenuBarIPApp: App {
                 .environmentObject(appState)
                 .navigationTitle(Constants.wnidowTitlePublicIplocation)
                 .frame(minWidth: 500, minHeight: 500)
+        }).windowResizability(.contentSize)
+        
+        WindowGroup(id:Constants.windowIdLog, content: {
+            LogView(container: Container())
+                .environmentObject(appState)
+                .navigationTitle(Constants.wnidowTitlePublicIpLog)
+                .frame(minWidth: 400, minHeight: 400)
         }).windowResizability(.contentSize)
         
         WindowGroup(id: Constants.windowIdInfo, content: {

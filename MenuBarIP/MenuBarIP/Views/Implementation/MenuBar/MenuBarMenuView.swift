@@ -32,10 +32,14 @@ struct MenuBarMenuView : IpAddressContainerView {
                     .font(.system(size: 10))
                     .bold()
                     .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                Button(Constants.menuItemShowOnMap, action: publicIpLocationButtonClickHandler)
+                    .isHidden(hidden: !(appState.network.publicIp?.hasLocation() ?? false), remove: true)
                 Button(Constants.menuItemCopy) {
                     AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
                 }
+                Button(Constants.menuItemShowOnMap, action: publicIpLocationButtonClickHandler)
+                    .isHidden(hidden: !(appState.network.publicIp?.hasLocation() ?? false), remove: true)
+                Button(Constants.menuItemShowLog, action: logButtonClickHandler)
+                    .isHidden(hidden: !appState.userData.enableLogging, remove: true)
             }
             .isHidden(hidden: appState.network.publicIp == nil, remove: true)
             Divider()
@@ -67,6 +71,10 @@ struct MenuBarMenuView : IpAddressContainerView {
     
     private func publicIpLocationButtonClickHandler() {
         openWindowWithId(id: Constants.windowIdPublicIpLocation)
+    }
+    
+    private func logButtonClickHandler() {
+        openWindowWithId(id: Constants.windowIdLog)
     }
     
     private func aboutButtonClickHandler() {

@@ -50,9 +50,7 @@ struct PublicIpLocationView : View {
         }
         .onAppear() {
             appState.views.shownWindows.append(Constants.windowIdPublicIpLocation)
-            AppHelper.setUpView(
-                viewName: Constants.windowIdPublicIpLocation,
-                onTop: true)
+            AppHelper.activateView(viewId: Constants.windowIdPublicIpLocation)
             cameraPosition = .region(region)
         }
         .onChange(of: appState.network.publicIp) {

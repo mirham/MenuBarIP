@@ -7,6 +7,7 @@
 
 struct NetworkStateUpdate {
     var status: NetworkStatusType?
+    var prevPublicIp: IpInfo?
     var publicIp: IpInfo?
     var localIp: String?
     var activeNetworkInterfaces: [NetworkInterface]?

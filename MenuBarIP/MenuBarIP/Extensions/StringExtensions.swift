@@ -43,6 +43,11 @@ extension String {
         pasteboard.clearContents()
         pasteboard.setString(input, forType: .string)
     }
+    
+    var firstLetterUppercased: String {
+        guard !isEmpty else { return self }
+        return prefix(1).uppercased() + dropFirst().lowercased()
+    }
 }
 
 extension String: @retroactive LocalizedError {

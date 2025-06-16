@@ -27,6 +27,16 @@ extension Container {
             .singleton
     }
     
+    var executiveService: Factory<ExecutiveServiceType> {
+        Factory(self) { ExecutiveService() }
+            .singleton
+    }
+    
+    var loggingService: Factory<LoggingServiceType> {
+        Factory(self) { LoggingService() }
+            .singleton
+    }
+    
     var launchAgentService: Factory<LaunchAgentServiceType> {
         Factory(self) { LaunchAgentService() }
             .singleton
