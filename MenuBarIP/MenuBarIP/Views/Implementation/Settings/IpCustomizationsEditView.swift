@@ -74,7 +74,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                         }
                     }
                 }
-                .padding(.bottom, 15)
+                .padding(.bottom, 5)
                 .safeAreaInset(edge: .bottom) {
                     VStack {
                         HStack {
@@ -128,6 +128,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                             .bold()
                             .pointerOnHover()
                     }
+                    .padding(5)
                 }
             }
         }
@@ -136,7 +137,9 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     // MARK: Private functions
     
     private func upsertIpCustomizationAsync() async {
-        let ipInfoResult = await ipService.getIpInfoAsync(ip: newIp)
+        let ipInfoResult = await ipService.getPublicIpInfoAsync(
+            publicIp: newIp,
+            keyMapping: appState.userData.ipInfoApiKeyMapping)
         
         if (ipInfoResult.error != nil) {
             isNewIpInvalid = true
@@ -192,7 +195,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     }
     
     private func escapeCustomText(text: NSString) -> String {
-        var result = text.replacingOccurrences(of: "\n", with: "")
+        var result = text.replacingOccurrences(of: Constants.newLine, with: String())
         result = String(result.prefix(Constants.maxCustomTextSymbols))
         
         return result

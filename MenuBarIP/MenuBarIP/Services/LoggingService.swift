@@ -182,9 +182,11 @@ class LoggingService: ServiceBase, LoggingServiceType {
             
             while stream.hasBytesAvailable {
                 let bytesRead = stream.read(buffer, maxLength: bufferSize)
+                
                 if bytesRead < 0 {
                     throw stream.streamError ?? NSError(domain: Constants.loggerDomainName, code: -1, userInfo: nil)
                 }
+                
                 if bytesRead == 0 { break }
                 
                 if let chunk = String(bytes: UnsafeBufferPointer(start: buffer, count: bytesRead), encoding: .utf8) {
@@ -193,7 +195,7 @@ class LoggingService: ServiceBase, LoggingServiceType {
                         omittingEmptySubsequences: false)
                     partialLine = lines.last.map { String($0) } ?? String()
                     
-                    for line in lines.dropLast(partialLine.isEmpty ? 0 : 1) {
+                    for line in lines.dropLast(1) {
                         recentLines.append(String(line))
                         if recentLines.count > appState.userData.logFileLimit {
                             recentLines.removeFirst()

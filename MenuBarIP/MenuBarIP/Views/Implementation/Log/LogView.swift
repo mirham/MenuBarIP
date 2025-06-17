@@ -29,13 +29,13 @@ struct LogView: View {
         VStack {
             ScrollView {
                 ScrollViewReader { scrollProxy in
-                    VStack(alignment: .leading, spacing: 2) {
+                    LazyVStack(alignment: .leading, spacing: 2) {
                         ForEach(viewModel.logEntries) { entry in
                             HStack(spacing: 8) {
-                                Text("\(entry.number) |")
+                                Text(String("\(entry.number) |"))
                                     .font(.system(.body, design: .monospaced))
                                     .foregroundColor(.gray)
-                                    .frame(width: 40, alignment: .trailing)
+                                    .frame(width: 60, alignment: .trailing)
                                 Text(entry.message)
                                     .font(.system(.body, design: .monospaced))
                                     .foregroundColor(.white)

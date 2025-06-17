@@ -32,7 +32,7 @@ struct PublicIpLocationView : View {
                     Image(Constants.iconIpPoint)
                         .resizable()
                         .frame(width: 50, height: 50)
-                    Text(appState.network.publicIp?.asAddressString() ?? String())
+                    Text(appState.network.publicIp?.asPhysicalAddressString() ?? String())
                     .font(.system(size: 16))
                     .bold()
                     .multilineTextAlignment(.center)

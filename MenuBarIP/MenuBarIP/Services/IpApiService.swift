@@ -7,9 +7,20 @@
 
 import Foundation
 
-class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {    
+class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
     func getRandomActiveIpApi() -> IpApiInfo? {
         let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
+        
+        return result
+    }
+    
+    func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String? {
+        guard !ipInfoApiUrl.isEmpty else { return nil }
+        guard !publicIp.isEmpty else { return nil }
+        
+        let result = ipInfoApiUrl.replacingOccurrences(of: Constants.publicIpMask, with: publicIp)
+        
+        guard result.isValidUrl() else { return nil }
         
         return result
     }
@@ -41,7 +52,8 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
         guard self.appState.network.status == .on && self.appState.network.hasInternetAccess
         else { return }
         
-        if let inactiveApiIndex = self.appState.userData.ipApis.firstIndex(where: { $0.url == ipApiUrl }) {
+        if let inactiveApiIndex = self.appState.userData.ipApis
+            .firstIndex(where: { $0.url == ipApiUrl }) {
             await MainActor.run() {
                 self.appState.userData.ipApis[inactiveApiIndex].active = false
             }

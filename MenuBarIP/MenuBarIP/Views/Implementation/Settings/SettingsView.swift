@@ -11,7 +11,7 @@ struct SettingsView : View {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.controlActiveState) var controlActiveState
-    
+
     var body: some View {
         TabView {
             GeneralSettingsEditView()
@@ -31,7 +31,13 @@ struct SettingsView : View {
                 .tabItem {
                     Text(Constants.settingsElementIpAddressApis)
                 }
+            IpInfoApiEditView()
+                .environmentObject(appState)
+                .tabItem {
+                    Text(Constants.settingsElementIpInfoApi)
+                }
         }
+        .tabViewStyle(.grouped)
         .onAppear(perform: {
             appState.views.shownWindows.append(Constants.windowIdSettings)
             AppHelper.setUpView(

@@ -9,18 +9,16 @@ import Foundation
 import Network
 
 struct IpInfo: Codable, Equatable {
-    var ipVersion: Int
     var ipAddress: String
+    var countryCode: String
     var latitude: Double
     var longitude: Double
     var zipCode: String?
-    var countryCode: String
-    var countryName: String
-    var regionName: String
-    var cityName: String
+    var countryName: String?
+    var regionName: String?
+    var cityName: String?
     
     enum CodingKeys: String, CodingKey {
-        case ipVersion
         case ipAddress
         case latitude
         case longitude
@@ -31,12 +29,7 @@ struct IpInfo: Codable, Equatable {
         case cityName
     }
     
-    static func == (lhs: IpInfo, rhs: IpInfo) -> Bool {
-        return lhs.ipAddress == rhs.ipAddress
-    }
-    
     init(ipAddress: String){
-        self.ipVersion = (IPv4Address(ipAddress) != nil) ? Constants.ipV4 : Constants.ipV6
         self.ipAddress = ipAddress
         self.latitude = 0.0
         self.longitude = 0.0
@@ -47,23 +40,54 @@ struct IpInfo: Codable, Equatable {
         self.cityName = String()
     }
     
+    static func == (lhs: IpInfo, rhs: IpInfo) -> Bool {
+        return lhs.ipAddress == rhs.ipAddress
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(ipAddress)
     }
     
-    func asAddressString() -> String {
-        guard hasLocation() else { return String() }
+    func asPhysicalAddressString() -> String {
+        guard hasPhysicalLocation() else { return String() }
         
-        return zipCode == nil
-            ? "\(countryName),\n\(regionName), \(cityName)"
-            : "\(String(describing: zipCode)), \(countryName),\n\(regionName), \(cityName)"
+        var data = [String]()
+        
+        if let currentZipCode = zipCode {
+            data.append(currentZipCode)
+        }
+        
+        if let currentCountryName = countryName {
+            data.append(currentCountryName)
+        }
+        
+        if let currentRegionName = regionName {
+            data.append(currentRegionName)
+        }
+        
+        if let currentCityName = cityName {
+            data.append(currentCityName)
+        }
+        
+        let result = data.enumerated().reduce(String()) { partialResult, pair in
+            let (index, element) = pair
+            let separator = index == 0 ? String() : ((index % 2 == 0) ? "\n" : ", ")
+            return partialResult + separator + element
+        }
+        
+        return result
     }
     
     func hasLocation() -> Bool {
         let emptyString = String()
+        let emptyDouble = 0.0
         
-        return countryName != emptyString
-        || regionName != emptyString
-        || cityName != emptyString
+        return countryCode != emptyString
+        || latitude != emptyDouble
+        || longitude != emptyDouble
+    }
+    
+    func hasPhysicalLocation() -> Bool {
+        return countryName != String()
     }
 }

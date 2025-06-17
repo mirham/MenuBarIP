@@ -31,11 +31,12 @@ struct Constants{
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
-    static let defaultCheckConnectionHealthIntervalSeconds: Int = 5
+    static let defaultCheckConnectionHealthIntervalSeconds: Int = 10
     static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds * 1_000_000_000)
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl = "https://google.com"
+    static let defaultIpInfoApiUrl = "http://ip-api.com/json/\(publicIpMask)"
     static let defaultLogFileLimit: Int = 1000
     static let minLogFileLimit: Int = 10
     static let maxLogFileLimit: Int = 10000
@@ -51,6 +52,7 @@ struct Constants{
     // MARK: Masks
     static let logEntryDateTimeMask = "yyyy-MM-dd @ HH:mm:ss"
     static let logConsoleMessageMask: StaticString = "%{public}s"
+    static let publicIpMask = "%IP%"
     
     // MARK: Icons
     static let iconApp = "AppIcon"
@@ -91,6 +93,8 @@ struct Constants{
     static let settingsKeyMenuBarTextSize = "menubar-text-size"
     static let settingsKeyMenuBarSpacing = "menubar-spacing"
     static let settingsKeyInternetCheckUrl = "internet-check-url"
+    static let settingsKeyIpInfoApiUrl = "ip-info-api-url"
+    static let settingsKeyIpInfoMapping = "ip-info-api-matches"
     
     // MARK: Elements names
     static let info = "Info"
@@ -104,6 +108,7 @@ struct Constants{
     static let ip = "IP"
     static let apiUrl = "API address"
     static let internetCheckUrl = "Check if internet access using address"
+    static let ipInfoApiUrl = "IP info API address (use \(publicIpMask) for public IP address)"
     static let customText = "Custom text"
     static let light = "Light"
     static let dark = "Dark"
@@ -117,6 +122,7 @@ struct Constants{
     static let clearLog = "Clear"
     static let showLogInFolder = "Show in folder"
     static let choose = "Choose"
+    static let mappings = "Mappings"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
@@ -133,16 +139,21 @@ struct Constants{
     static let settingsElementIps = "IP adresses customization"
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
+    static let settingsElementIpInfoApi = "IP info API"
     
     // MARK: Dialogs
     static let dialogHeaderIpAddressIsNotValid = "IP Address is not valid"
     static let dialogBodyIpAddressIsNotValid = "IP Address seems to not be valid and cannot be added."
-    static let dialogHeaderApiIsNotValid = "API for getting IP Address is not valid"
+    static let dialogHeaderApiIsNotValid = "API for getting IP address is not valid"
     static let dialogBodyApiIsNotValid = "API doesn't return a valid IP address as a plain text and cannot be added."
     static let dialogHeaderUrlIsNotValid = "Address for checking Internet access is not applicable"
     static let dialogBodyUrlIsNotValid = "The address for checking Internet access does not return correct data and cannot be used."
     static let dialogHeaderWrongScriptFile = "Input shell script file is not found or wrong one"
     static let dialogBodyWrongScriptFile = "Select a valid shell script file."
+    static let dialogHeaderIpInfoApiIsNotValid = "API for getting information of public IP address is not valid"
+    static let dialogBodyIpInfoApiIsNotValid = "API doesn't return a JSON data and cannot be added."
+    static let dialogHeaderIpInfoApiMappingIsNotValid = "API for getting information of public IP address doesn't return required data."
+    static let dialogBodyIpInfoApiMappingIsNotValid = "The API does not return the country code, latitude, or longitude. Please double-check the API values and mapping for correctness."
     
     // MARK: Hints
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
@@ -160,7 +171,9 @@ struct Constants{
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want"
     static let hintIps = "Add an IP address customization with desired custom text and custom color for light and dark theme\nRight click on the customization to display the context menu"
     static let hintIpApis = "Add an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
+    static let hintIpInfoApi = "The IP info API is needed to get advanced information about a public IP address, such as its location. This allows you to display the country flag in the macOS menu bar, as well as show the address on a map. Typically, data from such APIs is in JSON format. Here, you can assign an API address and map the JSON data values to application values."
     static let hintNotSet = "Not set yet"
+    static let hintJsonKey = "JSON data key"
     
     // MARK: Menubar item keys
     static let mbItemKeyPublicIpAddress = "public-ip-address"
@@ -192,6 +205,7 @@ struct Constants{
     static let menuItemQuit = "Quit"
     
     // MARK: Error messages
+    static let errorInvalidJson = "Invalid JSON"
     static let errorNoActiveIpApiFound = "Not possible to obtain IP, try to add a new IP API in the Settings to proceed work or check DNS availability"
     static let errorWhenCallingIpAddressApi = "Error when called IP address API '%1$@': '%2$@', API marked as inactive and will be skipped until next application run"
     static let errorIpApiResponseIsInvalid = "IP address API returned invalid IP address"
@@ -277,5 +291,27 @@ struct Constants{
         mbItemKeySeparatorPipe,
         mbItemKeySeparatorLeftBracket,
         mbItemKeySeparatorRightBracket
+    ]
+    
+    static let defaultIpInfoApiKeyMapping = [
+        "ipAddress" : "query",
+        "zipCode" : "zip",
+        "countryCode" : "countryCode",
+        "countryName" : "country",
+        "regionName" : "regionName",
+        "cityName" : "city",
+        "latitude" : "lat",
+        "longitude" : "lon"
+    ]
+    
+    static let readableIpInfoApiKeyMapping = [
+        "ipAddress" : "IP address",
+        "zipCode" : "Zip code",
+        "countryCode" : "Country code",
+        "countryName" : "Country name",
+        "regionName" : "Region name",
+        "cityName" : "City name",
+        "latitude" : "Latitude",
+        "longitude" : "Longitude"
     ]
 }

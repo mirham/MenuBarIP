@@ -24,28 +24,28 @@ struct MenuBarIPApp: App {
         }
         .menuBarExtraStyle(.menu)
         
-        WindowGroup(id:Constants.windowIdSettings, content: {
+        WindowGroup(id:Constants.windowIdSettings, makeContent: {
             SettingsView()
                 .environmentObject(appState)
                 .navigationTitle(Constants.menuItemSettings)
                 .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
         }).windowResizability(.contentSize)
         
-        WindowGroup(id:Constants.windowIdPublicIpLocation, content: {
+        WindowGroup(id:Constants.windowIdPublicIpLocation, makeContent: {
             PublicIpLocationView()
                 .environmentObject(appState)
                 .navigationTitle(Constants.wnidowTitlePublicIplocation)
                 .frame(minWidth: 500, minHeight: 500)
         }).windowResizability(.contentSize)
         
-        WindowGroup(id:Constants.windowIdLog, content: {
+        WindowGroup(id:Constants.windowIdLog, makeContent: {
             LogView(container: Container())
                 .environmentObject(appState)
                 .navigationTitle(Constants.wnidowTitlePublicIpLog)
                 .frame(minWidth: 400, minHeight: 400)
         }).windowResizability(.contentSize)
         
-        WindowGroup(id: Constants.windowIdInfo, content: {
+        WindowGroup(id: Constants.windowIdInfo, makeContent: {
             InfoView()
                 .environmentObject(appState)
                 .navigationTitle(Constants.info)

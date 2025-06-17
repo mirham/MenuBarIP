@@ -28,16 +28,16 @@ struct MenuBarMenuView : IpAddressContainerView {
                     forMenu: true))
                 .asMenuItemIp()
             VStack {
-                Text(appState.network.publicIp?.asAddressString() ?? String())
+                Text(appState.network.publicIp?.asPhysicalAddressString() ?? String())
                     .font(.system(size: 10))
                     .bold()
                     .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                    .isHidden(hidden: !(appState.network.publicIp?.hasLocation() ?? false), remove: true)
+                    .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
                 Button(Constants.menuItemCopy) {
                     AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
                 }
                 Button(Constants.menuItemShowOnMap, action: publicIpLocationButtonClickHandler)
-                    .isHidden(hidden: !(appState.network.publicIp?.hasLocation() ?? false), remove: true)
+                    .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
                 Button(Constants.menuItemShowLog, action: logButtonClickHandler)
                     .isHidden(hidden: !appState.userData.enableLogging, remove: true)
             }

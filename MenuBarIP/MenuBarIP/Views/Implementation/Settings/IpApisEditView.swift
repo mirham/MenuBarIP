@@ -54,7 +54,7 @@ struct IpApisEditView : View {
                             }
                         }
                     }
-                    .padding(.bottom, 15)
+                    .padding(.bottom, 5)
                 }
                 .safeAreaInset(edge: .bottom) {
                     VStack {
@@ -81,6 +81,7 @@ struct IpApisEditView : View {
                             .bold()
                     }
                 }
+                .padding(5)
             }
         }
     }

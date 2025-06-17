@@ -41,8 +41,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             request.httpMethod = Constants.headHttpMethod
             
             let (_, response) = try await URLSession.shared.data(for: request)
-            
-            let result = (response as? HTTPURLResponse)?.statusCode == 200
+            let parsedResponse = (response as? HTTPURLResponse)!
+            let result = parsedResponse.statusCode == 200
             
             return result
         }
@@ -204,7 +204,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     private func executeScript(prevPublicIp: IpInfo?, publicIp: IpInfo?) {
         guard appState.userData.runScript else { return }
         guard let ip = publicIp?.ipAddress else { return }
-        guard publicIp?.ipAddress != prevPublicIp?.ipAddress && publicIp != nil else { return }
+        guard publicIp != nil && prevPublicIp != nil
+              && publicIp?.ipAddress != prevPublicIp?.ipAddress else { return }
         
         executiveService.executeScript(publicIp: ip)
     }

@@ -7,6 +7,6 @@
 
 protocol IpServiceType {
     func getPublicIpAsync(ipApiUrl: String?, withInfo: Bool) async -> OperationResult<IpInfo>
-    func getIpInfoAsync(ip: String) async -> OperationResult<IpInfo>
+    func getPublicIpInfoAsync(publicIp: String, keyMapping: [String:String]) async -> OperationResult<IpInfo>
     func getLocalIp() -> String?
 }

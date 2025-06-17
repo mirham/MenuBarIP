@@ -7,5 +7,6 @@
 
 protocol IpApiServiceType {
     func getRandomActiveIpApi() -> IpApiInfo?
+    func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String?
     func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String>
 }

@@ -147,6 +147,12 @@ extension AppState {
         var ipApis = [IpApiInfo]() {
             didSet { writeSettingsArray(newValues: ipApis, key: Constants.settingsKeyApis) }
         }
+        var ipInfoApiUrl: String = Constants.defaultIpInfoApiUrl {
+            didSet { writeSetting(newValue: ipInfoApiUrl, key: Constants.settingsKeyIpInfoApiUrl) }
+        }
+        var ipInfoApiKeyMapping: [String:String] = Constants.defaultIpInfoApiKeyMapping {
+            didSet { writeSettingsDictionary(newValues: ipInfoApiKeyMapping, key: Constants.settingsKeyIpInfoMapping) }
+        }
         
         static func == (lhs: UserData, rhs: UserData) -> Bool {
             let result = lhs.menuBarUseThemeColor == rhs.menuBarUseThemeColor
@@ -163,32 +169,31 @@ extension AppState {
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize
             menuBarSpacing = readSetting(key: Constants.settingsKeyMenuBarSpacing) ?? Constants.defaultMenuBarSpacing
+            ipInfoApiUrl = readSetting(key: Constants.settingsKeyIpInfoApiUrl) ?? Constants.defaultIpInfoApiUrl
             
-            let savedIps: [IpCustomization]? = readSettingsArray(key: Constants.settingsKeyIpCustomizations)
-            let savedIpApis: [IpApiInfo]? = readSettingsArray(key: Constants.settingsKeyApis)
-            let savedMenuBarShownItems: [String]? = readSettingsArray(key: Constants.settingsKeyShownMenuBarItems)
-            let savedMenuBarHiddenItems: [String]? = readSettingsArray(key: Constants.settingsKeyHiddenMenuBarItems)
-            
-            if (savedIps != nil) {
-                ipCustomizations = savedIps!
+            if let savedIps:[IpCustomization] = readSettingsArray(key: Constants.settingsKeyIpCustomizations) {
+                ipCustomizations = savedIps
             }
             
-            if (savedIpApis == nil) {
+            if let savedIpApis:[IpApiInfo] = readSettingsArray(key: Constants.settingsKeyApis) {
+                ipApis = savedIpApis
+            } else {
                 for ipApiUrl in Constants.ipApiUrls {
                     let apiInfo = IpApiInfo(url: ipApiUrl, active: true)
                     ipApis.append(apiInfo)
                 }
             }
-            else {
-                ipApis = savedIpApis!
+            
+            if let savedMenuBarShownItems: [String] = readSettingsArray(key: Constants.settingsKeyShownMenuBarItems) {
+                menuBarShownItems = savedMenuBarShownItems
             }
             
-            if (savedMenuBarShownItems != nil) {
-                menuBarShownItems = savedMenuBarShownItems!
+            if let savedMenuBarHiddenItems: [String] = readSettingsArray(key: Constants.settingsKeyHiddenMenuBarItems) {
+                menuBarHiddenItems = savedMenuBarHiddenItems
             }
             
-            if (savedMenuBarHiddenItems != nil) {
-                menuBarHiddenItems = savedMenuBarHiddenItems!
+            if let savedIpInfoApiMapping: [String:String] = readSettingsDictionary(key: Constants.settingsKeyIpInfoMapping) {
+                ipInfoApiKeyMapping = savedIpInfoApiMapping
             }
         }
     }

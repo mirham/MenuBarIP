@@ -26,7 +26,9 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         guard ipAddressString.isValidIp() else { return OperationResult(error: Constants.errorIpApiResponseIsInvalid) }
         
         if withInfo {
-            let ipWithInfoResult = await getIpInfoAsync(ip: ipAddressString)
+            let ipWithInfoResult = await getPublicIpInfoAsync(
+                publicIp: ipAddressString,
+                keyMapping: appState.userData.ipInfoApiKeyMapping)
             
             return OperationResult(result: ipWithInfoResult.result! , error: ipWithInfoResult.error)
         }
@@ -34,28 +36,35 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         return OperationResult(result: IpInfo(ipAddress: ipAddressString))
     }
     
-    func getIpInfoAsync(ip: String) async -> OperationResult<IpInfo> {
+    func getPublicIpInfoAsync(publicIp: String, keyMapping: [String:String]) async -> OperationResult<IpInfo> {
+        guard let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
+            publicIp: publicIp,
+            ipInfoApiUrl: appState.userData.ipInfoApiUrl),
+            !keyMapping.isEmpty
+        else {
+            return OperationResult(result: IpInfo(ipAddress: publicIp))
+        }
+        
         do {
-            // TODO RUSS: Add to Settings, add JSON mapping
-            let response = try await callGetApiAsync(apiUrl: "https://freeipapi.com/api/json/\(ip)")
+            let response = try await callGetApiAsync(apiUrl: ipInfoUrl)
             let jsonData = response.data(using: .utf8)!
+            let preparedJsonData = try jsonData.remap(mapping: keyMapping)
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .useDefaultKeys
-            let info = try decoder.decode(IpInfo.self, from: jsonData)
+            let info = try decoder.decode(IpInfo.self, from: preparedJsonData)
             
             return OperationResult(result: info)
         }
         catch {
             if let error = error as? URLError, case .notConnectedToInternet = error.code {
-                return OperationResult(result: IpInfo(ipAddress: ip))
+                return OperationResult(result: IpInfo(ipAddress: publicIp))
             }
             
             if let error = error as? URLError, case .networkConnectionLost = error.code {
-                return OperationResult(result: IpInfo(ipAddress: ip))
+                return OperationResult(result: IpInfo(ipAddress: publicIp))
             }
             
             return OperationResult(
-                result: IpInfo(ipAddress: ip),
+                result: IpInfo(ipAddress: publicIp),
                 error: String(format: Constants.errorWhenCallingIpInfoApi, error.localizedDescription))
         }
     }
