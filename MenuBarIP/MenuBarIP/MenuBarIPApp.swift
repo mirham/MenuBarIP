@@ -28,7 +28,7 @@ struct MenuBarIPApp: App {
             SettingsView()
                 .environmentObject(appState)
                 .navigationTitle(Constants.menuItemSettings)
-                .frame(minWidth: 500, maxWidth: 500, minHeight: 500, maxHeight: 500)
+                .frame(minWidth: 590, maxWidth: 590, minHeight: 500, maxHeight: 500)
         }).windowResizability(.contentSize)
         
         WindowGroup(id:Constants.windowIdPublicIpLocation, makeContent: {

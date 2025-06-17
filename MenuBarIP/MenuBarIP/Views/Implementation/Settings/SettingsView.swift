@@ -37,7 +37,6 @@ struct SettingsView : View {
                     Text(Constants.settingsElementIpInfoApi)
                 }
         }
-        .tabViewStyle(.grouped)
         .onAppear(perform: {
             appState.views.shownWindows.append(Constants.windowIdSettings)
             AppHelper.setUpView(
@@ -49,7 +48,7 @@ struct SettingsView : View {
         })
         .opacity(getViewOpacity(state: controlActiveState))
         .padding()
-        .frame(maxWidth: 500, maxHeight: 500)
+        .frame(maxWidth: 590, maxHeight: 500)
     }
 }
 
