@@ -64,6 +64,7 @@ struct Constants{
     static let iconQuit = "xmark.circle"
     static let iconObtaining = "network"
     static let iconNotConnected = "network.slash"
+    static let iconNoActiveIpApi = "exclamationmark.triangle.fill"
     static let iconIpPoint = "ippoint"
     static let iconEdit = "pencil.line"
     static let iconSave = "chevron.down"
@@ -123,6 +124,7 @@ struct Constants{
     static let showLogInFolder = "Show in folder"
     static let choose = "Choose"
     static let mappings = "Mappings"
+    static let noActiveIpApi = "No active IP API"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
