@@ -21,9 +21,13 @@ MirHam MenuBarIP is a macOS menu bar application designed to display your public
 I was surprised to find that all similar applications in the App Store are paid and offer limited customization. Creating my own was not a big challenge, so now I’m sharing it with everyone.
 
 ## Features
-- Highly customizable various menu bar items
-- Periodic Internet connection checks
-- Operates continuously, even after computer restarts
+- Highly customizable menu bar items
+- Periodic internet connection checks
+- Continuous operation, even after computer restarts
+- Displays public IP on a map
+- Logs public IP changes
+- Runs shell scripts when the public IP changes
+- Option to use custom API to retrieve public IP address and geolocation information
 
 ## Installation
 
@@ -54,13 +58,46 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/MapView.png" width="800">
 </p>
 
+### Log
+<p align="left">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Log.png" width="400">
+</p>
+
 ### Settings
 <p align="left">
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings1.png" width="400">
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings2.png" width="400">
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings3.png" width="400">
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings4.png" width="400">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings5.png" width="400">
 </p>
+
+### Scripting
+
+As an advanced user, you can run your own shell script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter.
+
+Here's an example script that displays a notification in macOS' Notification Center.
+
+```shell
+#!/bin/bash
+
+# Check if IP argument is provided
+if [ -z "$1" ]; then
+    echo "Error: No IP address provided" >> ~/Scripts/ip_change.log
+    exit 1
+fi
+
+# Store the IP address
+IP="$1"
+
+# Display macOS notification
+osascript -e "display notification \"New public IP address: $IP\" with title \"IP Address Update\""
+
+# Log execution
+echo "$(date): New IP: $IP" >> ~/Scripts/ip_change.log
+
+exit 0
+```
 
 ## Improvement
 > [!TIP]
