@@ -43,11 +43,14 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     }
     
     var body: some View {
-        if (appState.network.status == .off) {
+        if appState.network.status == .off {
             makeOfflineView()
         }
-        else if (appState.network.isObtainingIp) {
+        else if appState.network.isObtainingIp {
             makeObtainingIpView()
+        }
+        else if !appState.userData.hasActiveIpApi() {
+            makeNoActiveIpApiView()
         }
         else {
             makeDefaultView(appState: appState, colorScheme: colorScheme)
@@ -63,6 +66,15 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
                 .font(.system(size: appState.userData.menuBarTextSize))
         }
         .foregroundStyle(.red)
+    }
+    
+    private func makeNoActiveIpApiView() -> some View {
+        HStack(spacing: appState.userData.menuBarSpacing) {
+            Image(systemName: Constants.iconNoActiveIpApi)
+            Text(Constants.noActiveIpApi.uppercased())
+                .font(.system(size: appState.userData.menuBarTextSize))
+        }
+        .foregroundStyle(.orange)
     }
     
     private func makeObtainingIpView() -> some View {
