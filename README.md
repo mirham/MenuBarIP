@@ -29,8 +29,10 @@ I was surprised to find that all similar applications in the App Store are paid 
 - Runs shell scripts when the public IP changes
 - Option to use custom API to retrieve public IP address and geolocation information
 
-## Installation
+## Compatibility
+This application is compatible with macOS 15.0 and above. All versions below 2.0 are compatible with macOS 14.0. Version [2.0](https://github.com/mirham/MenuBarIP/releases/download/2.0/MenuBarIP_macOS14.dmg) is the last compatible version for macOS 14.0 and will only be upgraded by request.
 
+## Installation
 Download the DMG installer from the [releases](https://github.com/mirham/MenuBarIP/releases), mount it, and drag and drop the application to the Applications folder. That's it! However, you will need to allow launching applications from unidentified developers to start the application, as I don't have an Apple developer license.
 
 ## Screenshots
