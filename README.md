@@ -74,8 +74,7 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings5.png" width="400">
 </p>
 
-### Scripting
-
+## Scripting
 As an advanced user, you can run your own shell script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter.
 
 Here's an example script that displays a notification in macOS' Notification Center.
@@ -100,6 +99,43 @@ echo "$(date): New IP: $IP" >> ~/Scripts/ip_change.log
 
 exit 0
 ```
+> [!IMPORTANT]
+> Make sure your script is executable, otherwise, it won't work. 
+
+You can make the script executable with the command:
+```
+chmod +x /path/to/your/script.sh
+```
+
+## Troubleshooting
+### Where I can find public IP API?
+You can find free IP APIs that return plain text and require no API key by searching online for "Free IP API plain text no API key." While many are available, not all may work in your country. Alternatively, you can create and deploy your own public IP API; it's not very complicated. The main condition is that it must return only the IP address as plain text, without any additional data.
+### Where I can find public IP info API?
+This is more complex, but you can also search online for "Free IP geolocation API no API key." While many free services exist, most require registration and an API key in the request. However, you are welcome to use them if you wish.
+
+I can recommend two free services:
+
+ - ```http://ip-api.com/json/%IP%``` – This one is used by default.
+ - ```https://free.freeipapi.com/api/json/%IP%``` – This one is less accurate.
+
+The mapping for the last service is as follows:
+
+  - City name -> ```cityName```
+  - Country code -> ```countryCode```
+  - Country name -> ```countryName```
+  - IP address -> ```ipAddress```
+  - Latitude -> ```latitude```
+  -  Longitude -> ```longitude```
+  -  Region name -> ```regionName```
+  -  Zip code -> leave blank
+### The app dispalys "Obtaining IP..." for a long time
+This could happen if some public IP APIs are unreachable from your current connection location. The app skips these, but this process takes time. Furthermore, after updating the public IP, the app attempts to use them again. I recommend checking public IP APIs in your browser. If an API no more rapidly return an IP address as plain text, you should remove that API from the app. This will solve the problem. Additionally, you can find new free APIs online, if they work well, feel free to add them to the app.
+### Shell script doesn't run
+Make sure you have ```/bin/zsh``` on your computer, and your script is executable.
+You can make the script executable with the command:
+```
+chmod +x /path/to/your/script.sh
+``` 
 
 ## Improvement
 > [!TIP]
