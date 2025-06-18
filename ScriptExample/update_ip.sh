@@ -9,7 +9,7 @@ fi
 # Store the IP address
 IP="$1"
 
-# Display macOS notification
+# Display macOS notification, notifications from "Script Editor" must be enabled in Notifications
 osascript -e "display notification \"New public IP address: $IP\" with title \"IP Address Update\""
 
 # Log execution
