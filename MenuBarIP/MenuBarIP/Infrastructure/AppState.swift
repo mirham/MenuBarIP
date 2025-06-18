@@ -196,5 +196,9 @@ extension AppState {
                 ipInfoApiKeyMapping = savedIpInfoApiMapping
             }
         }
+        
+        func hasActiveIpApi() -> Bool {
+            return !ipApis.isEmpty && ipApis.contains(where: {$0.isActive()})
+        }
     }
 }

@@ -111,9 +111,14 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 
                 do {
                     let hasInternetAccess = try await isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
+                    
                     builder.withHasInternetAccess(hasInternetAccess)
                     
-                    if hasInternetAccess && appState.network.publicIp == nil {
+                    let reqiredIpRefresh = hasInternetAccess
+                        && appState.userData.hasActiveIpApi()
+                        && appState.network.publicIp == nil
+                    
+                    if reqiredIpRefresh {
                         await refreshIpAddressesAsync()
                     }
                     
