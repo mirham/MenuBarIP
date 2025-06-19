@@ -35,7 +35,7 @@ struct IpInfoApiEditView: View {
                 VStack(alignment: .leading) {
                     Text("\(Constants.ipInfoApiUrl):")
                     HStack {
-                        TextField(Constants.hintNewVaildUrl, text: $newUrl)
+                        TextField(Constants.hintNewVaildApiUrl, text: $newUrl)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                 }

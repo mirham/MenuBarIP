@@ -33,20 +33,38 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     deinit {
         monitor.cancel()
         monitoringTask?.cancel()
+        publicIpRefreshingTask?.cancel()
         NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
     func isUrlReachableAsync(url : String) async throws -> Bool {
-        do {
-            let url = URL(string: url)!
-            var request = URLRequest(url: url)
-            request.httpMethod = Constants.headHttpMethod
-            
-            let (_, response) = try await URLSession.shared.data(for: request)
-            let parsedResponse = (response as? HTTPURLResponse)!
-            let result = parsedResponse.statusCode == 200
-            
-            return result
+        guard !Task.isCancelled else {
+            throw CancellationError()
+        }
+        
+        guard let url = URL(string: url) else {
+            throw URLError(.badURL)
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = Constants.headHttpMethod
+        request.timeoutInterval = Constants.callTimeoutSiteInSeconds
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            let task = URLSession.shared.dataTask(with: request) { _, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    continuation.resume(throwing: URLError(.badServerResponse))
+                    return
+                }
+                
+                continuation.resume(returning: httpResponse.statusCode == 200)
+            }
+            task.resume()
         }
     }
     

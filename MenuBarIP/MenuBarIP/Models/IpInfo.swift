@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Network
 
 struct IpInfo: Codable, Equatable {
     var ipAddress: String
@@ -53,19 +52,19 @@ struct IpInfo: Codable, Equatable {
         
         var data = [String]()
         
-        if let currentZipCode = zipCode {
+        if let currentZipCode = zipCode, !currentZipCode.isEmpty {
             data.append(currentZipCode)
         }
         
-        if let currentCountryName = countryName {
+        if let currentCountryName = countryName, !currentCountryName.isEmpty {
             data.append(currentCountryName)
         }
         
-        if let currentRegionName = regionName {
+        if let currentRegionName = regionName, !currentRegionName.isEmpty {
             data.append(currentRegionName)
         }
         
-        if let currentCityName = cityName {
+        if let currentCityName = cityName, !currentCityName.isEmpty {
             data.append(currentCityName)
         }
         

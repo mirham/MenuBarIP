@@ -27,8 +27,9 @@ struct Constants{
     static let ipV6: Int = 6
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
-    static let ipApiCallTimeoutInSeconds: Double = 1.0
-    static let ipInfoApiCallTimeoutInSeconds: Double = 2.0
+    static let callTimeoutIpApiInSeconds: Double = 1.0
+    static let callTimeoutIpInfoApiInSeconds: Double = 2.0
+    static let callTimeoutSiteInSeconds: Double = callTimeoutIpInfoApiInSeconds
     static let physicalNetworkInterfacePrefix = "en"
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0

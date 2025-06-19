@@ -59,7 +59,7 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         do {
             let response = try await callGetApiAsync(
                 apiUrl: ipInfoUrl,
-                timeoutInterval: Constants.ipInfoApiCallTimeoutInSeconds)
+                timeoutInterval: Constants.callTimeoutIpInfoApiInSeconds)
             
             guard let jsonData = response.data(using: .utf8) else {
                 throw URLError(.cannotParseResponse)
