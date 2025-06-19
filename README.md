@@ -109,7 +109,7 @@ chmod +x /path/to/your/script.sh
 
 ## Troubleshooting
 ### Where I can find public IP API?
-You can find free IP APIs that return plain text and require no API key by searching online for "Free IP API plain text no API key." While many are available, not all may work in your country. Alternatively, you can create and deploy your own public IP API; it's not very complicated. The main condition is that it must return only the IP address as plain text, without any additional data.
+You can find free IP APIs that return plain text and require no API key by searching online for "Free IP API plain text no API key." While many are available, not all may work in your country. Alternatively, you can create and deploy your own public IP API, it's not very complicated. The main condition is that it must return only the IP address as plain text, without any additional data.
 ### Where I can find public IP info API?
 This is more complex, but you can also search online for "Free IP geolocation API no API key." While many free services exist, most require registration and an API key in the request. However, you are welcome to use them if you wish.
 
@@ -130,6 +130,8 @@ The mapping for the last service is as follows:
   -  Zip code -> leave blank
 ### The app dispalys "Obtaining IP..." for a long time
 This could happen if some public IP APIs are unreachable from your current connection location. The app skips these, but this process takes time. Furthermore, after updating the public IP, the app attempts to use them again. I recommend checking public IP APIs in your browser. If an API no more rapidly return an IP address as plain text, you should remove that API from the app. This will solve the problem. Additionally, you can find new free APIs online, if they work well, feel free to add them to the app.
+### The app dispalys "No active IP API"
+This means no IP API can be called at this moment, and the application cannot obtain your public IP address. For the app to function normally, at least one IP API must be available and working properly. You can check the status of each IP API under Settings -> IP APIs. The "No active IP API" message indicates a network problem, such as a connection or DNS issue. Try restarting the application to reactivate the IP APIs. If this doesn't resolve the problem, please find and add working IP APIs, as explained in the previous instructions. 
 ### Shell script doesn't run
 Make sure you have ```/bin/zsh``` on your computer, and your script is executable.
 You can make the script executable with the command:
