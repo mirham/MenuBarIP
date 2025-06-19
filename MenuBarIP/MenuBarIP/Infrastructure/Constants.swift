@@ -27,11 +27,13 @@ struct Constants{
     static let ipV6: Int = 6
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
+    static let ipApiCallTimeoutInSeconds: Double = 0.5
+    static let ipInfoApiCallTimeoutInSeconds: Double = 2.0
     static let physicalNetworkInterfacePrefix = "en"
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
-    static let defaultCheckConnectionHealthIntervalSeconds: Int = 10
+    static let defaultCheckConnectionHealthIntervalSeconds: Int = 5
     static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds * 1_000_000_000)
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
@@ -223,6 +225,7 @@ struct Constants{
     static let errorReadingLogFile: String = "Error reading log file: %1$@"
     static let errorScriptFailed: String = "Script failed with status: %1$@"
     static let errorScriptCannotBeExecuted: String = "Failed to execute script: %1$@"
+    static let errorTaskCancelled = "Task cancelled"
     
     // MARK: Shell commands
     static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"
