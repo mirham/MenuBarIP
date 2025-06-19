@@ -27,7 +27,9 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
     
     func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String> {
         do {
-            let response = try await callGetApiAsync(apiUrl: ipApiUrl)
+            let response = try await callGetApiAsync(
+                apiUrl: ipApiUrl,
+                timeoutInterval: Constants.ipApiCallTimeoutInSeconds)
             
             return OperationResult(result: response)
         }

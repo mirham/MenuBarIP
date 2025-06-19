@@ -18,7 +18,9 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
+    private var publicIpRefreshingTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
+
     
     override init() {
         super.init()
@@ -49,6 +51,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     func refreshIpAddressesAsync() async {
+        guard !Task.isCancelled else { return }
+        
         await updateStatusAsync(update: NetworkStateUpdateBuilder()
             .withIsObtainingIp(true)
             .build())
@@ -62,6 +66,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             .withPublicIp(publicIp)
             .withLocalIp(localIp)
             .build())
+        
+        guard !Task.isCancelled else { return }
         
         writeLog(publicIp: publicIp)
         executeScript(prevPublicIp: prevPublicIp, publicIp: publicIp)
@@ -80,7 +86,9 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 let updatedStatus = status
                 let updatedNetworkInterfaces = networkInterfaces
                 
-                Task {
+                self.publicIpRefreshingTask?.cancel()
+                
+                self.publicIpRefreshingTask = Task {
                     await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
                         .withStatus(updatedStatus)
                         .withActiveNetworkInterfaces(updatedNetworkInterfaces)
@@ -88,8 +96,13 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                         .build())
                     
                     if status == .on {
-                        try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                        await self.refreshIpAddressesAsync()
+                        do {
+                            try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
+                            await self.refreshIpAddressesAsync()
+                        }
+                        catch {
+                            self.publicIpRefreshingTask?.cancel()
+                        }
                     }
                 }
             }
@@ -103,7 +116,10 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: Constants.defaultCheckConnectionHealthIntervalNanoseconds)
                 
-                guard self.appState.network.status == .on else {
+                let shouldCheckConnection = self.appState.network.status == .on
+                    && !self.appState.network.isObtainingIp
+                
+                guard shouldCheckConnection else {
                     continue
                 }
                 
@@ -173,7 +189,11 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func fetchPublicIpAsync() async -> IpInfo? {
-        while appState.network.hasInternetAccess && appState.userData.ipApis.contains(where: { $0.isActive() }) {
+        let shouldFetchPublicIp = !Task.isCancelled
+            && appState.network.hasInternetAccess
+            && appState.userData.ipApis.contains(where: { $0.isActive() })
+        
+        while shouldFetchPublicIp {
             let result = await ipService.getPublicIpAsync(ipApiUrl: nil, withInfo: true)
             
             if result.success {
@@ -193,6 +213,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func updateStatusAsync(update: NetworkStateUpdate) async {
+        guard !Task.isCancelled else { return }
+        
         await MainActor.run {
             appState.applyNetworkUpdate(update)
             appState.objectWillChange.send()
