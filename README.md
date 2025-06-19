@@ -136,6 +136,11 @@ You can make the script executable with the command:
 ```
 chmod +x /path/to/your/script.sh
 ``` 
+Also, make sure your script works using Terminal. If it functions properly in Terminal, it should also work with the application.
+Here is the Terminal command to check the example script from above (use the correct path to your shell script file):
+```
+'/ScriptExample/update_ip.sh' 15.15.15.15
+``` 
 
 ## Improvement
 > [!TIP]
