@@ -29,7 +29,7 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
         do {
             let response = try await callGetApiAsync(
                 apiUrl: ipApiUrl,
-                timeoutInterval: Constants.ipApiCallTimeoutInSeconds)
+                timeoutInterval: Constants.callTimeoutIpApiInSeconds)
             
             return OperationResult(result: response)
         }
