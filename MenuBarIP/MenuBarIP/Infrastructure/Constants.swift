@@ -63,13 +63,14 @@ struct Constants{
     static let minLogFileLimit: Int = 10
     static let maxLogFileLimit: Int = 10000
     static let newLine: String = "\n"
+    static let newLineChar: Character = "\n"
     static let loggerDomainName = "Logger"
     static let levelDebug = "Debug"
     static let levelInfo = "Info"
     static let levelError = "Error"
     static let minIpApiCount: Int = 1
     static let envPathName = "PATH"
-    static let envPossiblePathes = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    static let envPossiblePathes = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/\(NSUserName())/.dotnet/tools"
     static let space = " "
     static let slash = "/"
     static let scriptContentPrefix = "#!"

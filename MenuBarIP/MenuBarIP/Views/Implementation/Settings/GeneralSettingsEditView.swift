@@ -129,6 +129,7 @@ struct GeneralSettingsEditView: View {
                     isPresented: $showFileImporter,
                     allowedContentTypes: [
                         .executable,
+                        .sourceCode,
                         .shellScript,
                         .pythonScript,
                         .appleScript,
