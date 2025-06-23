@@ -77,7 +77,7 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
 ## Scripting
 As an advanced user, you can run your own shell script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter.
 
-Here's an example script that displays a notification in macOS' Notification Center.
+Here's a sample script that displays a notification in the macOS Notification Center and saves the public IP address in a log file.
 
 ```shell
 #!/bin/bash
