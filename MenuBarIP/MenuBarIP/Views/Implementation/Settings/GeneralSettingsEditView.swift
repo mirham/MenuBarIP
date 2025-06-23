@@ -14,6 +14,7 @@ struct GeneralSettingsEditView: View {
     @Environment(\.controlActiveState) var controlActiveState
     
     @Injected(\.networkService) private var networkService
+    @Injected(\.executiveService) private var executiveService
     @Injected(\.launchAgentService) private var launchAgentService
     
     @State private var isKeepRunningOn = false
@@ -22,13 +23,19 @@ struct GeneralSettingsEditView: View {
     @State private var showOverRunScript = false
     @State private var scriptPath: String = .init()
     @State private var showFileImporter = false
-    @State private var newUrl: String = .init()
-    @State private var isNewUrlValid = false
-    @State private var isNewUrlInvalid: Bool = false
-    @State private var isUrlEditMode: Bool = false
+    @State private var newUrl1: String = .init()
+    @State private var isNewUrl1Valid = false
+    @State private var isNewUrl1EditMode: Bool = false
+    @State private var newUrl2: String = .init()
+    @State private var isNewUrl2Valid: Bool = false
+    @State private var isNewUrl2EditMode: Bool = false
+    @State private var newUrl3: String = .init()
+    @State private var isNewUrl3Valid: Bool = false
+    @State private var isNewUrl3EditMode: Bool = false
     @State private var logLimit: Int = 0
-    @State private var scriptErrorMessage: String = .init()
     @State private var showScriptError = false
+    @State private var alertType: AlertType? = nil
+    @State private var pendingAlert: AlertType? = nil
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -118,48 +125,69 @@ struct GeneralSettingsEditView: View {
                 Button(Constants.choose) {
                     showFileImporter = true
                 }
-                .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.shellScript]) { result in
-                    selectScriptDialogResultHandler(dialogResult: result)
+                .fileImporter(
+                    isPresented: $showFileImporter,
+                    allowedContentTypes: [
+                        .executable,
+                        .shellScript,
+                        .pythonScript,
+                        .appleScript,
+                        .javaScript,
+                        .perlScript,
+                        .phpScript,
+                        .rubyScript,
+                        .text
+                    ]) { result in
+                    handleSelectScriptDialogResult(dialogResult: result)
                 }
-                .fileDialogDefaultDirectory(.documentsDirectory)
-                .alert(isPresented: $showScriptError) {
-                    Alert(title: Text(Constants.dialogHeaderWrongScriptFile),
-                          message: Text(Constants.dialogBodyWrongScriptFile),
-                          dismissButton: .default(Text(Constants.ok),
-                                                  action: {
-                        scriptErrorMessage = String()
-                        showScriptError = false
-                    }))
-                }
+                .fileDialogDefaultDirectory(.applicationDirectory)
             }
             .isHidden(hidden: !appState.userData.runScript, remove: true)
             Spacer()
                 .frame(height: 15)
             VStack(alignment: .leading) {
                 Text("\(Constants.internetCheckUrl):")
-                HStack {
-                    TextField(Constants.hintNewVaildUrl, text: $newUrl)
-                        .onChange(of: newUrl) {
-                            isNewUrlValid = newUrl.isValidUrl()
-                        }
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .disabled(!isUrlEditMode)
-                    AsyncButton(systemImageName: isUrlEditMode ? Constants.iconSave : Constants.iconEdit, action: changeInternetCheckingUrlButtonClickHandlerAsync)
-                        .disabled(!isNewUrlValid)
-                        .alert(isPresented: $isNewUrlInvalid) {
-                            Alert(title: Text(Constants.dialogHeaderUrlIsNotValid),
-                                  message: Text(Constants.dialogBodyUrlIsNotValid),
-                                  dismissButton: .default(Text(Constants.ok)))
-                        }
-                        .font(.system(size: 20))
-                        .foregroundStyle(isUrlEditMode ? .green : .accentColor)
-                        .buttonStyle(BorderlessButtonStyle())
-                        .pointerOnHover()
-                        .bold()
-                }
+                urlInputView(
+                    url: $newUrl1,
+                    isEditMode: $isNewUrl1EditMode,
+                    isValid: $isNewUrl1Valid,
+                    userDataKeyPath: \.internetCheckUrl1
+                )
+                urlInputView(
+                    url: $newUrl2,
+                    isEditMode: $isNewUrl2EditMode,
+                    isValid: $isNewUrl2Valid,
+                    userDataKeyPath: \.internetCheckUrl2
+                )
+                urlInputView(
+                    url: $newUrl3,
+                    isEditMode: $isNewUrl3EditMode,
+                    isValid: $isNewUrl3Valid,
+                    userDataKeyPath: \.internetCheckUrl3
+                )
             }
             .padding()
             Spacer()
+        }
+        .alert(isPresented: Binding(
+            get: {
+                alertType != nil
+            },
+            set: { newValue in
+                if !newValue {
+                    alertType = pendingAlert
+                    pendingAlert = nil
+                }
+            }
+        )) {
+            Alert (
+                title: Text(alertType?.alertContent.title ?? String()),
+                message: Text(alertType?.alertContent.message ?? String()),
+                dismissButton: .default(Text(Constants.ok)) {
+                    alertType = pendingAlert
+                    pendingAlert = nil
+                }
+            )
         }
         .onAppear(perform: initValues)
     }
@@ -169,7 +197,9 @@ struct GeneralSettingsEditView: View {
     private func initValues() {
         self.logLimit = appState.userData.logFileLimit
         self.scriptPath = appState.userData.scriptPath
-        self.newUrl = appState.userData.internetCheckUrl
+        self.newUrl1 = appState.userData.internetCheckUrl1
+        self.newUrl2 = appState.userData.internetCheckUrl2
+        self.newUrl3 = appState.userData.internetCheckUrl3
     }
     
     private func renderHelpHint(hint: String) -> some View {
@@ -186,42 +216,144 @@ struct GeneralSettingsEditView: View {
         return result
     }
     
-    private func selectScriptDialogResultHandler(dialogResult: Result<URL, any Error>) {
-        switch dialogResult {
-            case .success(let url):
-                let scriptPath = url.path(percentEncoded: false)
-                appState.userData.scriptPath = scriptPath
-                self.scriptPath = scriptPath
-                showFileImporter = false
-            case .failure(let error):
-                scriptErrorMessage = error.localizedDescription
-                showScriptError = true
-                showFileImporter = false
+    @ViewBuilder
+    func urlInputView(
+        url: Binding<String>,
+        isEditMode: Binding<Bool>,
+        isValid: Binding<Bool>,
+        userDataKeyPath: WritableKeyPath<AppState.UserData, String>
+    ) -> some View {
+        HStack {
+            TextField(Constants.hintNewVaildUrl, text: url)
+                .onChange(of: url.wrappedValue) {
+                    isValid.wrappedValue = url.wrappedValue.isValidUrl()
+                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .disabled(!isEditMode.wrappedValue)
+            AsyncButton(
+                systemImageName: isEditMode.wrappedValue ? Constants.iconSave : Constants.iconEdit
+            ) {
+                await handleUrlChangeAsync(
+                    url: url.wrappedValue,
+                    isEditMode: isEditMode,
+                    isValid: isValid,
+                    alertType: .newUrlInvalid,
+                    userDataKeyPath: userDataKeyPath
+                )
+            }
+            .disabled(!isValid.wrappedValue)
+            .font(.system(size: 20))
+            .foregroundStyle(isEditMode.wrappedValue ? .green : .accentColor)
+            .buttonStyle(BorderlessButtonStyle())
+            .pointerOnHover()
+            .bold()
         }
     }
     
-    private func changeInternetCheckingUrlButtonClickHandlerAsync() async {
-        if(!isUrlEditMode) {
-            isUrlEditMode = true
+    private func handleUrlChangeAsync(
+        url: String,
+        isEditMode: Binding<Bool>,
+        isValid: Binding<Bool>,
+        alertType: AlertType,
+        userDataKeyPath: WritableKeyPath<AppState.UserData, String>
+    ) async {
+        if !isEditMode.wrappedValue {
+            isEditMode.wrappedValue = true
             return
         }
         
         do {
-            let reachabilityResult = try await networkService.isUrlReachableAsync(url: newUrl)
-            isNewUrlInvalid = !reachabilityResult
-        }
-        catch {
-            isNewUrlInvalid = true
+            let isReachable = try await networkService.isUrlReachableAsync(url: url)
+            
+            if !isReachable {
+                self.alertType = alertType
+                
+                return
+            }
+            isValid.wrappedValue = true
+        } catch {
+            self.alertType = alertType
+            
             return
         }
         
-        guard isNewUrlValid else { return }
+        guard isValid.wrappedValue else { return }
         
-        appState.userData.internetCheckUrl = newUrl
+        appState.userData[keyPath: userDataKeyPath] = url
+        isEditMode.wrappedValue = false
+    }
+    
+    private func handleSelectScriptDialogResult(dialogResult: Result<URL, any Error>) {
+        switch dialogResult {
+            case .success(let url):
+                let scriptPath = url.path(percentEncoded: false)
+                
+                do {
+                    let scriptUrl = URL(string: scriptPath)
+                    let pathExtension = scriptUrl?.pathExtension.lowercased()
+                    if pathExtension != Constants.fileExtApp {
+                        _ = try executiveService.determineInterpreterPath(fileUrl: URL(filePath: scriptPath))
+                    }
+                }
+                catch {
+                    showAlert(.interpreterError)
+                    
+                    return
+                }
+                
+                self.scriptPath = scriptPath
+                appState.userData.scriptPath = scriptPath
+                showFileImporter = false
+            case .failure(let error):
+                showAlert(.scriptError(errorText: error.localizedDescription))
+        }
+    }
+    
+    private func showAlert(_ type: AlertType) {
+        if alertType == nil {
+            alertType = type
+        } else {
+            pendingAlert = type
+        }
+    }
+    
+    // MARK: Inner types
+    
+    private enum AlertType: Identifiable {
+        case newUrlInvalid
+        case newUrlAlternativeInvalid
+        case scriptError(errorText: String)
+        case interpreterError
         
-        isNewUrlValid = true
-        isNewUrlInvalid = false
-        isUrlEditMode = false
+        var id: Int {
+            switch self {
+                case .newUrlInvalid: return 0
+                case .newUrlAlternativeInvalid: return 1
+                case .scriptError: return 2
+                case .interpreterError: return 3
+            }
+        }
+        
+        var alertContent: (title: String, message: String) {
+            switch self {
+                case .newUrlInvalid:
+                    return (
+                        title: Constants.dialogHeaderUrlIsNotValid,
+                        message: Constants.dialogBodyUrlIsNotValid)
+                case .newUrlAlternativeInvalid:
+                    return (
+                        title: Constants.dialogHeaderUrlIsNotValid,
+                        message: Constants.dialogBodyUrlIsNotValid)
+                case .scriptError(let errorText):
+                    return (
+                        title: Constants.dialogHeaderWrongScriptFile,
+                        message: String(format: Constants.dialogBodyWrongScriptFile, errorText))
+                case .interpreterError:
+                    return (
+                        title: Constants.dialogBodyNoInterpreter,
+                        message: Constants.dialogHeaderNoInterpreter)
+            }
+        }
     }
 }
 

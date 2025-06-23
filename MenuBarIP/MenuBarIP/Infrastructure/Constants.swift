@@ -13,7 +13,22 @@ struct Constants{
     static let defaultCountryCode = "US"
     static let defaultPublicIpAddress = "1.1.1.1"
     static let defaultLocalIpAddress = "192.168.1.2"
-    static let zshPath = "/bin/zsh"
+    static let fileExtApp = "app"
+    static let fileExtSh = "sh"
+    static let fileExtPy = "py"
+    static let fileExtRb = "rb"
+    static let fileExtPl = "pl"
+    static let fileExtPhp = "php"
+    static let fileExtScpt = "scpt"
+    static let fileExtJs = "js"
+    static let fileExtTxt = "txt"
+    static let pathZsh = "/bin/zsh"
+    static let pathPython = "/usr/bin/env python3"
+    static let pathRuby = "/usr/bin/env ruby"
+    static let pathPerl = "/usr/bin/env perl"
+    static let pathPhp = "/usr/bin/env php"
+    static let pathAppleScript = "/usr/bin/osascript"
+    static let pathJs = "/usr/bin/env node"
     static let headHttpMethod = "HEAD"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
@@ -28,8 +43,9 @@ struct Constants{
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
     static let callTimeoutIpApiInSeconds: Double = 1.0
+    static let callTimeoutIpApiTotalInSeconds: Double = 20.0
     static let callTimeoutIpInfoApiInSeconds: Double = 2.0
-    static let callTimeoutSiteInSeconds: Double = callTimeoutIpInfoApiInSeconds
+    static let callTimeoutSiteInSeconds: Double = 5.0
     static let physicalNetworkInterfacePrefix = "en"
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
@@ -38,7 +54,9 @@ struct Constants{
     static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds * 1_000_000_000)
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
-    static let defaultInternetCheckUrl = "https://google.com"
+    static let defaultInternetCheckUrl1 = "https://google.com"
+    static let defaultInternetCheckUrl2 = "https://duckduckgo.com"
+    static let defaultInternetCheckUrl3 = "https://www.yahoo.com"
     static let defaultIpInfoApiUrl = "http://ip-api.com/json/\(publicIpMask)"
     static let defaultLogFileLimit: Int = 1000
     static let minLogFileLimit: Int = 10
@@ -48,6 +66,7 @@ struct Constants{
     static let levelDebug = "Debug"
     static let levelInfo = "Info"
     static let levelError = "Error"
+    static let minIpApiCount: Int = 1
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -96,7 +115,9 @@ struct Constants{
     static let settingsKeyMenuBarUseThemeColor = "menubar-use-theme-color"
     static let settingsKeyMenuBarTextSize = "menubar-text-size"
     static let settingsKeyMenuBarSpacing = "menubar-spacing"
-    static let settingsKeyInternetCheckUrl = "internet-check-url"
+    static let settingsKeyInternetCheckUrl1 = "internet-check-url-1"
+    static let settingsKeyInternetCheckUrl2 = "internet-check-url-2"
+    static let settingsKeyInternetCheckUrl3 = "internet-check-url-3"
     static let settingsKeyIpInfoApiUrl = "ip-info-api-url"
     static let settingsKeyIpInfoMapping = "ip-info-api-matches"
     
@@ -111,7 +132,7 @@ struct Constants{
     static let ok = "OK"
     static let ip = "IP"
     static let apiUrl = "API address"
-    static let internetCheckUrl = "Check if internet access using address"
+    static let internetCheckUrl = "Check if internet access using addresses"
     static let ipInfoApiUrl = "IP info API address (use \(publicIpMask) for public IP address)"
     static let customText = "Custom text"
     static let light = "Light"
@@ -134,7 +155,7 @@ struct Constants{
     static let settingsElementMenubar = "Menu bar"
     static let settingsElementKeepAppRunning = "Keep application running"
     static let settingsElementEnableLogging = "Enable public IP address logging"
-    static let settingsElementRunScript = "Run shell script when public IP address changes"
+    static let settingsElementRunScript = "Run application or script when public IP address changes"
     static let settingsElementLogFileLimit = "Log file lines limit"
     static let settingsElementCustomization = "Customization"
     static let settingsElementShownItems = "Shown menu bar items"
@@ -153,12 +174,16 @@ struct Constants{
     static let dialogBodyApiIsNotValid = "API doesn't return a valid IP address as a plain text and cannot be added."
     static let dialogHeaderUrlIsNotValid = "Address for checking Internet access is not applicable"
     static let dialogBodyUrlIsNotValid = "The address for checking Internet access does not return correct data and cannot be used."
-    static let dialogHeaderWrongScriptFile = "Input shell script file is not found or wrong one"
-    static let dialogBodyWrongScriptFile = "Select a valid shell script file."
+    static let dialogHeaderWrongScriptFile = "Input application or shell script file is not found or wrong one"
+    static let dialogBodyWrongScriptFile = "Error: '%1$@'\nSelect a valid application or shell script file. "
     static let dialogHeaderIpInfoApiIsNotValid = "API for getting information of public IP address is not valid"
     static let dialogBodyIpInfoApiIsNotValid = "API doesn't return a JSON data and cannot be added."
     static let dialogHeaderIpInfoApiMappingIsNotValid = "API for getting information of public IP address doesn't return required data."
     static let dialogBodyIpInfoApiMappingIsNotValid = "The API does not return the country code, latitude, or longitude. Please double-check the API values and mapping for correctness."
+    static let dialogHeaderLastIpApiCannotBeRemoved = "Cannot remove the last remaining IP API"
+    static let dialogBodyLastIpApiCannotBeRemoved = "You're trying to remove the last IP API, which will make the application stop working. To keep the app functional, please add more valid IP APIs (as many as possible) before deleting this one."
+    static let dialogHeaderNoInterpreter = "No script interpreter found"
+    static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)"
     
     // MARK: Hints
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
@@ -169,13 +194,13 @@ struct Constants{
     static let hintNewCustomText = "A new custom text"
     static let hintNewVaildUrl = "A new valid URL"
     static let hintNewVaildApiUrl = "A new valid API URL"
-    static let hintNewVaildScriptPath = "A new valid shell script path"
+    static let hintNewVaildScriptPath = "A new valid application or shell script path"
     static let hintLightColor = "Light theme color"
     static let hintDarkColor = "Dark theme color"
     static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed"
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want"
     static let hintIps = "Add an IP address customization with desired custom text and custom color for light and dark theme\nRight click on the customization to display the context menu"
-    static let hintIpApis = "Add an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
+    static let hintIpApis = "Add new public IP API addresses here, the more the better\nAdd an API that returns the public IP address in plain text\nRight click on the API to display the context menu\nIf API marked green, it works properly and in use"
     static let hintIpInfoApi = "The IP info API is needed to get advanced information about a public IP address, such as its location. This allows you to display the country flag in the macOS menu bar, as well as show the address on a map. Typically, data from such APIs is in JSON format. Here, you can assign an API address and map the JSON data values to application values."
     static let hintNotSet = "Not set yet"
     static let hintJsonKey = "JSON data key"
@@ -226,7 +251,12 @@ struct Constants{
     static let errorReadingLogFile: String = "Error reading log file: %1$@"
     static let errorScriptFailed: String = "Script failed with status: %1$@"
     static let errorScriptCannotBeExecuted: String = "Failed to execute script: %1$@"
+    static let errorAppCannotBeRan: String = "Failed to run app: %1$@"
     static let errorTaskCancelled = "Task cancelled"
+    static let errorScriptNotExecutable = "Script not executable: %@"
+    static let errorScriptTypeNotSupported = "Script not supported: %@"
+    static let errorUnsupportedScriptType = "Unsupported script type: %@"
+    static let errorInterpreterNotFound = "Interpreter not found: %@"
     
     // MARK: Shell commands
     static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"

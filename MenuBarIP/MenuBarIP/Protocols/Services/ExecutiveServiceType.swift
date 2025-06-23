@@ -5,6 +5,9 @@
 //  Created by UglyGeorge on 16.06.2025.
 //
 
+import Foundation
+
 protocol ExecutiveServiceType {
-    func executeScript(publicIp: String)
+    func execute(publicIp: String)
+    func determineInterpreterPath (fileUrl: URL) throws -> URL
 }
