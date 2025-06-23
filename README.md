@@ -21,16 +21,16 @@ MirHam MenuBarIP is a macOS menu bar application designed to display your public
 I was surprised to find that all similar applications in the App Store are paid and offer limited customization. Creating my own was not a big challenge, so now I’m sharing it with everyone.
 
 ## Features
-- Highly customizable menu bar items
+- Highly customizable menu bar items and used APIs
 - Periodic internet connection checks
 - Continuous operation, even after computer restarts
 - Displays public IP on a map
 - Logs public IP changes
-- Runs shell scripts when the public IP changes
+- Option to run application or script (shell, Javascript, Perl, Python, Ruby, PHP, AppleScript) when the public IP changes
 - Option to use custom API to retrieve public IP address and geolocation information
 
 ## Compatibility
-This application is compatible with macOS 15.0 and above. All versions below 2.0 are compatible with macOS 14.0. Version [2.1](https://github.com/mirham/MenuBarIP/releases/download/2.1/MenuBarIP_macOS14.dmg) is the last compatible version for macOS 14.0 and will only be upgraded by request.
+This application is compatible with macOS 15.0 and above. All versions below 2.0 are compatible with macOS 14.0. Version [2.2](https://github.com/mirham/MenuBarIP/releases/download/2.2/MenuBarIP_macOS14.dmg) is the last compatible version for macOS 14.0 and will only be upgraded by request.
 
 ## Installation
 Download the DMG installer from the [releases](https://github.com/mirham/MenuBarIP/releases), mount it, and drag and drop the application to the Applications folder. That's it! However, you will need to allow launching applications from unidentified developers to start the application, as I don't have an Apple developer license.
@@ -131,7 +131,7 @@ The mapping for the last service is as follows:
 ### The app dispalys "Obtaining IP..." for a long time
 This could happen if some public IP APIs are unreachable from your current connection location. The app skips these, but this process takes time. Furthermore, after updating the public IP, the app attempts to use them again. I recommend checking public IP APIs in your browser. If an API no more rapidly return an IP address as plain text, you should remove that API from the app. This will solve the problem. Additionally, you can find new free APIs online, if they work well, feel free to add them to the app.
 ### The app dispalys "No active IP API"
-This means no IP API can be called at this moment, and the application cannot obtain your public IP address. For the app to function normally, at least one IP API must be available and working properly. You can check the status of each IP API under `Settings` -> `IP APIs`. The "No active IP API" message indicates a network problem, such as a connection or DNS issue. Try restarting the application to reactivate the IP APIs. If this doesn't resolve the problem, please find and add working IP APIs, as explained in the previous instructions. 
+This means no IP API can be called at this moment, and the application cannot obtain your public IP address. For the app to function normally, at least one IP API must be available and working properly. But it is better to have a lot of them, **at least 10**, to prevent this message from appearing. You can check the status of each IP API under `Settings` -> `IP APIs`. The "No active IP API" message indicates a network problem, such as a connection or DNS issue. Try restarting the application to reactivate the IP APIs. If this doesn't resolve the problem, please find and add working IP APIs, as explained in the previous instructions. 
 ### The app displays "No Internet" although there is an Internet connection
 The app determines your internet connection status by calling the address configured in `Settings` -> `General` -> `Check if internet access using address` (which is google.com by default). If this site doesn't respond, the app considers there to be no internet connection. Please use a reliable address with an uptime close to 100% and one that is available in your country.
 ### Shell script doesn't run
