@@ -15,6 +15,16 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
     private let fileManager = FileManager.default
     private let scriptingQueue = DispatchQueue(label: Constants.scriptingQueueLabel, qos: .background)
     
+    private let interpreterMap: [String: String] = [
+        Constants.fileExtSh: Constants.pathZsh,
+        Constants.fileExtPy: Constants.pathPython,
+        Constants.fileExtRb: Constants.pathRuby,
+        Constants.fileExtPl: Constants.pathPerl,
+        Constants.fileExtPhp: Constants.pathPhp,
+        Constants.fileExtScpt: Constants.pathAppleScript,
+        Constants.fileExtJs: Constants.pathJs
+    ]
+    
     func execute(publicIp: String) {
         scriptingQueue.async {
             let scriptPath = self.appState.userData.scriptPath
@@ -40,39 +50,33 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
     
     func determineInterpreterPath (fileUrl: URL) throws -> URL {
         let pathExtension = fileUrl.pathExtension.lowercased()
-        var interpreter: String
+        let interpreterCommand: String
         
-        switch pathExtension {
-            case Constants.fileExtSh:
-                interpreter = Constants.pathZsh
-            case Constants.fileExtPy:
-                interpreter = Constants.pathPython
-            case Constants.fileExtRb:
-                interpreter = Constants.pathRuby
-            case Constants.fileExtPl:
-                interpreter = Constants.pathPerl
-            case Constants.fileExtPhp:
-                interpreter = Constants.pathPhp
-            case Constants.fileExtScpt:
-                interpreter = Constants.pathAppleScript
-            case Constants.fileExtJs:
-                interpreter = Constants.pathJs
-            case Constants.fileExtTxt:
-                guard isScriptContent(url: fileUrl) else {
-                    throw String(format: Constants.errorScriptNotExecutable, fileUrl.path)
-                }
-                interpreter = Constants.pathZsh
-            default:
-                throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
+        if let mappedInterpreter = interpreterMap[pathExtension] {
+            interpreterCommand = mappedInterpreter
+        } else if pathExtension == Constants.fileExtTxt {
+            guard isScriptContent(url: fileUrl) else {
+                throw String(format: Constants.errorScriptNotExecutable, fileUrl.path)
+            }
+            interpreterCommand = Constants.pathZsh
+        } else {
+            throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
         }
         
-        let result = URL(fileURLWithPath: interpreter)
-        
-        guard fileManager.fileExists(atPath: result.path) else {
-            throw String(format: Constants.errorInterpreterNotFound, interpreter)
+        guard let finalInterpreterPath = try resolveInterpreterCommandToPath(command: interpreterCommand) else {
+            throw String(format: Constants.errorInterpreterNotFound, interpreterCommand)
         }
         
-        return result
+        let resultURL = URL(fileURLWithPath: finalInterpreterPath)
+        
+        guard fileManager.fileExists(atPath: resultURL.path) else {
+            throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath)
+        }
+        guard fileManager.isExecutableFile(atPath: resultURL.path) else {
+            throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath)
+        }
+        
+        return resultURL
     }
     
     // MARK: Private functions
@@ -81,7 +85,21 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else {
             return false
         }
-        return content.hasPrefix("#!")
+        return content.hasPrefix(Constants.scriptContentPrefix)
+    }
+    
+    func resolveInterpreterCommandToPath(command: String) throws -> String? {
+        if command.hasPrefix(Constants.pathEnv) {
+            let components = command.split(separator: Constants.space, maxSplits: 1).map(String.init)
+            guard components.count == 2, let actualCommand = components.last else {
+                throw String(format: Constants.errorFailedToLocateInterpreter, command)
+            }
+            return try findExecutablePath(command: actualCommand)
+        } else if command.hasPrefix(Constants.slash) {
+            return command
+        } else {
+            return try findExecutablePath(command: command)
+        }
     }
     
     private func runApp(at url: URL, publicIp: String) throws {
@@ -98,7 +116,10 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
     }
     
     private func runScript(at url: URL, publicIp: String) throws {
+        var environment = ProcessInfo.processInfo.environment
+        environment[Constants.envPathName] = Constants.envPossiblePathes
         let process = Process()
+        process.environment = environment
         let interpreterUrl = try determineInterpreterPath(fileUrl: url)
         
         process.executableURL = interpreterUrl
@@ -111,4 +132,28 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
             self.loggingService.error(String(format: Constants.errorScriptFailed, process.terminationStatus), LogDestination.console)
         }
     }
+    
+    private func findExecutablePath(command: String) throws -> String? {
+        var environment = ProcessInfo.processInfo.environment
+        environment[Constants.envPathName] = Constants.envPossiblePathes
+        let process = Process()
+        process.environment = environment
+        process.launchPath = Constants.pathZsh
+        process.arguments = ["-l", "-c", "command -v \(command)"]
+        
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = Pipe()
+        
+        try process.run()
+        process.waitUntilExit()
+        
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !output.isEmpty {
+            return output
+        }
+        
+        return nil
+    }
+
 }

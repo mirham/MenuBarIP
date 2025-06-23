@@ -23,12 +23,13 @@ struct Constants{
     static let fileExtJs = "js"
     static let fileExtTxt = "txt"
     static let pathZsh = "/bin/zsh"
-    static let pathPython = "/usr/bin/env python3"
-    static let pathRuby = "/usr/bin/env ruby"
-    static let pathPerl = "/usr/bin/env perl"
-    static let pathPhp = "/usr/bin/env php"
+    static let pathEnv = "/usr/bin/env "
+    static let pathPython = "\(pathEnv) python3"
+    static let pathRuby = "\(pathEnv) ruby"
+    static let pathPerl = "\(pathEnv) perl"
+    static let pathPhp = "\(pathEnv) php"
     static let pathAppleScript = "/usr/bin/osascript"
-    static let pathJs = "/usr/bin/env node"
+    static let pathJs = "\(pathEnv) node"
     static let headHttpMethod = "HEAD"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
@@ -67,6 +68,11 @@ struct Constants{
     static let levelInfo = "Info"
     static let levelError = "Error"
     static let minIpApiCount: Int = 1
+    static let envPathName = "PATH"
+    static let envPossiblePathes = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    static let space = " "
+    static let slash = "/"
+    static let scriptContentPrefix = "#!"
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -257,6 +263,7 @@ struct Constants{
     static let errorScriptTypeNotSupported = "Script not supported: %@"
     static let errorUnsupportedScriptType = "Unsupported script type: %@"
     static let errorInterpreterNotFound = "Interpreter not found: %@"
+    static let errorFailedToLocateInterpreter = "Failed to locate interpreter for '%@'"
     
     // MARK: Shell commands
     static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"
