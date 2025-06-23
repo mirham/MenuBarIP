@@ -20,7 +20,7 @@ extension ShellAccessible {
         task.standardOutput = pipe
         task.standardError = pipe
         task.arguments = ["-c", command]
-        task.executableURL = URL(fileURLWithPath: Constants.zshPath)
+        task.executableURL = URL(fileURLWithPath: Constants.pathZsh)
         task.standardInput = nil
         
         try task.run()

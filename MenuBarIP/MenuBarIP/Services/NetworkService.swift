@@ -134,41 +134,50 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: Constants.defaultCheckConnectionHealthIntervalNanoseconds)
                 
-                let shouldCheckConnection = self.appState.network.status == .on
-                    && !self.appState.network.isObtainingIp
+                guard shouldCheckConnection() else { continue }
                 
-                guard shouldCheckConnection else {
-                    continue
-                }
-                
-                let builder = NetworkStateUpdateBuilder()
-                
-                do {
-                    let hasInternetAccess = try await isUrlReachableAsync(url: self.appState.userData.internetCheckUrl)
-                    
-                    builder.withHasInternetAccess(hasInternetAccess)
-                    
-                    let reqiredIpRefresh = hasInternetAccess
-                        && appState.userData.hasActiveIpApi()
-                        && appState.network.publicIp == nil
-                    
-                    if reqiredIpRefresh {
-                        await refreshIpAddressesAsync()
-                    }
-                    
-                    if !hasInternetAccess {
-                        builder.withPublicIp(nil)
-                    }
-
-                    await updateStatusAsync(update: builder.build())
-                } catch {
-                    await updateStatusAsync(update: builder
-                        .withHasInternetAccess(false)
-                        .withPublicIp(nil)
-                        .build())
-                }
+                await performConnectionHealthCheckAsync()
             }
         }
+    }
+    
+    private func shouldCheckConnection() -> Bool {
+        appState.network.status == .on && !appState.network.isObtainingIp
+    }
+    
+    private func performConnectionHealthCheckAsync() async {
+        let builder = NetworkStateUpdateBuilder()
+        
+        do {
+            let hasInternetAccess = try await checkIfInternetConnectionAsync()
+            builder.withHasInternetAccess(hasInternetAccess)
+            
+            if hasInternetAccess {
+                await handleIpRefreshIfNeededAsync()
+                await handleIpInfoRefreshIfNeededAsync()
+            } else {
+                builder.withPublicIp(nil)
+            }
+            
+            await updateStatusAsync(update: builder.build())
+        } catch {
+            await updateStatusAsync(update: builder
+                .withHasInternetAccess(false)
+                .withPublicIp(nil)
+                .build())
+        }
+    }
+    
+    private func handleIpRefreshIfNeededAsync() async {
+        let requiresIpRefresh = appState.userData.hasActiveIpApi() && appState.network.publicIp == nil
+        if requiresIpRefresh {
+            await refreshIpAddressesAsync()
+        }
+    }
+    
+    private func handleIpInfoRefreshIfNeededAsync() async {
+        guard let publicIp = appState.network.publicIp, !publicIp.hasLocation() else { return }
+        await refreshPublicIpInfoAsync()
     }
     
     private func determineNetworkStatusType(
@@ -222,6 +231,39 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         return nil
     }
     
+    func refreshPublicIpInfoAsync() async {
+        guard !Task.isCancelled else { return }
+        
+        guard let publicIpAddress = appState.network.publicIp?.ipAddress
+        else { return }
+        
+        let publicIpInfoResult = await ipService.getPublicIpInfoAsync(
+            publicIp: publicIpAddress,
+            keyMapping: appState.userData.ipInfoApiKeyMapping)
+        
+        guard publicIpInfoResult.success else { return }
+        
+        await updateStatusAsync(update: NetworkStateUpdateBuilder()
+            .withPublicIp(publicIpInfoResult.result)
+            .build())
+    }
+    
+    private func checkIfInternetConnectionAsync() async throws -> Bool {
+        try await withThrowingTaskGroup(of: Bool.self, returning: Bool.self) { group in
+            group.addTask {
+                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl1)
+            }
+            group.addTask {
+                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl2)
+            }
+            group.addTask {
+                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl3)
+            }
+            
+            return try await group.first(where: { $0 }) ?? false
+        }
+    }
+    
     @objc private func systemDidWake() {
         if (appState.network.publicIp == nil) {
             Task {
@@ -252,6 +294,6 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         guard publicIp != nil && prevPublicIp != nil
               && publicIp?.ipAddress != prevPublicIp?.ipAddress else { return }
         
-        executiveService.executeScript(publicIp: ip)
+        executiveService.execute(publicIp: ip)
     }
 }
