@@ -94,6 +94,7 @@ extension AppState {
         static func == (lhs: Network, rhs: Network) -> Bool {
             let result = lhs.status == rhs.status
             && lhs.publicIp == rhs.publicIp
+            && lhs.publicIp?.hasLocation() == rhs.publicIp?.hasLocation()
             && lhs.isObtainingIp == rhs.isObtainingIp
             && lhs.hasInternetAccess == rhs.hasInternetAccess
             && lhs.activeNetworkInterfaces == rhs.activeNetworkInterfaces
@@ -123,8 +124,14 @@ extension AppState {
         var scriptPath: String = String() {
             didSet { writeSetting(newValue: scriptPath, key: Constants.settingsKeyScriptPath) }
         }
-        var internetCheckUrl: String = Constants.defaultInternetCheckUrl {
-            didSet { writeSetting(newValue: internetCheckUrl, key: Constants.settingsKeyInternetCheckUrl) }
+        var internetCheckUrl1: String = Constants.defaultInternetCheckUrl1 {
+            didSet { writeSetting(newValue: internetCheckUrl1, key: Constants.settingsKeyInternetCheckUrl1) }
+        }
+        var internetCheckUrl2: String = Constants.defaultInternetCheckUrl2 {
+            didSet { writeSetting(newValue: internetCheckUrl2, key: Constants.settingsKeyInternetCheckUrl2) }
+        }
+        var internetCheckUrl3: String = Constants.defaultInternetCheckUrl3 {
+            didSet { writeSetting(newValue: internetCheckUrl3, key: Constants.settingsKeyInternetCheckUrl3) }
         }
         var menuBarShownItems = Constants.defaultShownMenuBarItems {
             didSet { writeSettingsArray(newValues: menuBarShownItems, key: Constants.settingsKeyShownMenuBarItems) }
@@ -165,7 +172,9 @@ extension AppState {
             logFileLimit = readSetting(key: Constants.settingsKeyLogFileLimit) ?? Constants.defaultLogFileLimit
             runScript = readSetting(key: Constants.settingsKeyRunScript) ?? false
             scriptPath = readSetting(key: Constants.settingsKeyScriptPath) ?? String()
-            internetCheckUrl = readSetting(key: Constants.settingsKeyInternetCheckUrl) ?? Constants.defaultInternetCheckUrl
+            internetCheckUrl1 = readSetting(key: Constants.settingsKeyInternetCheckUrl1) ?? Constants.defaultInternetCheckUrl1
+            internetCheckUrl2 = readSetting(key: Constants.settingsKeyInternetCheckUrl2) ?? Constants.defaultInternetCheckUrl2
+            internetCheckUrl3 = readSetting(key: Constants.settingsKeyInternetCheckUrl3) ?? Constants.defaultInternetCheckUrl3
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor) ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize) ?? Constants.defaultMenuBarTextSize
             menuBarSpacing = readSetting(key: Constants.settingsKeyMenuBarSpacing) ?? Constants.defaultMenuBarSpacing
