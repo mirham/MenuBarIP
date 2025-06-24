@@ -36,9 +36,9 @@ struct MenuBarMenuView : IpAddressContainerView {
                 Button(Constants.menuItemCopy) {
                     AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
                 }
-                Button(Constants.menuItemShowOnMap, action: publicIpLocationButtonClickHandler)
+                Button(Constants.menuItemShowOnMap, action: handlePublicIpLocationButtonClick)
                     .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
-                Button(Constants.menuItemShowLog, action: logButtonClickHandler)
+                Button(Constants.menuItemShowLog, action: handleLogButtonClick)
                     .isHidden(hidden: !appState.userData.enableLogging, remove: true)
             }
             .isHidden(hidden: appState.network.publicIp == nil, remove: true)
@@ -55,29 +55,29 @@ struct MenuBarMenuView : IpAddressContainerView {
             Divider()
             AsyncButton(Constants.menuItemRefresh, action: networkService.refreshIpAddressesAsync)
             Divider()
-            Button(Constants.menuItemSettings, action: settingsButtonClickHandler)
+            Button(Constants.menuItemSettings, action: handleSettingsButtonClick)
             Divider()
-            Button(Constants.menuItemAbout, action: aboutButtonClickHandler)
+            Button(Constants.menuItemAbout, action: handleAboutButtonClick)
             Divider()
-            Button(Constants.menuItemQuit, action: quitButtonClickHandler)
+            Button(Constants.menuItemQuit, action: handleQuitButtonClick)
         }
     }
     
     // MARK: Private functions
     
-    private func settingsButtonClickHandler() {
+    private func handleSettingsButtonClick() {
         openWindowWithId(id: Constants.windowIdSettings)
     }
     
-    private func publicIpLocationButtonClickHandler() {
+    private func handlePublicIpLocationButtonClick() {
         openWindowWithId(id: Constants.windowIdPublicIpLocation)
     }
     
-    private func logButtonClickHandler() {
+    private func handleLogButtonClick() {
         openWindowWithId(id: Constants.windowIdLog)
     }
     
-    private func aboutButtonClickHandler() {
+    private func handleAboutButtonClick() {
         openWindowWithId(id: Constants.windowIdInfo)
     }
     
@@ -89,7 +89,7 @@ struct MenuBarMenuView : IpAddressContainerView {
         }
     }
     
-    private func quitButtonClickHandler() {
+    private func handleQuitButtonClick() {
         launchAgentService.apply()
         NSApplication.shared.terminate(nil)
     }

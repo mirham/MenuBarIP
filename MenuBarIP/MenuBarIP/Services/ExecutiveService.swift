@@ -12,6 +12,7 @@ import AppKit
 class ExecutiveService: ServiceBase, ExecutiveServiceType {
     @Injected(\.loggingService) private var loggingService
     
+    private let scriptPrefixLength = 2
     private let fileManager = FileManager.default
     private let scriptingQueue = DispatchQueue(label: Constants.scriptingQueueLabel, qos: .background)
     
@@ -22,7 +23,8 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         Constants.fileExtPl: Constants.pathPerl,
         Constants.fileExtPhp: Constants.pathPhp,
         Constants.fileExtScpt: Constants.pathAppleScript,
-        Constants.fileExtJs: Constants.pathJs
+        Constants.fileExtJs: Constants.pathJs,
+        Constants.fileExtDotNetScript: Constants.pathDotNetScript
     ]
     
     func execute(publicIp: String) {
@@ -52,14 +54,19 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         let pathExtension = fileUrl.pathExtension.lowercased()
         let interpreterCommand: String
         
-        if let mappedInterpreter = interpreterMap[pathExtension] {
+        if let shebangInterpreterCommand = try parseShebang(from: fileUrl){
+            interpreterCommand = shebangInterpreterCommand
+        }
+        else if let mappedInterpreter = interpreterMap[pathExtension] {
             interpreterCommand = mappedInterpreter
-        } else if pathExtension == Constants.fileExtTxt {
+        }
+        else if pathExtension == Constants.fileExtTxt {
             guard isScriptContent(url: fileUrl) else {
                 throw String(format: Constants.errorScriptNotExecutable, fileUrl.path)
             }
             interpreterCommand = Constants.pathZsh
-        } else {
+        }
+        else {
             throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
         }
         
@@ -88,10 +95,35 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         return content.hasPrefix(Constants.scriptContentPrefix)
     }
     
+    private func parseShebang(from fileUrl: URL) throws -> String? {
+        guard fileManager.isReadableFile(atPath: fileUrl.path) else {
+            return nil
+        }
+        
+        let content = try String(contentsOf: fileUrl, encoding: .utf8)
+        let firstLine: String = content.prefix(
+            while: { $0 != Constants.newLineChar })
+            .trimmingCharacters(in: .whitespaces)
+        
+        guard firstLine.hasPrefix(Constants.scriptContentPrefix) else {
+            return nil
+        }
+        
+        let result = firstLine
+            .dropFirst(scriptPrefixLength)
+            .trimmingCharacters(in: .whitespaces)
+        
+        guard !result.isEmpty else {
+            return nil
+        }
+        
+        return result
+    }
+    
     func resolveInterpreterCommandToPath(command: String) throws -> String? {
         if command.hasPrefix(Constants.pathEnv) {
             let components = command.split(separator: Constants.space, maxSplits: 1).map(String.init)
-            guard components.count == 2, let actualCommand = components.last else {
+            guard components.count == scriptPrefixLength, let actualCommand = components.last else {
                 throw String(format: Constants.errorFailedToLocateInterpreter, command)
             }
             return try findExecutablePath(command: actualCommand)

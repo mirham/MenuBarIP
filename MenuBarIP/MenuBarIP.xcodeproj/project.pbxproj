@@ -61,6 +61,7 @@
 		358DDA222E00A331002DF782 /* ExecutiveServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA212E00A31F002DF782 /* ExecutiveServiceType.swift */; };
 		358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA232E00A3A6002DF782 /* ExecutiveService.swift */; };
 		358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA252E00A6D6002DF782 /* LogDestination.swift */; };
+		3594DE132E09F18B0040EA43 /* UTTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */; };
 		35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF42C736B040036AB41 /* NoInsetHostingView.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
@@ -130,6 +131,7 @@
 		358DDA212E00A31F002DF782 /* ExecutiveServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveServiceType.swift; sourceTree = "<group>"; };
 		358DDA232E00A3A6002DF782 /* ExecutiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveService.swift; sourceTree = "<group>"; };
 		358DDA252E00A6D6002DF782 /* LogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
+		3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTTypeExtensions.swift; sourceTree = "<group>"; };
 		35980DF42C736B040036AB41 /* NoInsetHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoInsetHostingView.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
@@ -410,6 +412,7 @@
 				3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */,
 				3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */,
 				35BF30A22E01A1B4003D9CE5 /* DataExtensions.swift */,
+				3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */,
 				3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */,
 			);
 			path = Extensions;
@@ -561,6 +564,7 @@
 				354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */,
 				3540327B2C5E6CE7002624D2 /* NWInterfaceExtension.swift in Sources */,
 				3575CCA62DD766A400102D4E /* IpApiServiceType.swift in Sources */,
+				3594DE132E09F18B0040EA43 /* UTTypeExtensions.swift in Sources */,
 				354032622C5E6730002624D2 /* Settable.swift in Sources */,
 				354032A32C5E7E81002624D2 /* IpAddressContainerView.swift in Sources */,
 				3540328A2C5E7860002624D2 /* AppHelper.swift in Sources */,
@@ -723,7 +727,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -755,7 +759,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
