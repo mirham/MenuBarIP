@@ -138,6 +138,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     
     private func upsertIpCustomizationAsync() async {
         let ipInfoResult = await ipService.getPublicIpInfoAsync(
+            apiUrl: appState.userData.ipInfoApiUrl,
             publicIp: newIp,
             keyMapping: appState.userData.ipInfoApiKeyMapping)
         

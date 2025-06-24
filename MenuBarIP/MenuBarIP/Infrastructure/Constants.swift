@@ -99,6 +99,7 @@ struct Constants{
     static let iconIpPoint = "ippoint"
     static let iconEdit = "pencil.line"
     static let iconSave = "chevron.down"
+    static let iconArrowBackward = "arrow.backward"
     
     // MARK: Symbols
     static let bullet = "•"
