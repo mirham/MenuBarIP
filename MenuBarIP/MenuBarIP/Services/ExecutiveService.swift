@@ -23,7 +23,8 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         Constants.fileExtPl: Constants.pathPerl,
         Constants.fileExtPhp: Constants.pathPhp,
         Constants.fileExtScpt: Constants.pathAppleScript,
-        Constants.fileExtJs: Constants.pathJs
+        Constants.fileExtJs: Constants.pathJs,
+        Constants.fileExtDotNetScript: Constants.pathDotNetScript
     ]
     
     func execute(publicIp: String) {

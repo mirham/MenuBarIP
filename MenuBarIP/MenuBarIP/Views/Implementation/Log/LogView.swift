@@ -55,9 +55,9 @@ struct LogView: View {
                 }
             }
             HStack {
-                Button(Constants.showLogInFolder, action: showLogInFolderClickHandler)
+                Button(Constants.showLogInFolder, action: handleShowLogInFolderClick)
                     .asLogButton()
-                Button(Constants.clearLog, action: clearLogClickHandler)
+                Button(Constants.clearLog, action: handleClearLogClick)
                     .asLogButton()
             }
             .padding(.bottom, 5)
@@ -74,11 +74,11 @@ struct LogView: View {
     
     // MARK: Private functions
     
-    private func clearLogClickHandler() {
+    private func handleClearLogClick() {
         loggingService.clearLogFile()
     }
     
-    private func showLogInFolderClickHandler() {
+    private func handleShowLogInFolderClick() {
         if let folderURL = loggingService.getLogFileUrl()?.deletingLastPathComponent() {
             NSWorkspace.shared.open(folderURL)
         }

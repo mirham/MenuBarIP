@@ -49,7 +49,7 @@ struct IpApisEditView : View {
                                 Button(action: { String.copyToClipboard(input: api.url) } ) {
                                     Text(Constants.copy)
                                 }
-                                Button(action: { deleteIpApiClickHandler(ipApiUrl: api.url) }) {
+                                Button(action: { handleDeleteIpApiClick(ipApiUrl: api.url) }) {
                                     Text(Constants.delete)
                                 }
                             }
@@ -71,7 +71,7 @@ struct IpApisEditView : View {
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                             }
                         }
-                        AsyncButton(Constants.add, action: addIpApiClickHandlerAsync)
+                        AsyncButton(Constants.add, action: handleAddIpApiClickAsync)
                             .disabled(!isNewUrlValid)
                             .pointerOnHover()
                             .bold()
@@ -100,7 +100,7 @@ struct IpApisEditView : View {
     
     // MARK: Private functions
     
-    private func addIpApiClickHandlerAsync() async {
+    private func handleAddIpApiClickAsync() async {
         let ipAddressResult = await ipService.getPublicIpAsync(ipApiUrl: newUrl, withInfo: true)
         
         guard ipAddressResult.success else {
@@ -121,7 +121,7 @@ struct IpApisEditView : View {
         isNewUrlValid = false
     }
     
-    private func deleteIpApiClickHandler(ipApiUrl: String) {
+    private func handleDeleteIpApiClick(ipApiUrl: String) {
         guard appState.userData.ipApis.count > Constants.minIpApiCount
         else {
             showAlert(.lastIpApi)

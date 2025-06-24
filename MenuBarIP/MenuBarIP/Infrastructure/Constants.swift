@@ -22,6 +22,7 @@ struct Constants{
     static let fileExtScpt = "scpt"
     static let fileExtJs = "js"
     static let fileExtTxt = "txt"
+    static let fileExtDotNetScript = "csx"
     static let pathZsh = "/bin/zsh"
     static let pathEnv = "/usr/bin/env "
     static let pathPython = "\(pathEnv) python3"
@@ -30,6 +31,7 @@ struct Constants{
     static let pathPhp = "\(pathEnv) php"
     static let pathAppleScript = "/usr/bin/osascript"
     static let pathJs = "\(pathEnv) node"
+    static let pathDotNetScript = "\(pathEnv) dotnet-script"
     static let headHttpMethod = "HEAD"
     static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
     static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
@@ -190,7 +192,7 @@ struct Constants{
     static let dialogHeaderLastIpApiCannotBeRemoved = "Cannot remove the last remaining IP API"
     static let dialogBodyLastIpApiCannotBeRemoved = "You're trying to remove the last IP API, which will make the application stop working. To keep the app functional, please add more valid IP APIs (as many as possible) before deleting this one."
     static let dialogHeaderNoInterpreter = "No script interpreter found"
-    static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)"
+    static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)\n\(pathDotNetScript)"
     
     // MARK: Hints
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
