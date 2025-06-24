@@ -54,11 +54,14 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             let task = URLSession.shared.dataTask(with: request) { _, response, error in
                 if let error = error {
                     continuation.resume(throwing: error)
+                    
                     return
                 }
                 
-                guard let httpResponse = response as? HTTPURLResponse else {
+                guard let httpResponse = response as? HTTPURLResponse
+                else {
                     continuation.resume(throwing: URLError(.badServerResponse))
+                    
                     return
                 }
                 
@@ -238,6 +241,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         else { return }
         
         let publicIpInfoResult = await ipService.getPublicIpInfoAsync(
+            apiUrl: appState.userData.ipInfoApiUrl,
             publicIp: publicIpAddress,
             keyMapping: appState.userData.ipInfoApiKeyMapping)
         

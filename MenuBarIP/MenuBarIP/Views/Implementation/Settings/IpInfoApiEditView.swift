@@ -17,8 +17,8 @@ struct IpInfoApiEditView: View {
     
     @State private var newUrl: String = .init()
     @State private var keyMapping: [String: String] = .init()
-    @State private var isNewUrlInvalid = false
-    @State private var isKeyMappingInvalid = false
+    @State private var alertType: AlertType? = nil
+    @State private var pendingAlert: AlertType? = nil
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -49,7 +49,6 @@ struct IpInfoApiEditView: View {
                                 Text(Constants.readableIpInfoApiKeyMapping[key] ?? String())
                                     .frame(width: 100, alignment: .leading)
                                     .foregroundColor(.primary)
-                                
                                 TextField(Constants.hintJsonKey, text: Binding(
                                     get: { keyMapping[key] ?? String() },
                                     set: { keyMapping[key] = $0 }
@@ -71,15 +70,25 @@ struct IpInfoApiEditView: View {
                     .bold()
             }
         }
-        .alert(isPresented: $isNewUrlInvalid) {
-            Alert(title: Text(Constants.dialogHeaderIpInfoApiIsNotValid),
-                  message: Text(Constants.dialogBodyIpInfoApiIsNotValid),
-                  dismissButton: .default(Text(Constants.ok)))
-        }
-        .alert(isPresented: $isKeyMappingInvalid) {
-            Alert(title: Text(Constants.dialogHeaderIpInfoApiMappingIsNotValid),
-                  message: Text(Constants.dialogBodyIpInfoApiMappingIsNotValid),
-                  dismissButton: .default(Text(Constants.ok)))
+        .alert(isPresented: Binding(
+            get: {
+                alertType != nil
+            },
+            set: { newValue in
+                if !newValue {
+                    alertType = pendingAlert
+                    pendingAlert = nil
+                }
+            }
+        )) {
+            Alert (
+                title: Text(alertType?.alertContent.title ?? String()),
+                message: Text(alertType?.alertContent.message ?? String()),
+                dismissButton: .default(Text(Constants.ok)) {
+                    alertType = pendingAlert
+                    pendingAlert = nil
+                }
+            )
         }
         .padding(5)
         .onAppear(perform: initValues)
@@ -104,12 +113,8 @@ struct IpInfoApiEditView: View {
             let ipInfo = try await validateAndTestSettings()
             
             await updateAppState(with: ipInfo)
-            
-            await MainActor.run {
-                isNewUrlInvalid = false
-                isKeyMappingInvalid = false
-            }
-        } catch {
+        }
+        catch {
             await handleError(error)
         }
     }
@@ -127,7 +132,11 @@ struct IpInfoApiEditView: View {
         }
         
         // Test API response
-        let testResponse = await ipService.getPublicIpInfoAsync(publicIp: publicIp, keyMapping: keyMapping)
+        let testResponse = await ipService.getPublicIpInfoAsync(
+            apiUrl: newUrl,
+            publicIp: publicIp,
+            keyMapping: keyMapping)
+        
         guard testResponse.success, let ipInfo = testResponse.result else {
             throw IpInfoApiSettingsError.invalidApiResponse
         }
@@ -153,14 +162,11 @@ struct IpInfoApiEditView: View {
         await MainActor.run {
             switch error {
                 case IpInfoApiSettingsError.invalidUrl, IpInfoApiSettingsError.urlUnreachable:
-                    isNewUrlInvalid = true
+                    showAlert(.newUrlInvalid)
                 case IpInfoApiSettingsError.missingLocationData:
-                    isKeyMappingInvalid = true
-                case IpInfoApiSettingsError.invalidApiResponse:
-                    isNewUrlInvalid = true
-                    isKeyMappingInvalid = true
+                    showAlert(.keyMappingInvalid)
                 default:
-                    isNewUrlInvalid = true
+                    showAlert(.newUrlInvalid)
             }
         }
     }
@@ -170,6 +176,14 @@ struct IpInfoApiEditView: View {
         self.keyMapping = keyMapping
     }
     
+    private func showAlert(_ type: AlertType) {
+        if alertType == nil {
+            alertType = type
+        } else {
+            pendingAlert = type
+        }
+    }
+    
     // MARK: Inner types
     
     private enum IpInfoApiSettingsError: Error {
@@ -177,6 +191,31 @@ struct IpInfoApiEditView: View {
         case urlUnreachable
         case invalidApiResponse
         case missingLocationData
+    }
+    
+    private enum AlertType: Identifiable {
+        case newUrlInvalid
+        case keyMappingInvalid
+        
+        var id: Int {
+            switch self {
+                case .newUrlInvalid: return 0
+                case .keyMappingInvalid: return 1
+            }
+        }
+        
+        var alertContent: (title: String, message: String) {
+            switch self {
+                case .newUrlInvalid:
+                    return (
+                        title: Constants.dialogHeaderIpInfoApiIsNotValid,
+                        message: Constants.dialogBodyIpInfoApiIsNotValid)
+                case .keyMappingInvalid:
+                    return (
+                        title: Constants.dialogHeaderIpInfoApiMappingIsNotValid,
+                        message: Constants.dialogBodyIpInfoApiMappingIsNotValid)
+            }
+        }
     }
 }
 

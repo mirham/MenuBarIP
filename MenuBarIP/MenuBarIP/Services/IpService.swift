@@ -28,6 +28,7 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         
         if withInfo {
             return await getPublicIpInfoAsync(
+                apiUrl: appState.userData.ipInfoApiUrl,
                 publicIp: ipAddress,
                 keyMapping: appState.userData.ipInfoApiKeyMapping
             )
@@ -36,16 +37,17 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         return OperationResult(result: IpInfo(ipAddress: ipAddress))
     }
     
-    func getPublicIpInfoAsync(publicIp: String, keyMapping: [String:String]) async -> OperationResult<IpInfo> {
+    func getPublicIpInfoAsync(
+        apiUrl: String,
+        publicIp: String,
+        keyMapping: [String:String]) async -> OperationResult<IpInfo> {
         guard !Task.isCancelled else {
             return OperationResult(error: Constants.errorTaskCancelled)
         }
         
-        guard !keyMapping.isEmpty,
-              let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
-                publicIp: publicIp,
-                ipInfoApiUrl: appState.userData.ipInfoApiUrl
-              ) else {
+        guard !keyMapping.isEmpty, let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
+            publicIp: publicIp, ipInfoApiUrl: apiUrl)
+        else {
             return OperationResult(result: IpInfo(ipAddress: publicIp))
         }
         
