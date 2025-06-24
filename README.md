@@ -26,7 +26,8 @@ I was surprised to find that all similar applications in the App Store are paid 
 - Continuous operation, even after computer restarts
 - Displays public IP on a map
 - Logs public IP changes
-- Option to run application or script (shell, Javascript, Perl, Python, Ruby, PHP, AppleScript) when the public IP changes
+- Option to run application or script (shell, Javascript, Perl, Python, Ruby, PHP, AppleScript, CSharp) when the public IP changes
+- Ability to use shebangs for unsupported script types
 - Option to use custom API to retrieve public IP address and geolocation information
 
 ## Compatibility
