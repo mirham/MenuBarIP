@@ -26,7 +26,7 @@ I was surprised to find that all similar applications in the App Store are paid 
 - Continuous operation, even after computer restarts
 - Displays public IP on a map
 - Logs public IP changes
-- Option to run application or script (shell, Javascript, Perl, Python, Ruby, PHP, AppleScript, CSharp) when the public IP changes
+- Option to run application or script (Shell, Javascript, Perl, Python, Ruby, PHP, AppleScript, CSharp) when the public IP changes
 - Ability to use shebangs for unsupported script types
 - Option to use custom API to retrieve public IP address and geolocation information
 
@@ -76,9 +76,20 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
 </p>
 
 ## Scripting
-As an advanced user, you can run your own shell script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter.
+As an advanced user, you can run your own application or script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter. 
 
-Here's a sample script that displays a notification in the macOS Notification Center and saves the public IP address in a log file.
+Supported types of scripts:
+- Shell
+- Javascript
+- Perl
+- Python
+- Ruby
+- PHP
+- AppleScript
+- CSharp
+- Any from shebang, if the interpreter exists
+
+Here's a sample Shell script that displays a notification in the macOS Notification Center and saves the public IP address in a log file.
 
 ```shell
 #!/bin/bash
