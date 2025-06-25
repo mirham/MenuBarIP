@@ -137,15 +137,15 @@ The mapping for the last service is as follows:
   - Country name -> ```countryName```
   - IP address -> ```ipAddress```
   - Latitude -> ```latitude```
-  -  Longitude -> ```longitude```
-  -  Region name -> ```regionName```
-  -  Zip code -> leave blank
+  - Longitude -> ```longitude```
+  - Region name -> ```regionName```
+  - Zip code -> leave blank
 ### The app dispalys "Obtaining IP..." for a long time
 This could happen if some public IP APIs are unreachable from your current connection location. The app skips these, but this process takes time. Furthermore, after updating the public IP, the app attempts to use them again. I recommend checking public IP APIs in your browser. If an API no more rapidly return an IP address as plain text, you should remove that API from the app. This will solve the problem. Additionally, you can find new free APIs online, if they work well, feel free to add them to the app.
 ### The app dispalys "No active IP API"
-This means no IP API can be called at this moment, and the application cannot obtain your public IP address. For the app to function normally, at least one IP API must be available and working properly. But it is better to have a lot of them, **at least 10**, to prevent this message from appearing. You can check the status of each IP API under `Settings` -> `IP APIs`. The "No active IP API" message indicates a network problem, such as a connection or DNS issue. Try restarting the application to reactivate the IP APIs. If this doesn't resolve the problem, please find and add working IP APIs, as explained in the previous instructions. 
+This means no IP API can be called at this moment, and the application cannot obtain your public IP address. For the app to function normally, at least one IP API must be available and working properly. But it is better to have a lot of them, **at least 10**, to prevent this message from appearing. You can check the status of each IP API under `Settings` -> `IP APIs`. The "No active IP API" message indicates a network problem, such as a connection or DNS issue. Try restarting the application to reactivate the IP APIs. If this doesn't resolve the problem, please find and add working IP APIs, as explained in the previous instructions, as more as possible.
 ### The app displays "No Internet" although there is an Internet connection
-The app determines your internet connection status by calling the address configured in `Settings` -> `General` -> `Check if internet access using address` (which is google.com by default). If this site doesn't respond, the app considers there to be no internet connection. Please use a reliable address with an uptime close to 100% and one that is available in your country.
+The app determines your internet connection status by calling addresses configured in `Settings` -> `General` -> `Check if internet access using addresses`. If all the sites there don't respond, the app considers there to be no internet connection. Please use a reliable addresses with an uptime close to 100% and ones that are available in your country.
 ### Shell script doesn't run
 Make sure you have ```/bin/zsh``` on your computer, and your script is executable.
 You can make the script executable with the command:
