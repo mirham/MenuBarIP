@@ -50,6 +50,9 @@ struct Constants{
     static let callTimeoutIpInfoApiInSeconds: Double = 2.0
     static let callTimeoutSiteInSeconds: Double = 5.0
     static let physicalNetworkInterfacePrefix = "en"
+    static let physicalNetworkInterfaceWiFi = "Wi-Fi"
+    static let physicalNetworkInterfaceLan = "LAN"
+    static let physicalNetworkInterfaceExclusion = "Thunderbolt"
     static let defaultMenuBarTextSize: Double = 10.0
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
@@ -76,6 +79,7 @@ struct Constants{
     static let space = " "
     static let slash = "/"
     static let scriptContentPrefix = "#!"
+
     
     // MARK: Regexes
     static let regexUrl = /(?<protocol>https?):\/\/(?:(?<username>[^:@\s\/\\]*)(?::(?<password>[^:@\s\/\\]*))?@)?(?<domain>[\w\d]+[\w\d.\-]+[\w\d]+|\[[a-f\d:]+\])(?::(?<port>\d+))?(?:(?<path>\/[^\?#\s]*)(?:\?(?<query>[^\?#\s]*))?(?:#(?<anchor>[^\?#\s]*))?)?/
@@ -134,7 +138,7 @@ struct Constants{
     // MARK: Elements names
     static let info = "Info"
     static let save = "Save"
-    static let none = "..."
+    static let none = "None"
     static let add = "Add"
     static let edit = "Edit"
     static let delete = "Delete"

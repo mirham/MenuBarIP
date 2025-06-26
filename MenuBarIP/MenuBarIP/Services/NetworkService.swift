@@ -7,6 +7,7 @@
 
 import Foundation
 import Network
+import SystemConfiguration
 import AppKit
 import Factory
 
@@ -18,7 +19,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
-    private var publicIpRefreshingTask: Task<Void, Never>?
+    private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
 
     
@@ -33,7 +34,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     deinit {
         monitor.cancel()
         monitoringTask?.cancel()
-        publicIpRefreshingTask?.cancel()
+        ipUpdateTask?.cancel()
         NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
@@ -100,16 +101,17 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         monitor.pathUpdateHandler = { path in
             let networkInterfaces = self.determineNetworkInterfaces(path: path)
             let status = self.determineNetworkStatusType(path: path, networkInterfaces: networkInterfaces)
-            
-            if (self.appState.network.isConnectionChanged (
+            let isConnectionChanged = self.appState.network.isConnectionChanged (
                 status: status,
-                activeNetworkInterfaces: networkInterfaces)) {
+                activeNetworkInterfaces: networkInterfaces)
+            
+            if isConnectionChanged {
                 let updatedStatus = status
                 let updatedNetworkInterfaces = networkInterfaces
                 
-                self.publicIpRefreshingTask?.cancel()
+                self.ipUpdateTask?.cancel()
                 
-                self.publicIpRefreshingTask = Task {
+                self.ipUpdateTask = Task {
                     await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
                         .withStatus(updatedStatus)
                         .withActiveNetworkInterfaces(updatedNetworkInterfaces)
@@ -122,7 +124,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                             await self.refreshIpAddressesAsync()
                         }
                         catch {
-                            self.publicIpRefreshingTask?.cancel()
+                            self.ipUpdateTask?.cancel()
                         }
                     }
                 }
@@ -145,7 +147,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func shouldCheckConnection() -> Bool {
-        appState.network.status == .on && !appState.network.isObtainingIp
+        return appState.network.status == .on
+                && !appState.network.isObtainingIp
     }
     
     private func performConnectionHealthCheckAsync() async {
@@ -209,6 +212,18 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         return result
     }
     
+    private func getNetworkInterfaceTypeByInterfaceName(interfaceName: String) -> NetworkInterfaceType {
+        if (interfaceName.range(of: Constants.physicalNetworkInterfaceWiFi, options: .caseInsensitive) != nil) {
+            return NetworkInterfaceType.wifi
+        }
+        
+        if (interfaceName.range(of: Constants.physicalNetworkInterfaceLan, options: .caseInsensitive) != nil) {
+            return NetworkInterfaceType.wired
+        }
+        
+        return NetworkInterfaceType.other
+    }
+    
     private func addSystemDidWakeHandler() {
         let center = NSWorkspace.shared.notificationCenter
         
@@ -269,7 +284,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     @objc private func systemDidWake() {
-        if (appState.network.publicIp == nil) {
+        if appState.network.publicIp == nil {
             Task {
                 await refreshIpAddressesAsync()
             }
