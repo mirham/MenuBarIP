@@ -34,7 +34,7 @@ class AppHelper {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
             
-            if(windowId.starts(with: viewName)) {
+            if windowId.starts(with: viewName) {
                 window.close()
             }
         }

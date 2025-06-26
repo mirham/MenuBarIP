@@ -142,7 +142,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             publicIp: newIp,
             keyMapping: appState.userData.ipInfoApiKeyMapping)
         
-        if (ipInfoResult.error != nil) {
+        if ipInfoResult.error != nil {
             isNewIpInvalid = true
             return
         }
