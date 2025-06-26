@@ -11,6 +11,7 @@ final class NetworkStateUpdateBuilder {
     @discardableResult
     func withStatus(_ status: NetworkStatusType) -> Self {
         update.status = status
+        
         return self
     }
     
@@ -18,6 +19,7 @@ final class NetworkStateUpdateBuilder {
     func withPublicIp(_ publicIp: IpInfo?) -> Self {
         update.publicIp = publicIp
         update.forceUpdatePublicIp = true
+        
         return self
     }
     
@@ -36,6 +38,12 @@ final class NetworkStateUpdateBuilder {
     @discardableResult
     func withIsDisconnected(_ isDisconnected: Bool) -> Self {
         update.isDisconnected = isDisconnected
+        
+        if isDisconnected {
+            update.publicIp = nil
+            update.forceUpdatePublicIp = true
+        }
+        
         return self
     }
     

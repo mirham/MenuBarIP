@@ -125,13 +125,13 @@ struct MenuBarStatusEditView: MenuBarItemsContainerView {
             keys: appState.userData.menuBarShownItems,
             appState: appState,
             colorScheme: colorScheme,
-            exampleAllowed: true)
+            isExampleAllowed: true)
         
         let hiddenItems = getMenuBarElements(
             keys: appState.userData.menuBarHiddenItems,
             appState: appState,
             colorScheme: colorScheme,
-            exampleAllowed: true)
+            isExampleAllowed: true)
         
         self.shownItems.removeAll()
         self.hiddenItems.removeAll()

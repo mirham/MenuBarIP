@@ -12,7 +12,7 @@ protocol MenuBarItemsContainerView : IpAddressContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
-        exampleAllowed: Bool) -> [MenuBarElement]
+        isExampleAllowed: Bool) -> [MenuBarElement]
 }
 
 extension MenuBarItemsContainerView {
@@ -21,7 +21,7 @@ extension MenuBarItemsContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
-        exampleAllowed: Bool = false) -> [MenuBarElement] {
+        isExampleAllowed: Bool = false) -> [MenuBarElement] {
             var result = [MenuBarElement]()
             
             let baseColor = getBaseColor(colorScheme: colorScheme)
@@ -36,67 +36,58 @@ extension MenuBarItemsContainerView {
                 switch key {
                     case Constants.mbItemKeyInternetStatus:
                         let internetAccess = getInternetStatusItem(
-                            internetAccess: appState.network.hasInternetAccess,
+                            networkStatus: appState.network.status,
+                            hasNetworkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: internetAccess), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyPublicIpAddress:
                         let publicIpAddress = getIpAddressItem(
-                            ipAddress: appState.network.publicIp == nil
-                                ? Constants.none
-                                : appState.network.publicIp!.ipAddress,
+                            ipAddress: getEffectivePublicIpString(appState: appState),
                             color: ipColor,
-                            exampleAllowed: exampleAllowed,
+                            isExampleAllowed: isExampleAllowed,
                             isPublic: true,
-                            networkAccess: appState.network.hasInternetAccess,
+                            hasNetworkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: publicIpAddress), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyLocalIpAddress:
                         let localIpAddress = getIpAddressItem(
-                            ipAddress: appState.network.localIp == nil
-                                ? Constants.none
-                                : appState.network.localIp!,
+                            ipAddress: getEffectiveLocalIpString(appState: appState),
                             color: baseColor,
-                            exampleAllowed: exampleAllowed,
+                            isExampleAllowed: isExampleAllowed,
                             isPublic: false,
-                            networkAccess: true,
+                            hasNetworkAccess: true,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: localIpAddress), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyBothIpAddressesPublicUpper:
                         let view = getBothIpAddressessItem(
-                            ipAddressUpper: appState.network.publicIp == nil
-                                ? Constants.none
-                                : appState.network.publicIp!.ipAddress,
-                            ipAddressLower: appState.network.localIp == nil
-                                ? Constants.none
-                                : appState.network.localIp!,
+                            ipAddressUpper: getEffectivePublicIpString(appState: appState),
+                            ipAddressLower: getEffectiveLocalIpString(appState: appState),
                             colorUpper: ipColor,
                             colorLower: baseColor,
-                            exampleAllowed: exampleAllowed,
+                            isExampleAllowed: isExampleAllowed,
                             isPublicUpper: true,
-                            networkAccess: appState.network.hasInternetAccess)
+                            hasNetworkAccess: appState.network.hasInternetAccess)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCustomText:
                         let view = getCustomTextItem(
                             customText: appState.current.ipCustomization?.customText ?? String(),
                             color: customTextColor,
-                            exampleAllowed: exampleAllowed)
+                            exampleAllowed: isExampleAllowed)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyPublicIpAddressWithCustomText:
                         let view = getPublicIpAddressWithCustomTextItem(
-                            ipAddress: appState.network.publicIp == nil
-                                ? Constants.none
-                                : appState.network.publicIp!.ipAddress,
+                            ipAddress: getEffectivePublicIpString(appState: appState),
                             customText: appState.current.ipCustomization?.customText ?? String(),
                             color: ipColor,
                             customTextColor: customTextColor,
-                            networkAccess: appState.network.hasInternetAccess,
+                            hasNetworkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize,
-                            exampleAllowed: exampleAllowed)
+                            isExampleAllowed: isExampleAllowed)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: view), key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCountryCode:
@@ -105,7 +96,7 @@ extension MenuBarItemsContainerView {
                             ? String()
                             : appState.network.publicIp!.countryCode,
                             color: ipColor,
-                            exampleAllowed: exampleAllowed,
+                            exampleAllowed: isExampleAllowed,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: renderMenuBarItemImage(view: countryCode), key: key)
                         result.append(menuBarItem)
@@ -114,7 +105,7 @@ extension MenuBarItemsContainerView {
                             countryCode: appState.network.publicIp == nil
                             ? String()
                             : appState.network.publicIp!.countryCode,
-                            exampleAllowed: exampleAllowed,
+                            isExampleAllowed: isExampleAllowed,
                             textSize: appState.userData.menuBarTextSize)
                         let menuBarItem = MenuBarElement(image: countryFlag, key: key)
                         result.append(menuBarItem)
@@ -123,7 +114,7 @@ extension MenuBarItemsContainerView {
                             countryCode: appState.network.publicIp == nil
                             ? String()
                             : appState.network.publicIp!.countryCode,
-                            exampleAllowed: exampleAllowed,
+                            isExampleAllowed: isExampleAllowed,
                             scalable: false)
                         let menuBarItem = MenuBarElement(image: countryFlag, key: key)
                         result.append(menuBarItem)
@@ -166,6 +157,21 @@ extension MenuBarItemsContainerView {
         }
     
     // MARK: Private functions
+    
+    private func getEffectivePublicIpString(appState: AppState) -> String {
+        return appState.network.status == .off
+            ? Constants.offline
+            : appState.network.isObtainingIp
+                ? Constants.obtainingIp
+                : appState.network.publicIp?.ipAddress ?? Constants.none
+    }
+    
+    private func getEffectiveLocalIpString(appState: AppState) -> String {
+        return appState.network.localIp == nil
+            ? Constants.none
+            : appState.network.localIp!
+    }
+    
     @MainActor
     private func renderMenuBarItemImage(view: some View) -> NSImage {
         let renderer = ImageRenderer(content: view)
@@ -177,17 +183,21 @@ extension MenuBarItemsContainerView {
     private func getIpAddressItem(
         ipAddress: String,
         color: Color,
-        exampleAllowed: Bool,
+        isExampleAllowed: Bool,
         isPublic: Bool,
-        networkAccess: Bool,
+        hasNetworkAccess: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize) -> Text {
-        let effectiveIpAddress = (ipAddress.isEmpty || ipAddress == Constants.none) && exampleAllowed
+        let noIpAddress = ipAddress.isEmpty
+            || ipAddress == Constants.none
+            || ipAddress == Constants.offline
+            || ipAddress == Constants.obtainingIp
+        let effectiveIpAddress = noIpAddress && isExampleAllowed
             ? isPublic
                 ? Constants.defaultPublicIpAddress
                 : Constants.defaultLocalIpAddress
             : ipAddress
         
-        if (networkAccess || exampleAllowed) {
+        if hasNetworkAccess || isExampleAllowed {
             let result = Text(effectiveIpAddress.uppercased())
                 .asMenuBarItem(color: color, textSize: textSize)
             return result
@@ -219,22 +229,22 @@ extension MenuBarItemsContainerView {
         ipAddressLower: String,
         colorUpper: Color,
         colorLower: Color,
-        exampleAllowed: Bool,
+        isExampleAllowed: Bool,
         isPublicUpper: Bool,
-        networkAccess: Bool) -> some View {
+        hasNetworkAccess: Bool) -> some View {
         let upperItem = getIpAddressItem(
             ipAddress: ipAddressUpper,
             color: colorUpper,
-            exampleAllowed: exampleAllowed,
+            isExampleAllowed: isExampleAllowed,
             isPublic: isPublicUpper,
-            networkAccess: networkAccess,
+            hasNetworkAccess: hasNetworkAccess,
             textSize: 9)
         let lowerItem = getIpAddressItem(
             ipAddress: ipAddressLower,
             color: colorLower,
-            exampleAllowed: exampleAllowed,
+            isExampleAllowed: isExampleAllowed,
             isPublic: !isPublicUpper,
-            networkAccess: true,
+            hasNetworkAccess: true,
             textSize: 9)
             
             let result = VStack(alignment: .leading, spacing: -2) {
@@ -250,30 +260,30 @@ extension MenuBarItemsContainerView {
         customText: String,
         color: Color,
         customTextColor: Color,
-        networkAccess: Bool,
+        hasNetworkAccess: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize,
-        exampleAllowed: Bool) -> any View {
-            if (!exampleAllowed && customText.isEmpty) {
+        isExampleAllowed: Bool) -> any View {
+            if !isExampleAllowed && customText.isEmpty {
                 return getIpAddressItem(
                     ipAddress: ipAddress,
                     color: color,
-                    exampleAllowed: exampleAllowed,
+                    isExampleAllowed: isExampleAllowed,
                     isPublic: true,
-                    networkAccess: networkAccess,
+                    hasNetworkAccess: hasNetworkAccess,
                     textSize: textSize)
             }
             
             let upperItem = getCustomTextItem(
                 customText: customText,
                 color: customTextColor,
-                exampleAllowed: exampleAllowed,
+                exampleAllowed: isExampleAllowed,
                 textSize: 7)
             let lowerItem = getIpAddressItem(
                 ipAddress: ipAddress,
                 color: color,
-                exampleAllowed: exampleAllowed,
+                isExampleAllowed: isExampleAllowed,
                 isPublic: true,
-                networkAccess: networkAccess,
+                hasNetworkAccess: hasNetworkAccess,
                 textSize: 12)
             
             let result = VStack(alignment: .leading, spacing: -3) {
@@ -299,11 +309,13 @@ extension MenuBarItemsContainerView {
     
     private func getCountryFlagItem(
         countryCode: String,
-        exampleAllowed: Bool,
+        isExampleAllowed: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize,
         scalable: Bool = true) -> NSImage {
         let scale = scalable ? 0.9 * textSize / 16 :  0.9
-        let effectiveCountryCode = countryCode.isEmpty && exampleAllowed ? Constants.defaultCountryCode : countryCode
+        let effectiveCountryCode = countryCode.isEmpty && isExampleAllowed
+            ? Constants.defaultCountryCode
+            : countryCode
         let result = getCountryFlag(countryCode: effectiveCountryCode)
         result.size.width = result.size.width * scale
         result.size.height = result.size.height * scale
@@ -312,11 +324,18 @@ extension MenuBarItemsContainerView {
     }
     
     private func getInternetStatusItem(
-        internetAccess: Bool,
+        networkStatus: NetworkStatusType,
+        hasNetworkAccess: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize) -> some View {
+            let color: Color = networkStatus == .on && hasNetworkAccess
+                ? .green
+                : networkStatus != .off
+                    ? .orange
+                    : .red
+            
             let scale = 1 * textSize / 16
             let result = Circle()
-                .fill(internetAccess ? .green : .red)
+                .fill(color)
                 .frame(width: 20, height: 20)
                 .overlay(content: {
                     Circle()

@@ -53,7 +53,8 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
     // MARK: Private functions
     
     private func deactivateIpApiAsync(ipApiUrl: String) async {
-        guard self.appState.network.status == .on && self.appState.network.hasInternetAccess
+        guard self.appState.network.status == .on
+                && self.appState.network.hasInternetAccess
         else { return }
         
         if let inactiveApiIndex = self.appState.userData.ipApis

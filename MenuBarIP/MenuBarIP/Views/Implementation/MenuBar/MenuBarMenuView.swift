@@ -21,7 +21,7 @@ struct MenuBarMenuView : IpAddressContainerView {
         VStack {
             Text(Constants.publicIp.uppercased())
                 .asMenuItemHeader()
-            Text(appState.network.publicIp?.ipAddress ?? Constants.none)
+            Text(appState.network.publicIp?.ipAddress ?? Constants.none.uppercased())
                 .foregroundStyle(getIpColor(
                     colorScheme: appState.current.colorScheme,
                     currentIpCustomization: appState.current.ipCustomization,
@@ -45,7 +45,7 @@ struct MenuBarMenuView : IpAddressContainerView {
             Divider()
             Text(Constants.localIp.uppercased())
                 .asMenuItemHeader()
-            Text(appState.network.localIp ?? Constants.none)
+            Text(appState.network.localIp ?? Constants.none.uppercased())
                 .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
                 .asMenuItemIp()
             Button(Constants.menuItemCopy) {

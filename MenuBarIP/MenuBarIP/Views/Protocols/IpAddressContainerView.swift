@@ -56,7 +56,7 @@ extension IpAddressContainerView {
     
     func getCountryFlag(countryCode: String) -> NSImage {
         return countryCode.isEmpty
-        ? NSImage()
-        : Flag(countryCode: countryCode)?.originalImage ?? NSImage()
+            ? NSImage()
+            : Flag(countryCode: countryCode)?.originalImage ?? NSImage()
     }
 }

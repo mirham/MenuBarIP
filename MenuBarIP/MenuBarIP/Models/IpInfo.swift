@@ -41,6 +41,7 @@ struct IpInfo: Codable, Equatable {
     
     static func == (lhs: IpInfo, rhs: IpInfo) -> Bool {
         return lhs.ipAddress == rhs.ipAddress
+            && lhs.countryCode == rhs.countryCode
     }
     
     func hash(into hasher: inout Hasher) {
