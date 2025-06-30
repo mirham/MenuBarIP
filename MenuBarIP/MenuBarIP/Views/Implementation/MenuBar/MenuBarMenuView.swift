@@ -28,11 +28,25 @@ struct MenuBarMenuView : IpAddressContainerView {
                     forMenu: true))
                 .asMenuItemIp()
             VStack {
-                Text(appState.network.publicIp?.asPhysicalAddressString() ?? String())
-                    .font(.system(size: 10))
-                    .bold()
-                    .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                    .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
+                VStack() {
+                    Text(Constants.location.uppercased())
+                        .asMenuItemHeaderSmall()
+                    Text(appState.network.publicIp?.asPhysicalAddressString() ?? String())
+                        .font(.system(size: 10))
+                        .bold()
+                        .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
+                }
+                .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
+                VStack {
+                    Text(Constants.provider.uppercased())
+                        .asMenuItemHeaderSmall()
+                        .padding(0)
+                    Text(appState.network.publicIp?.asIspInfoString() ?? String())
+                        .font(.system(size: 10))
+                        .bold()
+                        .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
+                }
+                .isHidden(hidden: !(appState.network.publicIp?.hasIspInfo() ?? false), remove: true)
                 Button(Constants.menuItemCopy) {
                     AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
                 }
@@ -97,13 +111,18 @@ struct MenuBarMenuView : IpAddressContainerView {
 
 private extension Text {
     func asMenuItemHeader() -> some View {
-        self.font(.system(size: 12))
+        self.font(.system(size: 14))
             .foregroundStyle(.gray)
     }
     
     func asMenuItemIp() -> some View {
         self.font(.system(size: 18))
             .bold()
+    }
+    
+    func asMenuItemHeaderSmall() -> some View {
+        self.font(.system(size: 10))
+            .foregroundStyle(.gray)
     }
 }
 

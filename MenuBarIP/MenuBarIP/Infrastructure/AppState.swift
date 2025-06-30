@@ -203,6 +203,7 @@ extension AppState {
             
             if let savedIpInfoApiMapping: [String:String] = readSettingsDictionary(key: Constants.settingsKeyIpInfoMapping) {
                 ipInfoApiKeyMapping = savedIpInfoApiMapping
+                    .mergingMissingPairs(from: Constants.defaultIpInfoApiKeyMapping)
             }
         }
         

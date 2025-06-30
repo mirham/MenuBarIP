@@ -54,6 +54,7 @@
 		3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */; };
 		3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */; };
 		3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */; };
+		358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */; };
 		358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA182E001D27002DF782 /* LoggingServiceType.swift */; };
 		358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1A2E001D7C002DF782 /* LoggingService.swift */; };
 		358DDA1E2E004F10002DF782 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1D2E004F02002DF782 /* LogView.swift */; };
@@ -124,6 +125,7 @@
 		3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedContainerExtensions.swift; sourceTree = "<group>"; };
 		3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExtensions.swift; sourceTree = "<group>"; };
 		3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerExtensions.swift; sourceTree = "<group>"; };
+		358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtensions.swift; sourceTree = "<group>"; };
 		358DDA182E001D27002DF782 /* LoggingServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingServiceType.swift; sourceTree = "<group>"; };
 		358DDA1A2E001D7C002DF782 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
 		358DDA1D2E004F02002DF782 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
@@ -407,6 +409,7 @@
 		3575CCA92DD7686200102D4E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */,
 				3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */,
 				3575CCAA2DD768CB00102D4E /* StringExtensions.swift */,
 				3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */,
@@ -571,6 +574,7 @@
 				3575CCAB2DD768D100102D4E /* StringExtensions.swift in Sources */,
 				35BF309F2E015FE2003D9CE5 /* IpInfoApiEditView.swift in Sources */,
 				35BF30A32E01A1BA003D9CE5 /* DataExtensions.swift in Sources */,
+				358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */,
 				354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */,
 				354032722C5E6A44002624D2 /* NetworkService.swift in Sources */,
 				354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */,
@@ -727,7 +731,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -759,7 +763,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.3;
+				MARKETING_VERSION = 2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

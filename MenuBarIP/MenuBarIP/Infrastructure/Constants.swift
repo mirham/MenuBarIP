@@ -78,7 +78,10 @@ struct Constants{
     static let envPossiblePathes = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/\(NSUserName())/.dotnet/tools"
     static let space = " "
     static let slash = "/"
+    static let maxMenuLineLength = 30
     static let scriptContentPrefix = "#!"
+    static let commaSeparator: String = ", "
+    static let hyphen: String = "-"
 
     
     // MARK: Regexes
@@ -163,6 +166,8 @@ struct Constants{
     static let choose = "Choose"
     static let mappings = "Mappings"
     static let noActiveIpApi = "No active IP API"
+    static let location = "Location"
+    static let provider = "Internet service provider"
     
     // MARK: Settings elements names
     static let settingsElementGeneral = "General"
@@ -352,7 +357,8 @@ struct Constants{
         "regionName" : "regionName",
         "cityName" : "city",
         "latitude" : "lat",
-        "longitude" : "lon"
+        "asn" : "as",
+        "isp" : "isp",
     ]
     
     static let readableIpInfoApiKeyMapping = [
@@ -363,6 +369,8 @@ struct Constants{
         "regionName" : "Region name",
         "cityName" : "City name",
         "latitude" : "Latitude",
-        "longitude" : "Longitude"
+        "longitude" : "Longitude",
+        "asn" : "ASN",
+        "isp" : "ISP",
     ]
 }
