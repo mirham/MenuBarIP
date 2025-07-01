@@ -143,7 +143,7 @@ The mapping for the last service is as follows:
   - ASN -> ```asn```
   - ISP -> ```asnOrganization```
 ### I don't want the app to show my ISP information.
-Just leave these mappings empty in ```Settings``` -> ```IP info API``` -> ```Mappings```
+Just leave these mappings empty in ```Settings``` -> ```IP info API``` -> ```Mappings```:
   - ASN -> leave blank
   - ISP -> leave blank
 ### The app dispalys "Obtaining IP..." for a long time
