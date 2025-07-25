@@ -16,7 +16,7 @@ class LaunchAgentService : ServiceBase, ShellAccessible, LaunchAgentServiceType 
         let fileManager = FileManager.default
         let plistFilePath = getPlistFilePath()
         
-        if(fileManager.fileExists(atPath: plistFilePath)) {
+        if fileManager.fileExists(atPath: plistFilePath) {
             isInstalled = true
         }
     }
@@ -43,10 +43,15 @@ class LaunchAgentService : ServiceBase, ShellAccessible, LaunchAgentServiceType 
     func apply() {
         do {
             if self.isInstalled {
-                try safeShell(String(format: Constants.shCommandLoadLaunchAgent, Constants.launchAgentsFolderPath, Constants.launchAgentPlistName))
+                try safeShell(
+                    String(format: Constants.shCommandLoadLaunchAgent,
+                           Constants.launchAgentsFolderPath,
+                           Constants.launchAgentPlistName))
             }
             else {
-                try safeShell(String(format: Constants.shCommandRemoveLaunchAgent, Constants.launchAgentName))
+                try safeShell(
+                    String(format: Constants.shCommandRemoveLaunchAgent,
+                           Constants.launchAgentName))
             }
         }
         catch {}

@@ -12,7 +12,7 @@ class AppHelper {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
             
-            if(windowId.starts(with: viewName)) {
+            if windowId.starts(with: viewName) {
                 window.level = onTop ? .floating : .normal
                 window.standardWindowButton(.zoomButton)?.isHidden = true
                 window.standardWindowButton(.miniaturizeButton)?.isHidden = true
@@ -24,7 +24,7 @@ class AppHelper {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
             
-            if(windowId.starts(with: viewId)) {
+            if windowId.starts(with: viewId) {
                 NSApplication.shared.activate(ignoringOtherApps: true)
             }
         }

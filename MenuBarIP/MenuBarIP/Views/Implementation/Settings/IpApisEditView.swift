@@ -109,9 +109,8 @@ struct IpApisEditView : View {
             return
         }
         
-        guard !appState.userData.ipApis.contains(where: {$0.url == newUrl}) else {
-            return
-        }
+        guard !appState.userData.ipApis.contains(where: {$0.url == newUrl})
+        else { return }
         
         let newApi = IpApiInfo(url: newUrl, active: true)
         

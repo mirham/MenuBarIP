@@ -32,10 +32,12 @@ struct DropViewDelegate: DropDelegate {
             return
         }
         
-        let from = sourceItems.firstIndex(of: draggedItem) != nil ? sourceItems.firstIndex(of: draggedItem) : nil
-        let to = sourceItems.firstIndex(of: item) != nil
-            ? sourceItems.firstIndex(of: item)!
-            : start
+        let from = sourceItems.firstIndex(of: draggedItem) == nil
+            ? nil
+            : sourceItems.firstIndex(of: draggedItem)
+        let to = sourceItems.firstIndex(of: item) == nil
+            ? start
+            : sourceItems.firstIndex(of: item)!
         
         withAnimation(.default) {
             if from != nil {
@@ -45,7 +47,7 @@ struct DropViewDelegate: DropDelegate {
             }
             else {
                 if keepLastItem {
-                    if (destinationItems.count == step) {
+                    if destinationItems.count == step {
                         return
                     }
                     else {

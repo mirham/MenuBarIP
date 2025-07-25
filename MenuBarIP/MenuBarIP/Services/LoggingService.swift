@@ -48,7 +48,8 @@ class LoggingService: ServiceBase, LoggingServiceType {
     }
     
     func getLogFileUrl() -> URL? {
-        guard let appSupportDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        guard let appSupportDirectory = FileManager.default.urls(
+            for: .applicationSupportDirectory, in: .userDomainMask).first
         else {
             os_log(.error, log: .default, Constants.errorFailedToCreateAppSupportFolder)
             return nil
@@ -73,9 +74,8 @@ class LoggingService: ServiceBase, LoggingServiceType {
     
     func clearLogFile() {
         fileQueue.async {
-            guard let fileURL = self.getLogFileUrl() else {
-                return
-            }
+            guard let fileURL = self.getLogFileUrl()
+            else { return }
             
             do {
                 try String().write(to: fileURL, atomically: true, encoding: .utf8)

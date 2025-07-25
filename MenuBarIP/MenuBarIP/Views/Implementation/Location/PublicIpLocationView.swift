@@ -20,7 +20,9 @@ struct PublicIpLocationView : View {
             latitude: appState.network.publicIp?.latitude ?? 0,
             longitude: appState.network.publicIp?.longitude ?? 0)
         
-        @State var region: MKCoordinateRegion = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.3, longitudeDelta: 0.3))
+        @State var region: MKCoordinateRegion = MKCoordinateRegion(
+            center: location,
+            span: MKCoordinateSpan(latitudeDelta: 0.3, longitudeDelta: 0.3))
         
         Map (
             position: $cameraPosition
@@ -59,7 +61,9 @@ struct PublicIpLocationView : View {
                     latitude: appState.network.publicIp?.latitude ?? 0,
                     longitude: appState.network.publicIp?.longitude ?? 0)
                 
-                region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta:  0.3, longitudeDelta:  0.3))
+                region = MKCoordinateRegion(
+                    center: location,
+                    span: MKCoordinateSpan(latitudeDelta:  0.3, longitudeDelta:  0.3))
                 cameraPosition = .region(region)
             }
         }

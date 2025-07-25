@@ -21,7 +21,6 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
     private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
-
     
     override init() {
         super.init()
@@ -39,13 +38,11 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     func isUrlReachableAsync(url : String) async throws -> Bool {
-        guard !Task.isCancelled else {
-            throw CancellationError()
-        }
+        guard !Task.isCancelled
+        else { throw CancellationError() }
         
-        guard let url = URL(string: url) else {
-            throw URLError(.badURL)
-        }
+        guard let url = URL(string: url)
+        else { throw URLError(.badURL) }
         
         var request = URLRequest(url: url)
         request.httpMethod = Constants.headHttpMethod
@@ -68,6 +65,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 
                 continuation.resume(returning: httpResponse.statusCode == 200)
             }
+            
             task.resume()
         }
     }
@@ -93,6 +91,10 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         
         writeLog(publicIp: publicIp)
         executeScript(prevPublicIp: prevPublicIp, publicIp: publicIp)
+    }
+    
+    func refreshIpAddressesManuallyAsync() async {
+        await performConnectionHealthCheckAsync()
     }
     
     // MARK: Private functions
@@ -147,7 +149,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func shouldCheckConnection() -> Bool {
-        return appState.network.status == .on
+        return appState.network.status != .off
                 && !appState.network.isObtainingIp
     }
     
@@ -182,7 +184,9 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func handleIpInfoRefreshIfNeededAsync() async {
-        guard let publicIp = appState.network.publicIp, !publicIp.hasLocation() else { return }
+        guard let publicIp = appState.network.publicIp, !publicIp.hasLocation()
+        else { return }
+        
         await refreshPublicIpInfoAsync()
     }
     
@@ -213,11 +217,15 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     private func getNetworkInterfaceTypeByInterfaceName(interfaceName: String) -> NetworkInterfaceType {
-        if (interfaceName.range(of: Constants.physicalNetworkInterfaceWiFi, options: .caseInsensitive) != nil) {
+        if interfaceName.range(
+            of: Constants.physicalNetworkInterfaceWiFi,
+            options: .caseInsensitive) != nil {
             return NetworkInterfaceType.wifi
         }
         
-        if (interfaceName.range(of: Constants.physicalNetworkInterfaceLan, options: .caseInsensitive) != nil) {
+        if interfaceName.range(
+            of: Constants.physicalNetworkInterfaceLan,
+            options: .caseInsensitive) != nil {
             return NetworkInterfaceType.wired
         }
         
@@ -270,13 +278,16 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     private func checkIfInternetConnectionAsync() async throws -> Bool {
         try await withThrowingTaskGroup(of: Bool.self, returning: Bool.self) { group in
             group.addTask {
-                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl1)
+                try await self.isUrlReachableAsync(
+                    url: self.appState.userData.internetCheckUrl1)
             }
             group.addTask {
-                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl2)
+                try await self.isUrlReachableAsync(
+                    url: self.appState.userData.internetCheckUrl2)
             }
             group.addTask {
-                try await self.isUrlReachableAsync(url: self.appState.userData.internetCheckUrl3)
+                try await self.isUrlReachableAsync(
+                    url: self.appState.userData.internetCheckUrl3)
             }
             
             return try await group.first(where: { $0 }) ?? false

@@ -162,7 +162,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             
             let matches = appState.userData.ipCustomizations.filter({$0.ipAddress == newIp})
             
-            if(matches.count > 1) {
+            if matches.count > 1 {
                 appState.userData.ipCustomizations.removeAll(where: {$0.id == matches.last!.id})
             }
         }
