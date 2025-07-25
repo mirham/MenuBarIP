@@ -45,7 +45,10 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
                     try self.runScript(at: url, publicIp: publicIp)
                 }
             } catch {
-                self.loggingService.error(String(format: Constants.errorScriptCannotBeExecuted, error.localizedDescription), LogDestination.console)
+                self.loggingService.error(
+                    String(format: Constants.errorScriptCannotBeExecuted,
+                           error.localizedDescription),
+                    LogDestination.console)
             }
         }
     }
@@ -70,18 +73,16 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
             throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
         }
         
-        guard let finalInterpreterPath = try resolveInterpreterCommandToPath(command: interpreterCommand) else {
-            throw String(format: Constants.errorInterpreterNotFound, interpreterCommand)
-        }
+        guard let finalInterpreterPath = try resolveInterpreterCommandToPath(command: interpreterCommand)
+        else { throw String(format: Constants.errorInterpreterNotFound, interpreterCommand) }
         
         let resultURL = URL(fileURLWithPath: finalInterpreterPath)
         
-        guard fileManager.fileExists(atPath: resultURL.path) else {
-            throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath)
-        }
-        guard fileManager.isExecutableFile(atPath: resultURL.path) else {
-            throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath)
-        }
+        guard fileManager.fileExists(atPath: resultURL.path)
+        else { throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath) }
+        
+        guard fileManager.isExecutableFile(atPath: resultURL.path)
+        else { throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath) }
         
         return resultURL
     }
@@ -89,43 +90,44 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
     // MARK: Private functions
     
     private func isScriptContent(url: URL) -> Bool {
-        guard let content = try? String(contentsOf: url, encoding: .utf8) else {
-            return false
-        }
+        guard let content = try? String(contentsOf: url, encoding: .utf8)
+        else { return false }
+        
         return content.hasPrefix(Constants.scriptContentPrefix)
     }
     
     private func parseShebang(from fileUrl: URL) throws -> String? {
-        guard fileManager.isReadableFile(atPath: fileUrl.path) else {
-            return nil
-        }
+        guard fileManager.isReadableFile(atPath: fileUrl.path)
+        else { return nil }
         
         let content = try String(contentsOf: fileUrl, encoding: .utf8)
         let firstLine: String = content.prefix(
             while: { $0 != Constants.newLineChar })
             .trimmingCharacters(in: .whitespaces)
         
-        guard firstLine.hasPrefix(Constants.scriptContentPrefix) else {
-            return nil
-        }
+        guard firstLine.hasPrefix(Constants.scriptContentPrefix)
+        else { return nil }
         
         let result = firstLine
             .dropFirst(scriptPrefixLength)
             .trimmingCharacters(in: .whitespaces)
         
-        guard !result.isEmpty else {
-            return nil
-        }
+        guard !result.isEmpty
+        else { return nil }
         
         return result
     }
     
     func resolveInterpreterCommandToPath(command: String) throws -> String? {
         if command.hasPrefix(Constants.pathEnv) {
-            let components = command.split(separator: Constants.space, maxSplits: 1).map(String.init)
-            guard components.count == scriptPrefixLength, let actualCommand = components.last else {
-                throw String(format: Constants.errorFailedToLocateInterpreter, command)
-            }
+            let components = command
+                .split(separator: Constants.space, maxSplits: 1)
+                .map(String.init)
+            
+            guard components.count == scriptPrefixLength,
+                  let actualCommand = components.last
+            else { throw String(format: Constants.errorFailedToLocateInterpreter, command) }
+            
             return try findExecutablePath(command: actualCommand)
         } else if command.hasPrefix(Constants.slash) {
             return command
@@ -140,7 +142,9 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
                 let configuration = NSWorkspace.OpenConfiguration()
                 configuration.arguments = [publicIp]
                 
-                try await NSWorkspace.shared.openApplication(at: url, configuration: configuration)
+                try await NSWorkspace.shared.openApplication(
+                    at: url,
+                    configuration: configuration)
             } catch {
                 throw String(format: Constants.errorAppCannotBeRan, error.localizedDescription)
             }
@@ -161,7 +165,9 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         process.waitUntilExit()
         
         if process.terminationStatus != 0 {
-            self.loggingService.error(String(format: Constants.errorScriptFailed, process.terminationStatus), LogDestination.console)
+            self.loggingService.error(
+                String(format: Constants.errorScriptFailed, process.terminationStatus),
+                LogDestination.console)
         }
     }
     
@@ -181,7 +187,10 @@ class ExecutiveService: ServiceBase, ExecutiveServiceType {
         process.waitUntilExit()
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines), !output.isEmpty {
+        
+        if let output = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+            !output.isEmpty {
             return output
         }
         

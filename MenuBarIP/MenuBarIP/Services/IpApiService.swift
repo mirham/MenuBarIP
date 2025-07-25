@@ -46,7 +46,10 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
             
             await deactivateIpApiAsync(ipApiUrl: ipApiUrl)
             
-            return OperationResult(error: String(format: Constants.errorWhenCallingIpAddressApi, ipApiUrl, error.localizedDescription))
+            return OperationResult(error: String(
+                format: Constants.errorWhenCallingIpAddressApi,
+                ipApiUrl,
+                error.localizedDescription))
         }
     }
     
@@ -68,7 +71,8 @@ class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
     private func calculateCallTimeout() -> Double {
         let activeApisCount = self.appState.userData.ipApis.count(where: {$0.isActive()})
         
-        guard activeApisCount > 0 else { return Constants.callTimeoutIpApiInSeconds }
+        guard activeApisCount > 0
+        else { return Constants.callTimeoutIpApiInSeconds }
         
         let result = Constants.callTimeoutIpApiTotalInSeconds / Double(activeApisCount)
         

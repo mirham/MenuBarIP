@@ -32,15 +32,13 @@ extension View {
 
 public extension NSView {
     func asImage() -> NSImage? {
-        guard let rep = bitmapImageRepForCachingDisplay(in: bounds) else {
-            return nil
-        }
+        guard let rep = bitmapImageRepForCachingDisplay(in: bounds)
+        else { return nil }
         
         cacheDisplay(in: bounds, to: rep)
         
-        guard let cgImage = rep.cgImage else {
-            return nil
-        }
+        guard let cgImage = rep.cgImage
+        else { return nil }
         
         let result = NSImage(cgImage: cgImage, size: bounds.size)
         

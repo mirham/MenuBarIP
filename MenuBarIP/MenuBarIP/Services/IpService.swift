@@ -12,19 +12,16 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
     @Injected(\.ipApiService) private var ipApiService
     
     func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
-        guard !Task.isCancelled else {
-            return OperationResult(error: Constants.errorTaskCancelled)
-        }
+        guard !Task.isCancelled
+        else { return OperationResult(error: Constants.errorTaskCancelled) }
         
-        guard let apiUrl = ipApiUrl ?? ipApiService.getRandomActiveIpApi()?.url else {
-            return OperationResult(error: Constants.errorNoActiveIpApiFound)
-        }
+        guard let apiUrl = ipApiUrl ?? ipApiService.getRandomActiveIpApi()?.url
+        else { return OperationResult(error: Constants.errorNoActiveIpApiFound) }
         
         let ipAddress = try? await fetchIpAddressAsync(from: apiUrl)
         
-        guard let ipAddress else {
-            return OperationResult(error: Constants.errorIpApiResponseIsInvalid)
-        }
+        guard let ipAddress
+        else { return OperationResult(error: Constants.errorIpApiResponseIsInvalid) }
         
         if withInfo {
             return await getPublicIpInfoAsync(
@@ -41,24 +38,22 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         apiUrl: String,
         publicIp: String,
         keyMapping: [String:String]) async -> OperationResult<IpInfo> {
-        guard !Task.isCancelled else {
-            return OperationResult(error: Constants.errorTaskCancelled)
-        }
+        guard !Task.isCancelled
+        else { return OperationResult(error: Constants.errorTaskCancelled) }
         
-        guard !keyMapping.isEmpty, let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
-            publicIp: publicIp, ipInfoApiUrl: apiUrl)
-        else {
-            return OperationResult(result: IpInfo(ipAddress: publicIp))
-        }
+        guard !keyMapping.isEmpty,
+              let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
+                publicIp: publicIp,
+                ipInfoApiUrl: apiUrl)
+        else { return OperationResult(result: IpInfo(ipAddress: publicIp)) }
         
         do {
             let response = try await callGetApiAsync(
                 apiUrl: ipInfoUrl,
                 timeoutInterval: Constants.callTimeoutIpInfoApiInSeconds)
             
-            guard let jsonData = response.data(using: .utf8) else {
-                throw URLError(.cannotParseResponse)
-            }
+            guard let jsonData = response.data(using: .utf8)
+            else { throw URLError(.cannotParseResponse) }
             
             let preparedJsonData = try jsonData.remap(mapping: keyMapping)
             let info = try JSONDecoder().decode(IpInfo.self, from: preparedJsonData)
@@ -90,7 +85,7 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
             if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
                 let name = String(cString: interface.ifa_name)
                 
-                if (name.hasPrefix(Constants.physicalNetworkInterfacePrefix)) {
+                if name.hasPrefix(Constants.physicalNetworkInterfacePrefix) {
                     
                     var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
                     getnameinfo(interface.ifa_addr, 
@@ -115,13 +110,12 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
     private func fetchIpAddressAsync(from apiUrl: String) async throws -> String {
         let result = await ipApiService.callIpApiAsync(ipApiUrl: apiUrl)
         
-        guard result.success, let ipAddress = result.result?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-            throw result.error ?? Constants.errorIpApiResponseIsInvalid
-        }
+        guard result.success,
+              let ipAddress = result.result?.trimmingCharacters(in: .whitespacesAndNewlines)
+        else { throw result.error ?? Constants.errorIpApiResponseIsInvalid }
         
-        guard ipAddress.isValidIp() else {
-            throw Constants.errorIpApiResponseIsInvalid
-        }
+        guard ipAddress.isValidIp()
+        else { throw Constants.errorIpApiResponseIsInvalid }
         
         return ipAddress
     }

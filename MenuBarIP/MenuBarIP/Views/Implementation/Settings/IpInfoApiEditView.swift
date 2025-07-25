@@ -122,14 +122,12 @@ struct IpInfoApiEditView: View {
     private func validateAndTestSettings() async throws -> IpInfo {
         // Prepare URL
         guard let publicIp = appState.network.publicIp?.ipAddress,
-              let checkUrl = ipApiService.prepareIpInfoApiUrl(publicIp: publicIp, ipInfoApiUrl: newUrl) else {
-            throw IpInfoApiSettingsError.invalidUrl
-        }
+              let checkUrl = ipApiService.prepareIpInfoApiUrl(publicIp: publicIp, ipInfoApiUrl: newUrl)
+        else { throw IpInfoApiSettingsError.invalidUrl }
         
         // Check URL reachability
-        guard try await networkService.isUrlReachableAsync(url: checkUrl) else {
-            throw IpInfoApiSettingsError.urlUnreachable
-        }
+        guard try await networkService.isUrlReachableAsync(url: checkUrl)
+        else { throw IpInfoApiSettingsError.urlUnreachable }
         
         // Test API response
         let testResponse = await ipService.getPublicIpInfoAsync(
@@ -137,14 +135,12 @@ struct IpInfoApiEditView: View {
             publicIp: publicIp,
             keyMapping: keyMapping)
         
-        guard testResponse.success, let ipInfo = testResponse.result else {
-            throw IpInfoApiSettingsError.invalidApiResponse
-        }
+        guard testResponse.success, let ipInfo = testResponse.result
+        else { throw IpInfoApiSettingsError.invalidApiResponse }
         
         // Verify location data
-        guard ipInfo.hasLocation() else {
-            throw IpInfoApiSettingsError.missingLocationData
-        }
+        guard ipInfo.hasLocation()
+        else { throw IpInfoApiSettingsError.missingLocationData }
         
         return ipInfo
     }

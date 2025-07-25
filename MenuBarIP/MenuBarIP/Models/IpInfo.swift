@@ -135,7 +135,7 @@ struct IpInfo: Codable, Equatable {
         return result
     }
     
-    // MARK: Privat functions
+    // MARK: Private functions
     
     private func splitIntoLines(_ string: String, lines: [String]) -> [String] {
         let words = string.split(separator: Constants.space).map { String($0) }

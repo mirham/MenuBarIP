@@ -28,7 +28,10 @@ struct MenuBarElement: View, Equatable {
     }
     
     func clone() -> MenuBarElement {
-        let result = MenuBarElement(image: self.image, key: self.key, isSeparator: self.isSeparator)
+        let result = MenuBarElement(
+            image: self.image,
+            key: self.key,
+            isSeparator: self.isSeparator)
         
         return result
     }

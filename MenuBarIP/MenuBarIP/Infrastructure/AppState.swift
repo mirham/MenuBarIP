@@ -16,24 +16,35 @@ class AppState : ObservableObject {
     static let shared = AppState()
     
     func applyNetworkUpdate(_ update: NetworkStateUpdate) {
+        var areIpApisReactivated = false
         var updatedNetwork = Network()
         
-        if update.status != nil {
-            updatedNetwork.status = update.status!
+        if update.hasInternetAccess == nil {
+            updatedNetwork.hasInternetAccess = network.hasInternetAccess
+        }
+        else {
+            updatedNetwork.hasInternetAccess = update.hasInternetAccess!
             
-            if network.status != .on && update.status == .on {
+            reactivateIpApis()
+            areIpApisReactivated = true
+        }
+        
+        if update.status == nil {
+            updatedNetwork.status = network.status
+        }
+        else {
+            updatedNetwork.status = update.status!
+            let apiReactivationNeeded = network.status != .on && update.status == .on && !areIpApisReactivated
+            
+            if apiReactivationNeeded {
                 reactivateIpApis()
             }
         }
-        else {
-            updatedNetwork.status = network.status
-        }
         
+        updatedNetwork.isObtainingIp = update.isObtainingIp ?? network.isObtainingIp
         updatedNetwork.publicIp = update.forceUpdatePublicIp ? update.publicIp : network.publicIp
         updatedNetwork.localIp = update.localIp ?? network.localIp
         updatedNetwork.activeNetworkInterfaces = update.activeNetworkInterfaces ?? network.activeNetworkInterfaces
-        updatedNetwork.isObtainingIp = update.isObtainingIp ?? network.isObtainingIp
-        updatedNetwork.hasInternetAccess = update.hasInternetAccess ?? network.hasInternetAccess
         
         if network != updatedNetwork {
             network = updatedNetwork

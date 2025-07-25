@@ -67,7 +67,7 @@ struct MenuBarMenuView : IpAddressContainerView {
             }
             .isHidden(hidden: appState.network.localIp == nil, remove: true)
             Divider()
-            AsyncButton(Constants.menuItemRefresh, action: networkService.refreshIpAddressesAsync)
+            AsyncButton(Constants.menuItemRefresh, action: networkService.refreshIpAddressesManuallyAsync)
             Divider()
             Button(Constants.menuItemSettings, action: handleSettingsButtonClick)
             Divider()
@@ -98,7 +98,7 @@ struct MenuBarMenuView : IpAddressContainerView {
     private func openWindowWithId (id: String) {
         NSApplication.shared.activate(ignoringOtherApps: true)
         
-        if (!appState.views.shownWindows.contains(where: {$0 == id})){
+        if !appState.views.shownWindows.contains(where: {$0 == id}) {
             openWindow(id: id)
         }
     }

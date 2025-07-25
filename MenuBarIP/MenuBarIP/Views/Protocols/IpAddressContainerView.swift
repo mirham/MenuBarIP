@@ -31,7 +31,8 @@ extension IpAddressContainerView {
         forMenu: Bool = false) -> Color {
             var result: Color = getBaseColor(colorScheme: colorScheme, forMenu: forMenu)
             
-            guard currentIpCustomization != nil else { return result }
+            guard currentIpCustomization != nil
+            else { return result }
             
             result = Color(hex: colorScheme == .dark
                            ? currentIpCustomization!.customDarkColor
@@ -45,7 +46,8 @@ extension IpAddressContainerView {
         currentIpCustomization: IpCustomization?) -> Color {
             var result: Color = getBaseColor(colorScheme: colorScheme)
             
-            guard currentIpCustomization != nil else { return result }
+            guard currentIpCustomization != nil
+            else { return result }
             
             result = Color(hex: colorScheme == .dark
                            ? currentIpCustomization!.customTextDarkColor
