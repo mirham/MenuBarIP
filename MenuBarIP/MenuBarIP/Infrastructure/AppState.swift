@@ -25,7 +25,7 @@ class AppState : ObservableObject {
         else {
             updatedNetwork.hasInternetAccess = update.hasInternetAccess!
             
-            reactivateIpApis()
+            userData.reactivateIpApis()
             areIpApisReactivated = true
         }
         
@@ -37,7 +37,7 @@ class AppState : ObservableObject {
             let apiReactivationNeeded = network.status != .on && update.status == .on && !areIpApisReactivated
             
             if apiReactivationNeeded {
-                reactivateIpApis()
+                userData.reactivateIpApis()
             }
         }
         
@@ -62,18 +62,11 @@ class AppState : ObservableObject {
         current.ipCustomization = userData.ipCustomizations
             .first(where: {$0.ipAddress == network.publicIp!.ipAddress})
     }
-    
-    private func reactivateIpApis() {
-        for index in 0..<userData.ipApis.count {
-            if !userData.ipApis[index].isActive() {
-                userData.ipApis[index].active = true
-            }
-        }
-    }
 }
 
 extension AppState {
     struct Current : Equatable {
+        var refreshSignal: Bool = false
         var ipCustomization: IpCustomization? = nil
         var colorScheme: ColorScheme = .light
         
@@ -87,6 +80,7 @@ extension AppState {
 
 extension AppState {
     struct Network : Equatable {
+        var refreshSignal: Bool = false
         var status: NetworkStatusType = NetworkStatusType.unknown
         var prevPublicIp: IpInfo? = nil
         var publicIp: IpInfo? = nil
@@ -220,6 +214,14 @@ extension AppState {
         
         func hasActiveIpApi() -> Bool {
             return !ipApis.isEmpty && ipApis.contains(where: {$0.isActive()})
+        }
+        
+        mutating func reactivateIpApis() {
+            for index in 0..<ipApis.count {
+                if !ipApis[index].isActive() {
+                    ipApis[index].active = true
+                }
+            }
         }
     }
 }
