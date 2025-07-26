@@ -94,7 +94,29 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     func refreshIpAddressesManuallyAsync() async {
-        await performConnectionHealthCheckAsync()
+        guard !Task.isCancelled else { return }
+        
+        let builder = NetworkStateUpdateBuilder()
+        
+        do {
+            let hasInternetAccess = try await checkIfInternetConnectionAsync()
+            builder.withHasInternetAccess(hasInternetAccess)
+            
+            if hasInternetAccess {
+                await reactivateIpApisAsync()
+                await refreshIpAddressesAsync()
+                await refreshIpInfoIfNeededAsync()
+            } else {
+                builder.withPublicIp(nil)
+            }
+            
+            await updateStatusAsync(update: builder.build())
+        } catch {
+            await updateStatusAsync(update: builder
+                .withHasInternetAccess(false)
+                .withPublicIp(nil)
+                .build())
+        }
     }
     
     // MARK: Private functions
@@ -161,8 +183,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             builder.withHasInternetAccess(hasInternetAccess)
             
             if hasInternetAccess {
-                await handleIpRefreshIfNeededAsync()
-                await handleIpInfoRefreshIfNeededAsync()
+                await refreshIpAddressIfNeededAsync()
+                await refreshIpInfoIfNeededAsync()
             } else {
                 builder.withPublicIp(nil)
             }
@@ -176,14 +198,24 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         }
     }
     
-    private func handleIpRefreshIfNeededAsync() async {
-        let requiresIpRefresh = appState.userData.hasActiveIpApi() && appState.network.publicIp == nil
+    private func reactivateIpApisAsync() async {
+        guard !Task.isCancelled else { return }
+        
+        await MainActor.run {
+            appState.userData.reactivateIpApis()
+        }
+    }
+    
+    private func refreshIpAddressIfNeededAsync() async {
+        let requiresIpRefresh = appState.userData.hasActiveIpApi()
+            && appState.network.publicIp == nil
+        
         if requiresIpRefresh {
             await refreshIpAddressesAsync()
         }
     }
     
-    private func handleIpInfoRefreshIfNeededAsync() async {
+    private func refreshIpInfoIfNeededAsync() async {
         guard let publicIp = appState.network.publicIp, !publicIp.hasLocation()
         else { return }
         
@@ -307,7 +339,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         
         await MainActor.run {
             appState.applyNetworkUpdate(update)
-            appState.objectWillChange.send()
+            appState.network.refreshSignal.toggle()
         }
     }
     
