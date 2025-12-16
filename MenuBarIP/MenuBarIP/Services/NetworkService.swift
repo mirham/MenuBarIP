@@ -21,12 +21,14 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
     private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
+    private var periodicCheckIpTask: Task<Void, Never>?
     
     override init() {
         super.init()
         
         startNetworkMonitoring()
         startConnectionHealthMonitoring()
+        startPeriodicIpCheck()
         addSystemDidWakeHandler()
     }
     
@@ -34,6 +36,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         monitor.cancel()
         monitoringTask?.cancel()
         ipUpdateTask?.cancel()
+        periodicCheckIpTask?.cancel()
         NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
@@ -166,6 +169,29 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 guard shouldCheckConnection() else { continue }
                 
                 await performConnectionHealthCheckAsync()
+            }
+        }
+    }
+    
+    func startPeriodicIpCheck() {
+        let builder = NetworkStateUpdateBuilder()
+        
+        periodicCheckIpTask = Task {
+            while !Task.isCancelled {
+                guard self.appState.userData.periodicIpCheck else {
+                    try? await Task.sleep(nanoseconds:UInt64(Constants.minTimeIntervalToCheck) * Constants.secondInNanoseconds)
+                    continue
+                }
+                
+                try? await Task.sleep(nanoseconds:UInt64(self.appState.userData.intervalBetweenChecks) * Constants.secondInNanoseconds)
+                
+                let publicIp = await fetchPublicIpAsync()
+                
+                await updateStatusAsync(update: builder
+                    .withPublicIp(publicIp)
+                    .build())
+                
+                writeLog(publicIp: publicIp)
             }
         }
     }

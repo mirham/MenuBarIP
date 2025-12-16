@@ -127,6 +127,12 @@ extension AppState {
 
 extension AppState {
     struct UserData : Settable, Equatable {
+        var periodicIpCheck: Bool = false {
+            didSet { writeSetting(newValue: periodicIpCheck, key: Constants.settingsKeyPeriodicIpCheck) }
+        }
+        var intervalBetweenChecks: Int = Constants.defaultIntervalBetweenChecksSeconds {
+            didSet { writeSetting(newValue: intervalBetweenChecks, key: Constants.settingsKeyIntervalBetweenChecks) }
+        }
         var enableLogging: Bool = false {
             didSet { writeSetting(newValue: enableLogging, key: Constants.settingsKeyEnableLogging) }
         }
@@ -183,6 +189,8 @@ extension AppState {
         }
         
         init() {
+            periodicIpCheck = readSetting(key: Constants.settingsKeyPeriodicIpCheck) ?? false
+            intervalBetweenChecks = readSetting(key: Constants.settingsKeyIntervalBetweenChecks) ?? Constants.defaultIntervalBetweenChecksSeconds
             enableLogging = readSetting(key: Constants.settingsKeyEnableLogging) ?? false
             logFileLimit = readSetting(key: Constants.settingsKeyLogFileLimit) ?? Constants.defaultLogFileLimit
             runScript = readSetting(key: Constants.settingsKeyRunScript) ?? false
