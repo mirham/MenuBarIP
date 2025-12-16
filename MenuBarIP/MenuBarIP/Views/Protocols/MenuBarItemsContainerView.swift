@@ -31,6 +31,12 @@ extension MenuBarItemsContainerView {
             let customTextColor = appState.userData.menuBarUseThemeColor
                 ? baseColor
                 : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
+            let localIpColor = appState.userData.menuBarUseThemeColor
+                ? baseColor
+                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
+            let localIpCustomTextColor = appState.userData.menuBarUseThemeColor
+                ? baseColor
+                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
             
             for key in keys {
                 switch key {
@@ -58,7 +64,7 @@ extension MenuBarItemsContainerView {
                     case Constants.mbItemKeyLocalIpAddress:
                         let localIpAddress = getIpAddressItem(
                             ipAddress: getEffectiveLocalIpString(appState: appState),
-                            color: baseColor,
+                            color: localIpColor,
                             isExampleAllowed: isExampleAllowed,
                             isPublic: false,
                             hasNetworkAccess: true,
@@ -72,7 +78,7 @@ extension MenuBarItemsContainerView {
                             ipAddressUpper: getEffectivePublicIpString(appState: appState),
                             ipAddressLower: getEffectiveLocalIpString(appState: appState),
                             colorUpper: ipColor,
-                            colorLower: baseColor,
+                            colorLower: localIpColor,
                             isExampleAllowed: isExampleAllowed,
                             isPublicUpper: true,
                             hasNetworkAccess: appState.network.hasInternetAccess)
@@ -90,13 +96,28 @@ extension MenuBarItemsContainerView {
                             key: key)
                         result.append(menuBarItem)
                     case Constants.mbItemKeyPublicIpAddressWithCustomText:
-                        let view = getPublicIpAddressWithCustomTextItem(
+                        let view = getIpAddressWithCustomTextItem(
                             ipAddress: getEffectivePublicIpString(appState: appState),
                             customText: appState.current.ipCustomization?.customText ?? String(),
                             color: ipColor,
                             customTextColor: customTextColor,
                             hasNetworkAccess: appState.network.hasInternetAccess,
                             textSize: appState.userData.menuBarTextSize,
+                            isPublic: true,
+                            isExampleAllowed: isExampleAllowed)
+                        let menuBarItem = MenuBarElement(
+                            image: renderMenuBarItemImage(view: view),
+                            key: key)
+                        result.append(menuBarItem)
+                    case Constants.mbItemKeyLocalIpAddressWithCustomText:
+                        let view = getIpAddressWithCustomTextItem(
+                            ipAddress: getEffectiveLocalIpString(appState: appState),
+                            customText: appState.current.localIpCustomization?.customText ?? String(),
+                            color: localIpColor,
+                            customTextColor: localIpCustomTextColor,
+                            hasNetworkAccess: appState.network.hasInternetAccess,
+                            textSize: appState.userData.menuBarTextSize,
+                            isPublic: false,
                             isExampleAllowed: isExampleAllowed)
                         let menuBarItem = MenuBarElement(
                             image: renderMenuBarItemImage(view: view),
@@ -288,44 +309,46 @@ extension MenuBarItemsContainerView {
         return result
     }
     
-    private func getPublicIpAddressWithCustomTextItem(
+    private func getIpAddressWithCustomTextItem(
         ipAddress: String,
         customText: String,
         color: Color,
         customTextColor: Color,
         hasNetworkAccess: Bool,
         textSize: Double = Constants.defaultMenuBarTextSize,
+        isPublic: Bool,
         isExampleAllowed: Bool) -> any View {
-            if !isExampleAllowed && customText.isEmpty {
-                return getIpAddressItem(
-                    ipAddress: ipAddress,
-                    color: color,
-                    isExampleAllowed: isExampleAllowed,
-                    isPublic: true,
-                    hasNetworkAccess: hasNetworkAccess,
-                    textSize: textSize)
-            }
-            
-            let upperItem = getCustomTextItem(
-                customText: customText,
-                color: customTextColor,
-                exampleAllowed: isExampleAllowed,
-                textSize: 7)
-            let lowerItem = getIpAddressItem(
+        if !isExampleAllowed && customText.isEmpty {
+            return getIpAddressItem(
                 ipAddress: ipAddress,
                 color: color,
                 isExampleAllowed: isExampleAllowed,
-                isPublic: true,
+                isPublic: isPublic,
                 hasNetworkAccess: hasNetworkAccess,
-                textSize: 12)
-            
-            let result = VStack(alignment: .leading, spacing: -3) {
-                upperItem
-                lowerItem
-            }
-            
-            return result
+                textSize: textSize)
         }
+            
+        let upperItem = getCustomTextItem(
+            customText: customText,
+            color: customTextColor,
+            exampleAllowed: isExampleAllowed,
+            textSize: 7)
+        let lowerItem = getIpAddressItem(
+            ipAddress: ipAddress,
+            color: color,
+            isExampleAllowed: isExampleAllowed,
+            isPublic: isPublic,
+            hasNetworkAccess: hasNetworkAccess,
+            textSize: 12)
+        
+        let result = VStack(alignment: .leading, spacing: -3) {
+            upperItem
+            lowerItem
+        }
+            
+        return result
+    }
+
     
     private func getCountryCodeItem(
         countryCode: String,
