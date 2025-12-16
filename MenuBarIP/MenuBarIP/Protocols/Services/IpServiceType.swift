@@ -12,4 +12,5 @@ protocol IpServiceType {
         publicIp: String,
         keyMapping: [String:String]) async -> OperationResult<IpInfo>
     func getLocalIp() -> String?
+    func isLocalIp(ipString: String) -> Bool
 }

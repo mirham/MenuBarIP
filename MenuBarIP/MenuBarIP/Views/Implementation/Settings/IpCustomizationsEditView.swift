@@ -137,14 +137,18 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     // MARK: Private functions
     
     private func upsertIpCustomizationAsync() async {
-        let ipInfoResult = await ipService.getPublicIpInfoAsync(
-            apiUrl: appState.userData.ipInfoApiUrl,
-            publicIp: newIp,
-            keyMapping: appState.userData.ipInfoApiKeyMapping)
+        let isLocalIp = ipService.isLocalIp(ipString: newIp)
         
-        if ipInfoResult.error != nil {
-            isNewIpInvalid = true
-            return
+        if !isLocalIp {
+            let ipInfoResult = await ipService.getPublicIpInfoAsync(
+                apiUrl: appState.userData.ipInfoApiUrl,
+                publicIp: newIp,
+                keyMapping: appState.userData.ipInfoApiKeyMapping)
+            
+            if ipInfoResult.error != nil {
+                isNewIpInvalid = true
+                return
+            }
         }
         
         let ipCustomization = IpCustomization(

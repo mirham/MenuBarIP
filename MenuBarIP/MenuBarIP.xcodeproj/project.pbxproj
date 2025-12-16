@@ -10,6 +10,7 @@
 		351458EF2DDB469700E11326 /* Factory in Frameworks */ = {isa = PBXBuildFile; productRef = 351458EE2DDB469700E11326 /* Factory */; };
 		351458F22DDB46AF00E11326 /* FlagKit in Frameworks */ = {isa = PBXBuildFile; productRef = 351458F12DDB46AF00E11326 /* FlagKit */; };
 		352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */; };
+		353EBC4A2EF1960300B7A963 /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 353EBC492EF195FC00B7A963 /* ArrayExtensions.swift */; };
 		354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032472C5E626D002624D2 /* MenuBarIPApp.swift */; };
 		3540324C2C5E6270002624D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324B2C5E6270002624D2 /* Assets.xcassets */; };
 		3540324F2C5E6270002624D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3540324E2C5E6270002624D2 /* Preview Assets.xcassets */; };
@@ -79,6 +80,7 @@
 
 /* Begin PBXFileReference section */
 		352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverColorPicker.swift; sourceTree = "<group>"; };
+		353EBC492EF195FC00B7A963 /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		354032442C5E626D002624D2 /* MenuBarIP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MenuBarIP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		354032472C5E626D002624D2 /* MenuBarIPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarIPApp.swift; sourceTree = "<group>"; };
 		3540324B2C5E6270002624D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -409,6 +411,7 @@
 		3575CCA92DD7686200102D4E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				353EBC492EF195FC00B7A963 /* ArrayExtensions.swift */,
 				358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */,
 				3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */,
 				3575CCAA2DD768CB00102D4E /* StringExtensions.swift */,
@@ -541,6 +544,7 @@
 				3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */,
 				35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */,
 				3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */,
+				353EBC4A2EF1960300B7A963 /* ArrayExtensions.swift in Sources */,
 				358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */,
 				3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */,
 				358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */,
@@ -731,7 +735,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -763,7 +767,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.5;
+				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

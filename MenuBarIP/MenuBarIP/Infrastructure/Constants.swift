@@ -113,6 +113,7 @@ struct Constants{
     static let pipe = "|"
     static let leftBracket = "("
     static let rightBracket = ")"
+    static let dot = "."
     
     // MARK: Window IDs
     static let windowIdSettings = "settings-view"
@@ -228,6 +229,7 @@ struct Constants{
     static let mbItemKeyPublicIpAddress = "public-ip-address"
     static let mbItemKeyPublicIpAddressWithCustomText = "public-ip-address-with-custom-text"
     static let mbItemKeyLocalIpAddress = "local-ip-address"
+    static let mbItemKeyLocalIpAddressWithCustomText = "local-ip-address-with-custom-text"
     static let mbItemKeyBothIpAddressesPublicUpper = "both-ips-public-upper"
     static let mbItemKeyCountryCode = "country-code"
     static let mbItemKeyCountryFlag = "country-flag"
@@ -310,7 +312,19 @@ struct Constants{
         "https://l2.io/ip",
         "https://api.ip.sb/ip",
         "https://ipv4.ddnspod.com/",
-        "https://api.ip.lk/"
+        "https://api.ip.lk/",
+        "https://realip.cc/simple",
+        "https://cdid.c-ctrip.com/model-poc2/h",
+        "https://ipv4.gdt.qq.com/get_client_ip",
+        "https://ifconfig.es/",
+        "https://eth0.me",
+        "http://ipaddr.site",
+        "https://ipaddress.sh",
+        "https://wgetip.com",
+        "https://ip.tyk.nu",
+        "https://curlmyip.net",
+        "https://ipcalf.com",
+        "https://getip.cc"
     ]
     
     static let launchAgentXmlContent =
@@ -339,6 +353,7 @@ struct Constants{
         mbItemKeyInternetStatus,
         mbItemKeyBigCountryFlag,
         mbItemKeyPublicIpAddressWithCustomText,
+        mbItemKeyLocalIpAddressWithCustomText,
         mbItemKeyBothIpAddressesPublicUpper,
         mbItemKeyLocalIpAddress,
         mbItemKeyCustomText,

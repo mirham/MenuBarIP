@@ -7,6 +7,7 @@
 
 import Foundation
 import Factory
+import Network
 
 class IpService : ServiceBase, ApiCallable, IpServiceType {
     @Injected(\.ipApiService) private var ipApiService
@@ -103,6 +104,30 @@ class IpService : ServiceBase, ApiCallable, IpServiceType {
         freeifaddrs(ifaddr)
         
         return result
+    }
+    
+    func isLocalIp(ipString: String) -> Bool {
+        if let ipv4 = IPv4Address(ipString) {
+            if ipv4.isLoopback || ipv4.isLinkLocal { return true }
+            
+            let octets = ipString.split(separator: Constants.dot).compactMap { Int($0) }
+            guard octets.count == 4 else { return false }
+            
+            switch (octets[0], octets[1]) {
+                case (10, _), (192, 168):
+                    return true
+                case (172, 16...31):
+                    return true
+                default:
+                    break
+            }
+        }
+        
+        if let ipv6 = IPv6Address(ipString) {
+            return ipv6.isLoopback || ipv6.isLinkLocal || ipv6.isUniqueLocal
+        }
+        
+        return false
     }
     
     // MARK: Private functions

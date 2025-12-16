@@ -54,6 +54,14 @@ class AppState : ObservableObject {
     // MARK: Private functions
     
     private func setCurrentState() {
+        guard network.localIp != nil else {
+            current.localIpCustomization = nil
+            return
+        }
+        
+        current.localIpCustomization = userData.ipCustomizations
+            .first(where: {$0.ipAddress == network.localIp})
+        
         guard network.publicIp != nil else {
             current.ipCustomization = nil
             return
@@ -68,10 +76,12 @@ extension AppState {
     struct Current : Equatable {
         var refreshSignal: Bool = false
         var ipCustomization: IpCustomization? = nil
+        var localIpCustomization: IpCustomization? = nil
         var colorScheme: ColorScheme = .light
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
+            && lhs.localIpCustomization == rhs.localIpCustomization
             
             return result
         }
@@ -204,6 +214,7 @@ extension AppState {
             
             if let savedMenuBarHiddenItems: [String] = readSettingsArray(key: Constants.settingsKeyHiddenMenuBarItems) {
                 menuBarHiddenItems = savedMenuBarHiddenItems
+                    .syncWithDefaults(Constants.defaultHiddenMenuBarItems, excluding: menuBarShownItems)
             }
             
             if let savedIpInfoApiMapping: [String:String] = readSettingsDictionary(key: Constants.settingsKeyIpInfoMapping) {
