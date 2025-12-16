@@ -13,6 +13,10 @@ struct Constants{
     static let defaultCountryCode = "US"
     static let defaultPublicIpAddress = "1.1.1.1"
     static let defaultLocalIpAddress = "192.168.1.2"
+    static let defaultIntervalBetweenChecksSeconds: Int = 60
+    static let minTimeIntervalBetweenChecksSeconds: Int = 1
+    static let maxTimeIntervalBetweenChecksSeconds: Int = 300
+    static let secondInNanoseconds: UInt64 = 1_000_000_000
     static let fileExtApp = "app"
     static let fileExtSh = "sh"
     static let fileExtPy = "py"
@@ -57,7 +61,7 @@ struct Constants{
     static let defaultMenuBarSpacing: Double = 4.0
     static let maxCustomTextSymbols: Int = 20
     static let defaultCheckConnectionHealthIntervalSeconds: Int = 5
-    static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds * 1_000_000_000)
+    static let defaultCheckConnectionHealthIntervalNanoseconds: UInt64 = UInt64(defaultCheckConnectionHealthIntervalSeconds) * secondInNanoseconds
     static let defaultLightColor = "#FEFFFF"
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl1 = "https://google.com"
@@ -67,6 +71,8 @@ struct Constants{
     static let defaultLogFileLimit: Int = 1000
     static let minLogFileLimit: Int = 10
     static let maxLogFileLimit: Int = 10000
+    static let minTimeIntervalToCheck: Int = 1
+    static let maxTimeIntervalToCheck: Int = 300
     static let newLine: String = "\n"
     static let newLineChar: Character = "\n"
     static let loggerDomainName = "Logger"
@@ -76,12 +82,9 @@ struct Constants{
     static let minIpApiCount: Int = 1
     static let envPathName = "PATH"
     static let envPossiblePathes = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/\(NSUserName())/.dotnet/tools"
-    static let space = " "
-    static let slash = "/"
     static let maxMenuLineLength = 30
     static let scriptContentPrefix = "#!"
     static let commaSeparator: String = ", "
-    static let hyphen: String = "-"
 
     
     // MARK: Regexes
@@ -114,6 +117,9 @@ struct Constants{
     static let leftBracket = "("
     static let rightBracket = ")"
     static let dot = "."
+    static let hyphen: String = "-"
+    static let space = " "
+    static let slash = "/"
     
     // MARK: Window IDs
     static let windowIdSettings = "settings-view"
@@ -122,6 +128,8 @@ struct Constants{
     static let windowIdInfo = "info-view"
     
     // MARK:  Settings key names
+    static let settingsKeyPeriodicIpCheck = "periodic-ip-check"
+    static let settingsKeyIntervalBetweenChecks = "interval-between-checks"
     static let settingsKeyEnableLogging = "enable-logging"
     static let settingsKeyLogFileLimit = "log-file-limit"
     static let settingsKeyRunScript = "run-script"
@@ -174,6 +182,9 @@ struct Constants{
     static let settingsElementGeneral = "General"
     static let settingsElementMenubar = "Menu bar"
     static let settingsElementKeepAppRunning = "Keep application running"
+    static let settingsElementPeriodicIpCheck = "Periodic IP address check"
+    static let settingsElementIntervalBegin = "at intervals of"
+    static let settingsElementIntervalEnd = "second(s)"
     static let settingsElementEnableLogging = "Enable public IP address logging"
     static let settingsElementRunScript = "Run application or script when public IP address changes"
     static let settingsElementLogFileLimit = "Log file lines limit"
@@ -206,6 +217,8 @@ struct Constants{
     static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)\n\(pathDotNetScript)"
     
     // MARK: Hints
+    static let hintPeriodicIpCheck = "Check the public IP address periodically when monitoring is enabled at the interval specified below."
+    static let hintInterval = "\(minTimeIntervalToCheck)..\(maxTimeIntervalToCheck)"
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
     static let hintRunScript = "Run a custom shell script when the public address changes, the new public IP address will be passed as the first argument as a string"
     static let hintApiIsActive = "API is active and in use"
@@ -372,6 +385,7 @@ struct Constants{
         "regionName" : "regionName",
         "cityName" : "city",
         "latitude" : "lat",
+        "longitude" : "lon",
         "asn" : "as",
         "isp" : "isp",
     ]

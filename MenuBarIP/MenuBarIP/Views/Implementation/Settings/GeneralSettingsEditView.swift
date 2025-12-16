@@ -18,6 +18,8 @@ struct GeneralSettingsEditView: View {
     @Injected(\.launchAgentService) private var launchAgentService
     
     @State private var isKeepRunningOn = false
+    @State private var showOverPeriodicIpCheck = false
+    @State private var interval: Int = 0
     @State private var showOverKeepApplicationRunning = false
     @State private var showOverEnableLogging = false
     @State private var showOverRunScript = false
@@ -66,6 +68,38 @@ struct GeneralSettingsEditView: View {
                              arrowEdge: .trailing,
                              content: { renderHelpHint(hint: Constants.hintKeepApplicationRunning) })
             }
+            HStack {
+                Toggle(Constants.settingsElementPeriodicIpCheck, isOn: Binding(
+                    get: { appState.userData.periodicIpCheck },
+                    set: { appState.userData.periodicIpCheck = $0 }
+                ))
+                .withSettingToggleStyle()
+                Spacer()
+                Image(systemName: Constants.iconQuestionMark)
+                    .asHelpIcon()
+                    .onHover(perform: { hovering in
+                        showOverPeriodicIpCheck = hovering && controlActiveState == .key
+                    })
+                    .popover(isPresented: $showOverPeriodicIpCheck,
+                             arrowEdge: .trailing,
+                             content: { renderHelpHint(hint: Constants.hintPeriodicIpCheck) })
+            }
+            .padding(.bottom, 0)
+            HStack {
+                Text(Constants.settingsElementIntervalBegin)
+                    .padding(.leading, 45)
+                TextField(Constants.hintInterval, value: $interval, formatter: NumberFormatter())
+                    .foregroundColor(checkIfTimeIntervalValid(interval: interval) ? .primary : .red)
+                    .onChange(of: interval) {
+                        if checkIfTimeIntervalValid(interval: interval) {
+                            appState.userData.intervalBetweenChecks = interval
+                        }
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 59)
+                Text(Constants.settingsElementIntervalEnd)
+            }
+            .isHidden(hidden: !appState.userData.periodicIpCheck, remove: true)
             HStack {
                 Toggle(Constants.settingsElementEnableLogging, isOn: Binding(
                     get: { appState.userData.enableLogging },
@@ -196,6 +230,7 @@ struct GeneralSettingsEditView: View {
     // MARK: Private functions
     
     private func initValues() {
+        self.interval = appState.userData.intervalBetweenChecks
         self.logLimit = appState.userData.logFileLimit
         self.scriptPath = appState.userData.scriptPath
         self.newUrl1 = appState.userData.internetCheckUrl1
@@ -213,6 +248,12 @@ struct GeneralSettingsEditView: View {
     
     private func checkIfLogIntervalValid(logLimit: Int) -> Bool {
         let result = logLimit >= Constants.minLogFileLimit && logLimit <= Constants.maxLogFileLimit
+        
+        return result
+    }
+    
+    private func checkIfTimeIntervalValid(interval: Int) -> Bool {
+        let result = interval >= Constants.minTimeIntervalToCheck && interval <= Constants.maxTimeIntervalToCheck
         
         return result
     }
