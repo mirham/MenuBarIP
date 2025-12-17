@@ -73,16 +73,35 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
         }
     }
     
-    func refreshIpAddressesAsync() async {
+    func refreshIpAddressesAsync(isManually: Bool = false) async {
         guard !Task.isCancelled else { return }
         
-        await updateStatusAsync(update: NetworkStateUpdateBuilder()
-            .withIsObtainingIp(true)
-            .build())
-        
         let prevPublicIp = appState.network.publicIp
+        var loadingTask: Task<Void, Never>?
+        
+        func showObtainingStatus() async {
+            await updateStatusAsync(update: NetworkStateUpdateBuilder()
+                .withIsObtainingIp(true)
+                .build())
+        }
+        
+        if (isManually) {
+            await showObtainingStatus()
+        }
+        else {
+            loadingTask = Task {
+                try? await Task.sleep(nanoseconds: Constants.secondInNanoseconds)
+                
+                guard !Task.isCancelled else { return }
+                
+                await showObtainingStatus()
+            }
+        }
+        
         let localIp = ipService.getLocalIp()
         let publicIp = await fetchPublicIpAsync()
+        
+        loadingTask?.cancel()
         
         await updateStatusAsync(update: NetworkStateUpdateBuilder()
             .withIsObtainingIp(false)
@@ -107,7 +126,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             
             if hasInternetAccess {
                 await reactivateIpApisAsync()
-                await refreshIpAddressesAsync()
+                await refreshIpAddressesAsync(isManually: true)
                 await refreshIpInfoIfNeededAsync()
             } else {
                 builder.withPublicIp(nil)
@@ -125,34 +144,36 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     // MARK: Private functions
     
     private func startNetworkMonitoring() {
-        monitor.pathUpdateHandler = { path in
+        monitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
+            
             let networkInterfaces = self.determineNetworkInterfaces(path: path)
             let status = self.determineNetworkStatusType(path: path, networkInterfaces: networkInterfaces)
             let isConnectionChanged = self.appState.network.isConnectionChanged (
                 status: status,
                 activeNetworkInterfaces: networkInterfaces)
             
-            if isConnectionChanged {
-                let updatedStatus = status
-                let updatedNetworkInterfaces = networkInterfaces
+            guard isConnectionChanged else { return }
+            
+            let updatedStatus = status
+            let updatedNetworkInterfaces = networkInterfaces
+            
+            self.ipUpdateTask?.cancel()
+            
+            self.ipUpdateTask = Task {
+                await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
+                    .withStatus(updatedStatus)
+                    .withActiveNetworkInterfaces(updatedNetworkInterfaces)
+                    .withIsDisconnected(updatedStatus != .on)
+                    .build())
                 
-                self.ipUpdateTask?.cancel()
-                
-                self.ipUpdateTask = Task {
-                    await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
-                        .withStatus(updatedStatus)
-                        .withActiveNetworkInterfaces(updatedNetworkInterfaces)
-                        .withIsDisconnected(updatedStatus != .on)
-                        .build())
-                    
-                    if status == .on {
-                        do {
-                            try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                            await self.refreshIpAddressesAsync()
-                        }
-                        catch {
-                            self.ipUpdateTask?.cancel()
-                        }
+                if status == .on {
+                    do {
+                        try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
+                        await self.refreshIpAddressesAsync()
+                    }
+                    catch {
+                        self.ipUpdateTask?.cancel()
                     }
                 }
             }
@@ -166,7 +187,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: Constants.defaultCheckConnectionHealthIntervalNanoseconds)
                 
-                guard shouldCheckConnection() else { continue }
+                guard await shouldCheckConnectionWithRetryAsync() else { continue }
                 
                 await performConnectionHealthCheckAsync()
             }
@@ -201,11 +222,38 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 && !appState.network.isObtainingIp
     }
     
+    private func shouldCheckConnectionWithRetryAsync() async -> Bool {
+        for _ in 0..<Constants.minMaxConnectionChecks {
+            if shouldCheckConnection() {
+                return true
+            }
+            
+            try? await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
+        }
+        
+        return shouldCheckConnection()
+    }
+    
     private func performConnectionHealthCheckAsync() async {
         let builder = NetworkStateUpdateBuilder()
         
         do {
-            let hasInternetAccess = try await checkIfInternetConnectionAsync()
+            var hasInternetAccess = try await checkIfInternetConnectionAsync()
+            
+            if !hasInternetAccess {
+                let startTime = Date()
+                
+                while Date().timeIntervalSince(startTime) < Constants.callTimeoutIpApiInSeconds {
+                    hasInternetAccess = try await checkIfInternetConnectionAsync()
+                    
+                    if hasInternetAccess {
+                        break
+                    }
+                    
+                    try? await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
+                }
+            }
+            
             builder.withHasInternetAccess(hasInternetAccess)
             
             if hasInternetAccess {

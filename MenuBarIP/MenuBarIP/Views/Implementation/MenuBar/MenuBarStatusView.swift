@@ -12,11 +12,14 @@ struct MenuBarStatusView : MenuBarItemsContainerView {
     
     @Environment(\.colorScheme) private var colorScheme
     
+    @State private var debouncedAppState: AppState?
+    @State private var debounceTask: Task<Void, Never>?
+    
     @MainActor
     var body: some View {
         HStack{
             let image = MenuBarStatusRawView(
-                appState: appState,
+                appState: debouncedAppState ?? appState,
                 colorScheme: colorScheme).renderAsImage()
             Image(nsImage: image!)
                 .nonAntialiased()
@@ -24,9 +27,24 @@ struct MenuBarStatusView : MenuBarItemsContainerView {
         }
         .onAppear(){
             appState.current.colorScheme = colorScheme
+            updateDebouncedState()
+        }
+        .onChange(of: appState.network) {
+            updateDebouncedState()
         }
         .onChange(of: colorScheme) {
             appState.current.colorScheme = colorScheme
+        }
+    }
+    
+    private func updateDebouncedState() {
+        debounceTask?.cancel()
+        
+        debounceTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: Constants.minRefreshingTimeInterval)
+            guard !Task.isCancelled else { return }
+            
+            debouncedAppState = appState
         }
     }
 }

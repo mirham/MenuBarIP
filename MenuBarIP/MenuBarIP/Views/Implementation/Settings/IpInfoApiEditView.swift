@@ -151,7 +151,7 @@ struct IpInfoApiEditView: View {
             appState.userData.ipInfoApiKeyMapping = keyMapping
         }
         
-        await networkService.refreshIpAddressesAsync()
+        await networkService.refreshIpAddressesAsync(isManually: false)
     }
     
     private func handleError(_ error: Error) async {

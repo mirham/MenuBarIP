@@ -85,6 +85,8 @@ struct Constants{
     static let maxMenuLineLength = 30
     static let scriptContentPrefix = "#!"
     static let commaSeparator: String = ", "
+    static let minRefreshingTimeInterval: UInt64 = 500_000_000
+    static let minMaxConnectionChecks = 10
 
     
     // MARK: Regexes
