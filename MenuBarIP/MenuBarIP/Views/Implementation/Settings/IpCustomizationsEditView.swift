@@ -74,7 +74,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                         }
                     }
                 }
-                .padding(.bottom, 5)
+                .padding(10)
                 .safeAreaInset(edge: .bottom) {
                     VStack {
                         HStack {
@@ -128,7 +128,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                             .bold()
                             .pointerOnHover()
                     }
-                    .padding(5)
+                    .padding(10)
                 }
             }
         }
@@ -211,7 +211,7 @@ private extension PopoverColorPicker {
     func asCircle() -> some View {
         self.fixedSize()
             .frame(width: 20, height: 20)
-            .offset(x: -7.5)
+            .offset(x: -10)
             .scaleEffect(1.2)
             .clipShape(Circle())
             .overlay(content: {

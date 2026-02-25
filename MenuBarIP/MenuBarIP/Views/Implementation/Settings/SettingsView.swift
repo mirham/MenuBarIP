@@ -13,31 +13,72 @@ struct SettingsView : View {
     @Environment(\.controlActiveState) var controlActiveState
 
     var body: some View {
-        TabView {
-            GeneralSettingsEditView()
-                .tabItem {
-                    Text(Constants.settingsElementGeneral)
+        VStack {
+            HStack {
+                Spacer()
+                    .frame(width: 30)
+                Text(Constants.menuItemSettings)
+                    .font(.headline)
+                Spacer()
+            }
+            .offset(y: -22)
+            FixedSidebarTabView {
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementGeneral,
+                    icon: "gear"
+                ) {
+                    GeneralSettingsEditView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            MenuBarStatusEditView()
-                .tabItem {
-                    Text(Constants.settingsElementMenubar)
+                
+                // Menu Bar Settings
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementMenubar,
+                    icon: "menubar.rectangle"
+                ) {
+                    MenuBarStatusEditView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            IpCustomizationsEditView()
-                .tabItem {
-                    Text(Constants.settingsElementCustomization)
+                
+                // IP Customization
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementIpCustomization,
+                    icon: "paintbrush"
+                ) {
+                    IpCustomizationsEditView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            IpApisEditView()
-                .environmentObject(appState)
-                .tabItem {
-                    Text(Constants.settingsElementIpAddressApis)
+                
+                // ISP Customization
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementIspCustomization,
+                    icon: "paintbrush"
+                ) {
+                    IpCustomizationsEditView() // Note: You might want a different view here
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-            IpInfoApiEditView()
-                .environmentObject(appState)
-                .tabItem {
-                    Text(Constants.settingsElementIpInfoApi)
+                
+                // IP Address APIs
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementIpAddressApis,
+                    icon: "list.bullet.rectangle"
+                ) {
+                    IpApisEditView()
+                        .environmentObject(appState)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                
+                // IP Info API
+                FixedSidebarTabView.TabItem(
+                    title: Constants.settingsElementIpInfoApi,
+                    icon: "list.bullet.rectangle"
+                ) {
+                    IpInfoApiEditView()
+                        .environmentObject(appState)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
         }
-        .tabViewStyle(.grouped)
         .onAppear(perform: {
             appState.views.shownWindows.append(Constants.windowIdSettings)
             AppHelper.setUpView(
@@ -48,8 +89,6 @@ struct SettingsView : View {
             appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdSettings})
         })
         .opacity(getViewOpacity(state: controlActiveState))
-        .padding()
-        .frame(maxWidth: 500, maxHeight: 500)
     }
 }
 

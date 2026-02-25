@@ -46,7 +46,7 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
                                     keepLastItem: false))
                         }
                     }
-                    .frame(width: 420, alignment: .center)
+                    .frame(width: 450, alignment: .center)
                     .onChange(of: shownItems, saveMenuBarElementItems)
                     .onChange(of: appState.network, fillMenuBarElementItems)
                     .onChange(of: appState.userData, fillMenuBarElementItems)
@@ -70,7 +70,7 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
                                     keepLastItem: true))
                         }
                     }
-                    .frame(width: 420, alignment: .center)
+                    .frame(width: 450, alignment: .center)
                     .onChange(of: hiddenItems, saveMenuBarElementItems)
                     .onChange(of: appState.network, fillMenuBarElementItems)
                     .onChange(of: appState.userData, fillMenuBarElementItems)
@@ -169,7 +169,7 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
 
 private extension ScrollView {
     func asMenuBarPreview() -> some View {
-        self.frame(width: 420, height: 30)
+        self.frame(width: 450, height: 30)
             .clipShape(
                 RoundedRectangle(
                     cornerRadius: 6

@@ -28,7 +28,7 @@ struct IpApisEditView : View {
                     .padding(.trailing)
             }
             Spacer()
-                .frame(height: 10)
+                .frame(height: 5)
             VStack(alignment: .center) {
                 Text(Constants.settingsElementIpAddressApis)
                     .font(.title3)
@@ -55,7 +55,7 @@ struct IpApisEditView : View {
                             }
                         }
                     }
-                    .padding(.bottom, 5)
+                    .padding(10)
                 }
                 .safeAreaInset(edge: .bottom) {
                     VStack {
@@ -76,8 +76,8 @@ struct IpApisEditView : View {
                             .pointerOnHover()
                             .bold()
                     }
+                    .padding(10)
                 }
-                .padding(5)
             }
         }
         .alert(isPresented: Binding(

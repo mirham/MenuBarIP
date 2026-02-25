@@ -59,7 +59,7 @@ struct IpInfoApiEditView: View {
                         }
                     }
                 }
-                .padding(.bottom, 5)
+                .padding(10)
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -69,6 +69,7 @@ struct IpInfoApiEditView: View {
                     .pointerOnHover()
                     .bold()
             }
+            .padding(10)
         }
         .alert(isPresented: Binding(
             get: {
@@ -90,7 +91,6 @@ struct IpInfoApiEditView: View {
                 }
             )
         }
-        .padding(5)
         .onAppear(perform: initValues)
     }
     
