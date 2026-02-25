@@ -222,7 +222,9 @@ extension AppState {
             
             if let savedMenuBarHiddenItems: [String] = readSettingsArray(key: Constants.settingsKeyHiddenMenuBarItems) {
                 menuBarHiddenItems = savedMenuBarHiddenItems
-                    .syncWithDefaults(Constants.defaultHiddenMenuBarItems, excluding: menuBarShownItems)
+                    .syncWithDefaults(
+                        Array(Set(Constants.defaultShownMenuBarItems + Constants.defaultHiddenMenuBarItems)),
+                        excluding: menuBarShownItems)
             }
             
             if let savedIpInfoApiMapping: [String:String] = readSettingsDictionary(key: Constants.settingsKeyIpInfoMapping) {

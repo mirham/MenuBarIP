@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MenuBarStatusEditView: MenuBarItemsContainerView {
+struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.colorScheme) private var colorScheme

@@ -85,6 +85,8 @@ struct Constants{
     static let maxMenuLineLength = 30
     static let scriptContentPrefix = "#!"
     static let commaSeparator: String = ", "
+    static let minRefreshingTimeInterval: UInt64 = 500_000_000
+    static let minMaxConnectionChecks = 10
 
     
     // MARK: Regexes
@@ -193,7 +195,7 @@ struct Constants{
     static let settingsElementHiddenItems = "Hidden menu bar items"
     static let settingsElementItemsSize = "Items size"
     static let settingsElementSpacing = "Spacing"
-    static let settingsElementIps = "IP adresses customization"
+    static let settingsElementIps = "IP addresses customization"
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
     static let settingsElementIpInfoApi = "IP info API"

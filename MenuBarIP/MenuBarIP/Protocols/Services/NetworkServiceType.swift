@@ -7,6 +7,6 @@
 
 protocol NetworkServiceType {
     func isUrlReachableAsync(url : String) async throws -> Bool
-    func refreshIpAddressesAsync() async
+    func refreshIpAddressesAsync(isManually: Bool) async
     func refreshIpAddressesManuallyAsync() async
 }

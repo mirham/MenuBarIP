@@ -7,16 +7,19 @@
 
 import SwiftUI
 
-struct MenuBarStatusView : MenuBarItemsContainerView {
+struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.colorScheme) private var colorScheme
+    
+    @State private var debouncedAppState: AppState?
+    @State private var debounceTask: Task<Void, Never>?
     
     @MainActor
     var body: some View {
         HStack{
             let image = MenuBarStatusRawView(
-                appState: appState,
+                appState: debouncedAppState ?? appState,
                 colorScheme: colorScheme).renderAsImage()
             Image(nsImage: image!)
                 .nonAntialiased()
@@ -24,16 +27,31 @@ struct MenuBarStatusView : MenuBarItemsContainerView {
         }
         .onAppear(){
             appState.current.colorScheme = colorScheme
+            updateDebouncedState()
+        }
+        .onChange(of: appState.network) {
+            updateDebouncedState()
         }
         .onChange(of: colorScheme) {
             appState.current.colorScheme = colorScheme
+        }
+    }
+    
+    private func updateDebouncedState() {
+        debounceTask?.cancel()
+        
+        debounceTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: Constants.minRefreshingTimeInterval)
+            guard !Task.isCancelled else { return }
+            
+            debouncedAppState = appState
         }
     }
 }
 
 // MARK: Inner types
 
-private struct MenuBarStatusRawView: MenuBarItemsContainerView {
+private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
     private let appState: AppState
     private let colorScheme: ColorScheme
     
