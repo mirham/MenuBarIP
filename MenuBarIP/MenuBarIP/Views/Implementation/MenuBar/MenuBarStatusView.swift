@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MenuBarStatusView : MenuBarItemsContainerView {
+struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
     @EnvironmentObject var appState: AppState
     
     @Environment(\.colorScheme) private var colorScheme
@@ -51,7 +51,7 @@ struct MenuBarStatusView : MenuBarItemsContainerView {
 
 // MARK: Inner types
 
-private struct MenuBarStatusRawView: MenuBarItemsContainerView {
+private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
     private let appState: AppState
     private let colorScheme: ColorScheme
     
