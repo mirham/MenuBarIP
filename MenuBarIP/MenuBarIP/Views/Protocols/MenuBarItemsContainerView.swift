@@ -27,16 +27,22 @@ extension MenuBarItemsContainerView {
             let baseColor = getBaseColor(colorScheme: colorScheme)
             let ipColor = appState.userData.menuBarUseThemeColor
                 ? baseColor
-                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
+                : getIpColor(colorScheme: colorScheme, currentCustomization: appState.current.ipCustomization)
             let customTextColor = appState.userData.menuBarUseThemeColor
                 ? baseColor
-                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
+                : getCustomTextColor(
+                    colorScheme: colorScheme,
+                    primaryCustomization: appState.current.ipCustomization,
+                    optionalCustomization: appState.current.customTextCustomization)
             let localIpColor = appState.userData.menuBarUseThemeColor
                 ? baseColor
-                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
+                : getIpColor(colorScheme: colorScheme, currentCustomization: appState.current.localIpCustomization)
             let localIpCustomTextColor = appState.userData.menuBarUseThemeColor
                 ? baseColor
-                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
+                : getCustomTextColor(
+                    colorScheme: colorScheme,
+                    primaryCustomization: appState.current.localIpCustomization,
+                    optionalCustomization: appState.current.customTextCustomization)
             
             for key in keys {
                 switch key {
@@ -88,7 +94,7 @@ extension MenuBarItemsContainerView {
                         result.append(menuBarItem)
                     case Constants.mbItemKeyCustomText:
                         let view = getCustomTextItem(
-                            customText: appState.current.ipCustomization?.customText ?? String(),
+                            customText: appState.current.publicIpCustomText ?? String(),
                             color: customTextColor,
                             exampleAllowed: isExampleAllowed)
                         let menuBarItem = MenuBarElement(
@@ -98,7 +104,7 @@ extension MenuBarItemsContainerView {
                     case Constants.mbItemKeyPublicIpAddressWithCustomText:
                         let view = getIpAddressWithCustomTextItem(
                             ipAddress: getEffectivePublicIpString(appState: appState),
-                            customText: appState.current.ipCustomization?.customText ?? String(),
+                            customText: appState.current.publicIpCustomText ?? String(),
                             color: ipColor,
                             customTextColor: customTextColor,
                             hasNetworkAccess: appState.network.hasInternetAccess,

@@ -28,7 +28,7 @@ struct IpApisEditView : View {
                     .padding(.trailing)
             }
             Spacer()
-                .frame(height: 5)
+                .frame(height: 10)
             VStack(alignment: .center) {
                 Text(Constants.settingsElementIpAddressApis)
                     .font(.title3)

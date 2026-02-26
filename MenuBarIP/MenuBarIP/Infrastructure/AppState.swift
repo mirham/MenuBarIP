@@ -54,34 +54,90 @@ class AppState : ObservableObject {
     // MARK: Private functions
     
     private func setCurrentState() {
-        guard network.localIp != nil else {
+        setLocalIpCustomization()
+        setPublicIpCustomization()
+        setCustomTextCustomization()
+    }
+    
+    private func setLocalIpCustomization() {
+        guard let localIp = network.localIp else {
             current.localIpCustomization = nil
             return
         }
         
         current.localIpCustomization = userData.ipCustomizations
-            .first(where: {$0.ipAddress == network.localIp})
-        
-        guard network.publicIp != nil else {
+            .first { $0.value == localIp }
+    }
+    
+    private func setPublicIpCustomization() {
+        guard let publicIp = network.publicIp?.ipAddress else {
             current.ipCustomization = nil
             return
         }
         
-        current.ipCustomization = userData.ipCustomizations
-            .first(where: {$0.ipAddress == network.publicIp!.ipAddress})
+        let customization = userData.ipCustomizations
+            .first { $0.value == publicIp }
+        
+        guard let customization = customization
+        else { return }
+        
+        current.ipCustomization = customization
+        current.publicIpCustomText = customization.customText
+    }
+    
+    private func setCustomTextCustomization() {
+        guard let publicIp = network.publicIp else {
+            current.customTextCustomization = nil
+            current.publicIpCustomText = nil
+            return
+        }
+        
+        guard current.ipCustomization == nil
+        else { return }
+        
+        findAndApplyCustomTextCustomization(for: publicIp)
+    }
+    
+    private func findAndApplyCustomTextCustomization(for ipInfo: IpInfo) {
+        var bestMatch: (customization: Customization, matchedValue: String)?
+        var fallbackMatch: (customization: Customization, matchedValue: String)?
+        
+        for customization in userData.customTextCustomizations {
+            guard let matchedValue = customization.getIpInfoMatch(ipInfo: ipInfo)
+            else { continue }
+            
+            if !customization.customText.isEmpty {
+                bestMatch = (customization, matchedValue)
+                break
+            } else if fallbackMatch == nil {
+                fallbackMatch = (customization, matchedValue)
+            }
+        }
+        
+        applyTextCustomization(bestMatch ?? fallbackMatch)
+    }
+    
+    private func applyTextCustomization(_ match: (
+        customization: Customization,
+        matchedValue: String)?) {
+        current.customTextCustomization = match?.customization
+        current.publicIpCustomText = match?.matchedValue
     }
 }
 
 extension AppState {
     struct Current : Equatable {
         var refreshSignal: Bool = false
-        var ipCustomization: IpCustomization? = nil
-        var localIpCustomization: IpCustomization? = nil
+        var ipCustomization: Customization? = nil
+        var localIpCustomization: Customization? = nil
+        var customTextCustomization: Customization? = nil
+        var publicIpCustomText: String? = nil
         var colorScheme: ColorScheme = .light
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
             && lhs.localIpCustomization == rhs.localIpCustomization
+            && lhs.customTextCustomization == rhs.customTextCustomization
             
             return result
         }
@@ -128,58 +184,137 @@ extension AppState {
 extension AppState {
     struct UserData : Settable, Equatable {
         var periodicIpCheck: Bool = false {
-            didSet { writeSetting(newValue: periodicIpCheck, key: Constants.settingsKeyPeriodicIpCheck) }
+            didSet {
+                writeSetting(
+                    newValue: periodicIpCheck,
+                    key: Constants.settingsKeyPeriodicIpCheck)
+            }
         }
         var intervalBetweenChecks: Int = Constants.defaultIntervalBetweenChecksSeconds {
-            didSet { writeSetting(newValue: intervalBetweenChecks, key: Constants.settingsKeyIntervalBetweenChecks) }
+            didSet {
+                writeSetting(
+                    newValue: intervalBetweenChecks,
+                    key: Constants.settingsKeyIntervalBetweenChecks)
+            }
         }
         var enableLogging: Bool = false {
-            didSet { writeSetting(newValue: enableLogging, key: Constants.settingsKeyEnableLogging) }
+            didSet {
+                writeSetting(
+                    newValue: enableLogging,
+                    key: Constants.settingsKeyEnableLogging)
+            }
         }
         var logFileLimit: Int = Constants.defaultLogFileLimit {
-            didSet { writeSetting(newValue: logFileLimit, key: Constants.settingsKeyLogFileLimit) }
+            didSet {
+                writeSetting(
+                    newValue: logFileLimit,
+                    key: Constants.settingsKeyLogFileLimit)
+            }
         }
         var runScript: Bool = false {
-            didSet { writeSetting(newValue: runScript, key: Constants.settingsKeyRunScript) }
+            didSet {
+                writeSetting(
+                    newValue: runScript,
+                    key: Constants.settingsKeyRunScript)
+            }
         }
         var scriptPath: String = String() {
-            didSet { writeSetting(newValue: scriptPath, key: Constants.settingsKeyScriptPath) }
+            didSet {
+                writeSetting(
+                    newValue: scriptPath,
+                    key: Constants.settingsKeyScriptPath)
+            }
         }
         var internetCheckUrl1: String = Constants.defaultInternetCheckUrl1 {
-            didSet { writeSetting(newValue: internetCheckUrl1, key: Constants.settingsKeyInternetCheckUrl1) }
+            didSet {
+                writeSetting(
+                    newValue: internetCheckUrl1,
+                    key: Constants.settingsKeyInternetCheckUrl1)
+            }
         }
         var internetCheckUrl2: String = Constants.defaultInternetCheckUrl2 {
-            didSet { writeSetting(newValue: internetCheckUrl2, key: Constants.settingsKeyInternetCheckUrl2) }
+            didSet {
+                writeSetting(
+                    newValue: internetCheckUrl2,
+                    key: Constants.settingsKeyInternetCheckUrl2)
+            }
         }
         var internetCheckUrl3: String = Constants.defaultInternetCheckUrl3 {
-            didSet { writeSetting(newValue: internetCheckUrl3, key: Constants.settingsKeyInternetCheckUrl3) }
+            didSet {
+                writeSetting(
+                    newValue: internetCheckUrl3,
+                    key: Constants.settingsKeyInternetCheckUrl3)
+            }
         }
         var menuBarShownItems = Constants.defaultShownMenuBarItems {
-            didSet { writeSettingsArray(newValues: menuBarShownItems, key: Constants.settingsKeyShownMenuBarItems) }
+            didSet {
+                writeSettingsArray(
+                    newValues: menuBarShownItems,
+                    key: Constants.settingsKeyShownMenuBarItems)
+            }
         }
         var menuBarHiddenItems = Constants.defaultHiddenMenuBarItems {
-            didSet { writeSettingsArray(newValues: menuBarHiddenItems, key: Constants.settingsKeyHiddenMenuBarItems) }
+            didSet {
+                writeSettingsArray(
+                    newValues: menuBarHiddenItems,
+                    key: Constants.settingsKeyHiddenMenuBarItems)
+            }
         }
         var menuBarTextSize: Double = Constants.defaultMenuBarTextSize {
-            didSet { writeSetting(newValue: menuBarTextSize, key: Constants.settingsKeyMenuBarTextSize) }
+            didSet {
+                writeSetting(
+                    newValue: menuBarTextSize,
+                    key: Constants.settingsKeyMenuBarTextSize)
+            }
         }
         var menuBarSpacing: Double = Constants.defaultMenuBarSpacing {
-            didSet { writeSetting(newValue: menuBarSpacing, key: Constants.settingsElementSpacing) }
+            didSet {
+                writeSetting(
+                    newValue: menuBarSpacing,
+                    key: Constants.settingsElementSpacing)
+            }
         }
         var menuBarUseThemeColor: Bool = false {
-            didSet { writeSetting(newValue: menuBarUseThemeColor, key: Constants.settingsKeyMenuBarUseThemeColor) }
+            didSet {
+                writeSetting(
+                    newValue: menuBarUseThemeColor,
+                    key: Constants.settingsKeyMenuBarUseThemeColor)
+            }
         }
-        var ipCustomizations = [IpCustomization]() {
-            didSet { writeSettingsArray(newValues: ipCustomizations, key: Constants.settingsKeyIpCustomizations) }
+        var ipCustomizations = [Customization]() {
+            didSet {
+                writeSettingsArray(
+                    newValues: ipCustomizations,
+                    key: Constants.settingsKeyIpCustomizations)
+            }
+        }
+        var customTextCustomizations = [Customization]() {
+            didSet {
+                writeSettingsArray(
+                    newValues: customTextCustomizations,
+                    key: Constants.settingsKeyCustomTextCustomizations)
+            }
         }
         var ipApis = [IpApiInfo]() {
-            didSet { writeSettingsArray(newValues: ipApis, key: Constants.settingsKeyApis) }
+            didSet {
+                writeSettingsArray(
+                    newValues: ipApis,
+                    key: Constants.settingsKeyApis)
+            }
         }
         var ipInfoApiUrl: String = Constants.defaultIpInfoApiUrl {
-            didSet { writeSetting(newValue: ipInfoApiUrl, key: Constants.settingsKeyIpInfoApiUrl) }
+            didSet {
+                writeSetting(
+                    newValue: ipInfoApiUrl,
+                    key: Constants.settingsKeyIpInfoApiUrl)
+            }
         }
         var ipInfoApiKeyMapping: [String:String] = Constants.defaultIpInfoApiKeyMapping {
-            didSet { writeSettingsDictionary(newValues: ipInfoApiKeyMapping, key: Constants.settingsKeyIpInfoMapping) }
+            didSet {
+                writeSettingsDictionary(
+                    newValues: ipInfoApiKeyMapping,
+                    key: Constants.settingsKeyIpInfoMapping)
+            }
         }
         
         static func == (lhs: UserData, rhs: UserData) -> Bool {
@@ -203,8 +338,12 @@ extension AppState {
             menuBarSpacing = readSetting(key: Constants.settingsKeyMenuBarSpacing) ?? Constants.defaultMenuBarSpacing
             ipInfoApiUrl = readSetting(key: Constants.settingsKeyIpInfoApiUrl) ?? Constants.defaultIpInfoApiUrl
             
-            if let savedIps:[IpCustomization] = readSettingsArray(key: Constants.settingsKeyIpCustomizations) {
-                ipCustomizations = savedIps
+            if let savedIpCustomizations:[Customization] = readSettingsArray(key: Constants.settingsKeyIpCustomizations) {
+                ipCustomizations = savedIpCustomizations
+            }
+            
+            if let savedCustomTextCustomizations:[Customization] = readSettingsArray(key: Constants.settingsKeyCustomTextCustomizations) {
+                customTextCustomizations = savedCustomTextCustomizations
             }
             
             if let savedIpApis:[IpApiInfo] = readSettingsArray(key: Constants.settingsKeyApis) {

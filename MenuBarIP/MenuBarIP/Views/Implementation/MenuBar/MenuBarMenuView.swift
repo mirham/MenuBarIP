@@ -24,7 +24,7 @@ struct MenuBarMenuView : IpAddressContainerView {
             Text(appState.network.publicIp?.ipAddress ?? Constants.none.uppercased())
                 .foregroundStyle(getIpColor(
                     colorScheme: appState.current.colorScheme,
-                    currentIpCustomization: appState.current.ipCustomization,
+                    currentCustomization: appState.current.ipCustomization,
                     forMenu: true))
                 .asMenuItemIp()
             VStack {

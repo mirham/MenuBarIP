@@ -25,13 +25,11 @@ struct SettingsView : View {
             FixedSidebarTabView {
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementGeneral,
-                    icon: "gear"
+                    icon: Constants.iconGear
                 ) {
                     GeneralSettingsEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                // Menu Bar Settings
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementMenubar,
                     icon: "menubar.rectangle"
@@ -39,8 +37,6 @@ struct SettingsView : View {
                     MenuBarStatusEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                // IP Customization
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpCustomization,
                     icon: "paintbrush"
@@ -48,17 +44,13 @@ struct SettingsView : View {
                     IpCustomizationsEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                // ISP Customization
                 FixedSidebarTabView.TabItem(
-                    title: Constants.settingsElementIspCustomization,
+                    title: Constants.settingsElementCustomTextCustomization,
                     icon: "paintbrush"
                 ) {
-                    IpCustomizationsEditView() // Note: You might want a different view here
+                    CustomTextCustomizationsEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                // IP Address APIs
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpAddressApis,
                     icon: "list.bullet.rectangle"
@@ -67,8 +59,6 @@ struct SettingsView : View {
                         .environmentObject(appState)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                
-                // IP Info API
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpInfoApi,
                     icon: "list.bullet.rectangle"

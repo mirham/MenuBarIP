@@ -39,7 +39,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                     .padding(.trailing)
             }
             Spacer()
-                .frame(height: 10)
+                .frame(height: 15)
             VStack(alignment: .center) {
                 Text(Constants.settingsElementIps)
                     .font(.title3)
@@ -48,7 +48,7 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                     List {
                         ForEach(appState.userData.ipCustomizations, id: \.id) { ipCustomization in
                             HStack {
-                                Text(ipCustomization.ipAddress)
+                                Text(ipCustomization.value)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                 Circle()
                                     .asSelectedColor(colorHex: ipCustomization.customLightColor, hint: Constants.hintLightColor)
@@ -151,9 +151,10 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             }
         }
         
-        let ipCustomization = IpCustomization(
+        let ipCustomization = Customization(
             id: customizationId ?? UUID(),
-            ipAddress: newIp,
+            type: .ip,
+            value: newIp,
             customText: newCustomText,
             customLightColor: newIpLightColor.toHex() ?? Color.black.toHex()!,
             customDarkColor: newIpDarkColor.toHex() ?? Color.white.toHex()!,
@@ -161,10 +162,10 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             customTextDarkColor: newCustomTextDarkColor.toHex() ?? Color.white.toHex()!)
         
         if let currentIpIndex = appState.userData.ipCustomizations.firstIndex(
-            where: {$0.id == ipCustomization.id || $0.ipAddress == ipCustomization.ipAddress}) {
+            where: {$0.id == ipCustomization.id || $0.value == ipCustomization.value}) {
             appState.userData.ipCustomizations[currentIpIndex] = ipCustomization
             
-            let matches = appState.userData.ipCustomizations.filter({$0.ipAddress == newIp})
+            let matches = appState.userData.ipCustomizations.filter({$0.value == newIp})
             
             if matches.count > 1 {
                 appState.userData.ipCustomizations.removeAll(where: {$0.id == matches.last!.id})
@@ -185,9 +186,9 @@ struct IpCustomizationsEditView : IpAddressContainerView {
         newCustomTextDarkColor = Color.white
     }
     
-    private func editIpCustomization(ipCustomization: IpCustomization) {
+    private func editIpCustomization(ipCustomization: Customization) {
         customizationId = ipCustomization.id
-        newIp = ipCustomization.ipAddress
+        newIp = ipCustomization.value
         newCustomText = ipCustomization.customText
         newIpLightColor = Color(hex: ipCustomization.customLightColor)
         newIpDarkColor = Color(hex: ipCustomization.customDarkColor)
@@ -195,8 +196,13 @@ struct IpCustomizationsEditView : IpAddressContainerView {
         newCustomTextDarkColor = Color(hex: ipCustomization.customTextDarkColor)
     }
     
-    private func deleteIpCustomization(ipCustomization: IpCustomization) {
+    private func deleteIpCustomization(ipCustomization: Customization) {
         appState.userData.ipCustomizations.removeAll(where: {$0 == ipCustomization})
+        
+        if appState.userData.ipCustomizations.isEmpty {
+            appState.current.ipCustomization = nil
+            appState.current.publicIpCustomText = nil
+        }
     }
     
     private func escapeCustomText(text: NSString) -> String {
