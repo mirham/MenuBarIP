@@ -41,6 +41,7 @@ struct InfoView: View {
                 .resizable()
                 .frame(minWidth: 360, maxWidth: 360, minHeight: 220, maxHeight: 220)
         }
+        .offset(y: -16)
         .onAppear(perform: {
             openDialog()
         })
