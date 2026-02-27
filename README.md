@@ -68,11 +68,12 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
 
 ### Settings
 <p align="left">
-  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings1.png" width="400">
-  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings2.png" width="400">
-  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings3.png" width="400">
-  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings4.png" width="400">
-  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings5.png" width="400">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings1.png" width="500">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings2.png" width="500">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings3.png" width="500">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings4.png" width="500">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings5.png" width="500">
+  <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings6.png" width="500">
 </p>
 
 ## Scripting
