@@ -113,6 +113,10 @@ struct Constants{
     static let iconSave = "chevron.down"
     static let iconArrowBackward = "arrow.backward"
     static let iconGear = "gear"
+    static let iconFolder = "folder"
+    static let iconMenubar = "menubar.rectangle"
+    static let iconPaintbrush = "paintbrush"
+    static let iconBulletRectangle = "list.bullet.rectangle"
     
     // MARK: Symbols
     static let bullet = "•"

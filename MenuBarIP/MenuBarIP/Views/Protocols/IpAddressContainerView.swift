@@ -10,7 +10,7 @@ import FlagKit
 
 protocol IpAddressContainerView : CustomizableItemsContainerView {}
 
-extension IpAddressContainerView {    
+extension IpAddressContainerView {
     func getCountryFlag(countryCode: String) -> NSImage {
         return countryCode.isEmpty
             ? NSImage()

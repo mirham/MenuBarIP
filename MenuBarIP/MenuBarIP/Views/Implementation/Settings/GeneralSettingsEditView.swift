@@ -41,50 +41,70 @@ struct GeneralSettingsEditView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack(alignment: .center) {
-                Toggle(Constants.settingsElementKeepAppRunning, isOn: .init(
-                    get: { isKeepRunningOn },
-                    set: { _, _ in if isKeepRunningOn {
+            keepAppRunningSection
+            periodicIpCheckSection
+            enableLoggingSection
+            runScriptSection
+            Spacer().frame(height: 15)
+            internetCheckUrlsSection
+            Spacer()
+        }
+        .alert(isPresented: Binding(
+            get: { alertType != nil },
+            set: { if !$0 { alertType = pendingAlert; pendingAlert = nil } }
+        )) {
+            Alert(
+                title: Text(alertType?.alertContent.title ?? String()),
+                message: Text(alertType?.alertContent.message ?? String()),
+                dismissButton: .default(Text(Constants.ok)) {
+                    alertType = pendingAlert
+                    pendingAlert = nil
+                }
+            )
+        }
+        .onAppear(perform: initValues)
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var keepAppRunningSection: some View {
+        HStack {
+            Toggle(Constants.settingsElementKeepAppRunning, isOn: .init(
+                get: { isKeepRunningOn },
+                set: { _, _ in
+                    if isKeepRunningOn {
                         isKeepRunningOn = !launchAgentService.delete()
                         launchAgentService.setState(isInstalled: false)
+                    } else {
+                        isKeepRunningOn = launchAgentService.create()
+                        launchAgentService.setState(isInstalled: true)
                     }
-                        else {
-                            isKeepRunningOn = launchAgentService.create()
-                            launchAgentService.setState(isInstalled: true)
-                        }
-                    }))
-                .withSettingToggleStyle()
-                .onAppear {
-                    let initState = launchAgentService.isInstalled
-                    isKeepRunningOn = initState
                 }
-                Spacer()
-                Image(systemName: Constants.iconQuestionMark)
-                    .asHelpIcon()
-                    .onHover(perform: { hovering in
-                        showOverKeepApplicationRunning = hovering && controlActiveState == .key
-                    })
-                    .popover(isPresented: $showOverKeepApplicationRunning,
-                             arrowEdge: .trailing,
-                             content: { renderHelpHint(hint: Constants.hintKeepApplicationRunning) })
+            ))
+            .withSettingToggleStyle()
+            .onAppear {
+                isKeepRunningOn = launchAgentService.isInstalled
             }
-            HStack {
-                Toggle(Constants.settingsElementPeriodicIpCheck, isOn: Binding(
-                    get: { appState.userData.periodicIpCheck },
-                    set: { appState.userData.periodicIpCheck = $0 }
-                ))
-                .withSettingToggleStyle()
-                Spacer()
-                Image(systemName: Constants.iconQuestionMark)
-                    .asHelpIcon()
-                    .onHover(perform: { hovering in
-                        showOverPeriodicIpCheck = hovering && controlActiveState == .key
-                    })
-                    .popover(isPresented: $showOverPeriodicIpCheck,
-                             arrowEdge: .trailing,
-                             content: { renderHelpHint(hint: Constants.hintPeriodicIpCheck) })
-            }
-            .padding(.bottom, 0)
+            Spacer()
+            Image(systemName: Constants.iconQuestionMark)
+                .asHelpIcon()
+                .onHover { showOverKeepApplicationRunning = $0 && controlActiveState == .key }
+                .popover(isPresented: $showOverKeepApplicationRunning, arrowEdge: .trailing) {
+                    helpHint(Constants.hintKeepApplicationRunning)
+                }
+        }
+    }
+    
+    @ViewBuilder
+    private var periodicIpCheckSection: some View {
+        SettingToggleRow(
+            label: Constants.settingsElementPeriodicIpCheck,
+            hint: Constants.hintPeriodicIpCheck,
+            isOn: $appState.userData.periodicIpCheck
+        )
+        
+        if appState.userData.periodicIpCheck {
             HStack {
                 Text(Constants.settingsElementIntervalBegin)
                     .padding(.leading, 45)
@@ -99,24 +119,18 @@ struct GeneralSettingsEditView: View {
                     .frame(width: 59)
                 Text(Constants.settingsElementIntervalEnd)
             }
-            .isHidden(hidden: !appState.userData.periodicIpCheck, remove: true)
-            HStack {
-                Toggle(Constants.settingsElementEnableLogging, isOn: Binding(
-                    get: { appState.userData.enableLogging },
-                    set: { appState.userData.enableLogging = $0 }
-                ))
-                .withSettingToggleStyle()
-                Spacer()
-                Image(systemName: Constants.iconQuestionMark)
-                    .asHelpIcon()
-                    .onHover(perform: { hovering in
-                        showOverEnableLogging = hovering && controlActiveState == .key
-                    })
-                    .popover(isPresented: $showOverEnableLogging,
-                             arrowEdge: .trailing,
-                             content: { renderHelpHint(hint: Constants.hintEnableLogging) })
-            }
-            .padding(.bottom, 0)
+        }
+    }
+    
+    @ViewBuilder
+    private var enableLoggingSection: some View {
+        SettingToggleRow(
+            label: Constants.settingsElementEnableLogging,
+            hint: Constants.hintEnableLogging,
+            isOn: $appState.userData.enableLogging
+        )
+        
+        if appState.userData.enableLogging {
             HStack {
                 Text(Constants.settingsElementLogFileLimit)
                     .padding(.leading, 45)
@@ -130,32 +144,27 @@ struct GeneralSettingsEditView: View {
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 59)
             }
-            .isHidden(hidden: !appState.userData.enableLogging, remove: true)
+        }
+    }
+    
+    @ViewBuilder
+    private var runScriptSection: some View {
+        SettingToggleRow(
+            label: Constants.settingsElementRunScript,
+            hint: Constants.hintRunScript,
+            isOn: $appState.userData.runScript
+        )
+        
+        if appState.userData.runScript {
             HStack {
-                Toggle(Constants.settingsElementRunScript, isOn: Binding(
-                    get: { appState.userData.runScript },
-                    set: { appState.userData.runScript = $0 }
-                ))
-                .withSettingToggleStyle()
-                Spacer()
-                Image(systemName: Constants.iconQuestionMark)
-                    .asHelpIcon()
-                    .onHover(perform: { hovering in
-                        showOverRunScript = hovering && controlActiveState == .key
-                    })
-                    .popover(isPresented: $showOverRunScript,
-                             arrowEdge: .trailing,
-                             content: { renderHelpHint(hint: Constants.hintRunScript) })
-            }
-            HStack {
-                TextField(Constants.hintNewVaildScriptPath, text:$scriptPath)
+                TextField(Constants.hintNewVaildScriptPath, text: $scriptPath)
                     .padding(.leading, 45)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 350)
                     .help(appState.userData.scriptPath.isEmpty
                           ? Constants.hintNotSet
                           : appState.userData.scriptPath)
-                    .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                    .disabled(true)
                 Button(Constants.choose) {
                     showFileImporter = true
                 }
@@ -172,59 +181,24 @@ struct GeneralSettingsEditView: View {
                         .phpScript,
                         .rubyScript,
                         .text
-                    ]) { result in
+                    ]
+                ) { result in
                     handleSelectScriptDialogResult(dialogResult: result)
                 }
                 .fileDialogDefaultDirectory(.applicationDirectory)
             }
-            .isHidden(hidden: !appState.userData.runScript, remove: true)
-            Spacer()
-                .frame(height: 15)
-            VStack(alignment: .leading) {
-                Text("\(Constants.internetCheckUrl):")
-                urlInputView(
-                    url: $newUrl1,
-                    isEditMode: $isNewUrl1EditMode,
-                    isValid: $isNewUrl1Valid,
-                    userDataKeyPath: \.internetCheckUrl1
-                )
-                urlInputView(
-                    url: $newUrl2,
-                    isEditMode: $isNewUrl2EditMode,
-                    isValid: $isNewUrl2Valid,
-                    userDataKeyPath: \.internetCheckUrl2
-                )
-                urlInputView(
-                    url: $newUrl3,
-                    isEditMode: $isNewUrl3EditMode,
-                    isValid: $isNewUrl3Valid,
-                    userDataKeyPath: \.internetCheckUrl3
-                )
-            }
-            .padding()
-            Spacer()
         }
-        .alert(isPresented: Binding(
-            get: {
-                alertType != nil
-            },
-            set: { newValue in
-                if !newValue {
-                    alertType = pendingAlert
-                    pendingAlert = nil
-                }
-            }
-        )) {
-            Alert (
-                title: Text(alertType?.alertContent.title ?? String()),
-                message: Text(alertType?.alertContent.message ?? String()),
-                dismissButton: .default(Text(Constants.ok)) {
-                    alertType = pendingAlert
-                    pendingAlert = nil
-                }
-            )
+    }
+    
+    @ViewBuilder
+    private var internetCheckUrlsSection: some View {
+        VStack(alignment: .leading) {
+            Text("\(Constants.internetCheckUrl):")
+            urlInputView(url: $newUrl1, isEditMode: $isNewUrl1EditMode, isValid: $isNewUrl1Valid, userDataKeyPath: \.internetCheckUrl1)
+            urlInputView(url: $newUrl2, isEditMode: $isNewUrl2EditMode, isValid: $isNewUrl2Valid, userDataKeyPath: \.internetCheckUrl2)
+            urlInputView(url: $newUrl3, isEditMode: $isNewUrl3EditMode, isValid: $isNewUrl3Valid, userDataKeyPath: \.internetCheckUrl3)
         }
-        .onAppear(perform: initValues)
+        .padding()
     }
     
     // MARK: Private functions
@@ -236,14 +210,6 @@ struct GeneralSettingsEditView: View {
         self.newUrl1 = appState.userData.internetCheckUrl1
         self.newUrl2 = appState.userData.internetCheckUrl2
         self.newUrl3 = appState.userData.internetCheckUrl3
-    }
-    
-    private func renderHelpHint(hint: String) -> some View {
-        let result = Text(hint)
-            .frame(width: 200)
-            .padding()
-        
-        return result
     }
     
     private func checkIfLogIntervalValid(logLimit: Int) -> Bool {
@@ -397,6 +363,29 @@ struct GeneralSettingsEditView: View {
             }
         }
     }
+    
+    private struct SettingToggleRow: View {
+        let label: String
+        let hint: String
+        @Binding var isOn: Bool
+        @Environment(\.controlActiveState) private var controlActiveState
+        
+        @State private var showHint = false
+        
+        var body: some View {
+            HStack {
+                Toggle(label, isOn: $isOn)
+                    .withSettingToggleStyle()
+                Spacer()
+                Image(systemName: Constants.iconQuestionMark)
+                    .asHelpIcon()
+                    .onHover { showHint = $0 && controlActiveState == .key }
+                    .popover(isPresented: $showHint, arrowEdge: .trailing) {
+                        helpHint(hint)
+                    }
+            }
+        }
+    }
 }
 
 private extension Toggle {
@@ -406,6 +395,14 @@ private extension Toggle {
             .pointerOnHover()
             .padding(.leading)
             .padding(.top)
+    }
+}
+
+private extension View {
+    func helpHint(_ hint: String) -> some View {
+        Text(hint)
+            .frame(width: 200)
+            .padding()
     }
 }
 

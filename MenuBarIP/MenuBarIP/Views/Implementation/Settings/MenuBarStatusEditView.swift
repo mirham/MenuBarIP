@@ -17,100 +17,19 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
     @State private var draggedItem: MenuBarElement?
     @State private var menuBarTextSize: Double = Constants.defaultMenuBarTextSize
     @State private var menuBarSpacing: Double = Constants.defaultMenuBarSpacing
+    @State private var separatorInsertedDuringDrag: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: Constants.iconInfo)
-                    .asInfoIcon()
-                Text(Constants.hintMenuBarAdjustment)
-                    .padding(.top)
-                    .padding(.trailing)
-            }
-            VStack(alignment: .center) {
-                Text(Constants.settingsElementShownItems)
-                    .asCenteredTitle()
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: menuBarSpacing) {
-                        ForEach(shownItems, id: \.id) { item in
-                            item
-                                .onDrag({
-                                    self.draggedItem = item
-                                    return NSItemProvider(object: item.image)
-                                })
-                                .onDrop(of: [.image], delegate: DropViewDelegate(
-                                    draggedItem: $draggedItem,
-                                    sourceItems: $shownItems,
-                                    destinationItems: $hiddenItems,
-                                    item: item,
-                                    keepLastItem: false))
-                        }
-                    }
-                    .frame(width: 450, alignment: .center)
-                    .onChange(of: shownItems, saveMenuBarElementItems)
-                    .onChange(of: appState.network, fillMenuBarElementItems)
-                    .onChange(of: appState.userData, fillMenuBarElementItems)
-                }
-                .asMenuBarPreview()
-                Text(Constants.settingsElementHiddenItems)
-                    .asCenteredTitle()
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(alignment: .center, spacing: menuBarSpacing) {
-                        ForEach(hiddenItems, id: \.id) { item in
-                            item
-                                .onDrag {
-                                    self.draggedItem = item
-                                    return NSItemProvider(object: item.image)
-                                }
-                                .onDrop(of: [.image], delegate: DropViewDelegate(
-                                    draggedItem: $draggedItem,
-                                    sourceItems: $hiddenItems,
-                                    destinationItems: $shownItems,
-                                    item: item,
-                                    keepLastItem: true))
-                        }
-                    }
-                    .frame(width: 450, alignment: .center)
-                    .onChange(of: hiddenItems, saveMenuBarElementItems)
-                    .onChange(of: appState.network, fillMenuBarElementItems)
-                    .onChange(of: appState.userData, fillMenuBarElementItems)
-                }
-                .asMenuBarPreview()
-            }
-            Spacer()
-                .frame(height: 10)
-            HStack(alignment: .center) {
-                VStack {
-                    Text(Constants.settingsElementItemsSize)
-                        .asCenteredTitle()
-                    Slider(value: $menuBarTextSize, in: 8...16)
-                        .onChange(of: menuBarTextSize, saveMenuBarTextSize)
-                        .onChange(of: menuBarTextSize, fillMenuBarElementItems)
-                        .padding(.leading)
-                        .padding(.trailing)
-                }
-            }
-            HStack(alignment: .center) {
-                VStack {
-                    Text(Constants.settingsElementSpacing)
-                        .asCenteredTitle()
-                    Slider(value: $menuBarSpacing, in: 1...5)
-                        .onChange(of: menuBarSpacing, saveMenuBarSpacing)
-                        .onChange(of: menuBarSpacing, fillMenuBarElementItems)
-                        .padding(.leading)
-                        .padding(.trailing)
-                }
-            }
-            Toggle(Constants.settingsElementThemeColor, isOn: Binding(
-                get: { appState.userData.menuBarUseThemeColor },
-                set: {
-                    appState.userData.menuBarUseThemeColor = $0
-                }
-            ))
-            .withSettingToggleStyle()
+            hintSection
+            itemsSection
+            Spacer().frame(height: 10)
+            textSizeSection
+            spacingSection
+            themeColorSection
             Spacer()
         }
-        .onAppear() {
+        .onAppear {
             setMenuBarTextSize()
             setMenuBarSpacing()
             fillMenuBarElementItems()
@@ -118,7 +37,121 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
     
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var hintSection: some View {
+        HStack {
+            Image(systemName: Constants.iconInfo)
+                .asInfoIcon()
+            Text(Constants.hintMenuBarAdjustment)
+                .padding(.top)
+                .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var itemsSection: some View {
+        VStack(alignment: .center) {
+            menuBarScrollSection(
+                title: Constants.settingsElementShownItems,
+                items: $shownItems,
+                destinationItems: $hiddenItems,
+                keepLastItem: false
+            )
+            menuBarScrollSection(
+                title: Constants.settingsElementHiddenItems,
+                items: $hiddenItems,
+                destinationItems: $shownItems,
+                keepLastItem: true
+            )
+        }
+    }
+    
+    @ViewBuilder
+    private var textSizeSection: some View {
+        sliderSection(
+            title: Constants.settingsElementItemsSize,
+            value: $menuBarTextSize,
+            range: 8...16,
+            onChangeHandlers: [saveMenuBarTextSize, fillMenuBarElementItems]
+        )
+    }
+    
+    @ViewBuilder
+    private var spacingSection: some View {
+        sliderSection(
+            title: Constants.settingsElementSpacing,
+            value: $menuBarSpacing,
+            range: 1...5,
+            onChangeHandlers: [saveMenuBarSpacing, fillMenuBarElementItems]
+        )
+    }
+    
+    @ViewBuilder
+    private var themeColorSection: some View {
+        Toggle(Constants.settingsElementThemeColor, isOn: Binding(
+            get: { appState.userData.menuBarUseThemeColor },
+            set: { appState.userData.menuBarUseThemeColor = $0 }
+        ))
+        .withSettingToggleStyle()
+    }
+    
     // MARK: Private functions
+    
+    @ViewBuilder
+    private func menuBarScrollSection(
+        title: String,
+        items: Binding<[MenuBarElement]>,
+        destinationItems: Binding<[MenuBarElement]>,
+        keepLastItem: Bool
+    ) -> some View {
+        Text(title)
+            .asCenteredTitle()
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: menuBarSpacing) {
+                ForEach(items.wrappedValue, id: \.id) { item in
+                    item
+                        .onDrag {
+                            self.draggedItem = item
+                            self.separatorInsertedDuringDrag = false
+                            return NSItemProvider(object: item.image)
+                        }
+                        .onDrop(of: [.image], delegate: DropViewDelegate(
+                            draggedItem: $draggedItem,
+                            sourceItems: items,
+                            destinationItems: destinationItems,
+                            separatorInsertedDuringDrag: $separatorInsertedDuringDrag, item: item,
+                            keepLastItem: keepLastItem
+                        ))
+                }
+            }
+            .frame(width: 450, alignment: .center)
+            .onChange(of: items.wrappedValue, saveMenuBarElementItems)
+            .onChange(of: appState.network, fillMenuBarElementItems)
+            .onChange(of: appState.userData, fillMenuBarElementItems)
+        }
+        .asMenuBarPreview()
+    }
+    
+    @ViewBuilder
+    private func sliderSection(
+        title: String,
+        value: Binding<Double>,
+        range: ClosedRange<Double>,
+        onChangeHandlers: [() -> Void]
+    ) -> some View {
+        HStack(alignment: .center) {
+            VStack {
+                Text(title)
+                    .asCenteredTitle()
+                Slider(value: value, in: range)
+                    .onChange(of: value.wrappedValue) { onChangeHandlers.forEach { $0() } }
+                    .padding(.leading)
+                    .padding(.trailing)
+            }
+        }
+    }
     
     private func fillMenuBarElementItems() {
         let shownItems = getMenuBarElements(

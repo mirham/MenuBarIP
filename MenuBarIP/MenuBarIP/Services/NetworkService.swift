@@ -234,22 +234,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
     
     private func performConnectionHealthCheckAsync() async {
         let builder = NetworkStateUpdateBuilder()
-        
-        var hasInternetAccess = await checkIfInternetConnectionAsync()
-        
-        if !hasInternetAccess {
-            let startTime = Date()
-            
-            while Date().timeIntervalSince(startTime) < Constants.callTimeoutIpApiInSeconds {
-                hasInternetAccess = await checkIfInternetConnectionAsync()
-                
-                if hasInternetAccess {
-                    break
-                }
-                
-                try? await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-            }
-        }
+        let hasInternetAccess = await checkInternetAccessWithRetryAsync()
         
         builder.withHasInternetAccess(hasInternetAccess)
         
@@ -262,6 +247,32 @@ class NetworkService: ApiCallable, NetworkServiceType {
         }
         
         await updateStatusAsync(update: builder.build())
+    }
+    
+    private func checkInternetAccessWithRetryAsync() async -> Bool {
+        if await checkIfInternetConnectionAsync() {
+            return true
+        }
+        
+        let startTime = ContinuousClock.now
+        let timeout = Duration.seconds(Constants.callTimeoutIpApiInSeconds)
+        let retryInterval = Duration.nanoseconds(Constants.defaultToleranceInNanoseconds)
+        
+        while true {
+            let elapsedTime = startTime.duration(to: ContinuousClock.now)
+            
+            if elapsedTime > timeout {
+                break
+            }
+            
+            try? await Task.sleep(for: retryInterval)
+            
+            if await checkIfInternetConnectionAsync() {
+                return true
+            }
+        }
+        
+        return false
     }
     
     private func reactivateIpApisAsync() async {

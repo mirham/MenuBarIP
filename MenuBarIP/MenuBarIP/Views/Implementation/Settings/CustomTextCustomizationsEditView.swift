@@ -26,105 +26,138 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: Constants.iconInfo)
-                    .asInfoIcon()
-                Text(Constants.hintCustomTextCustomization)
-                    .padding(.top)
-                    .padding(.trailing)
-            }
-            Spacer()
-                .frame(height: 15)
-            VStack(alignment: .center) {
-                Text(Constants.settingsElementCustomTextCustomization)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                NavigationStack() {
-                    List {
-                        ForEach(appState.userData.customTextCustomizations, id: \.id) { customization in
-                            HStack {
-                                Text(customization.type.displayName)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Spacer()
-                                    .frame(width: 70)
-                                Text(customization.value)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Spacer()
-                                    .frame(width: 70)
-                                Text(customization.customText)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Circle()
-                                    .asSelectedColor(colorHex: customization.customTextLightColor, hint: Constants.hintLightColor)
-                                Circle()
-                                    .asSelectedColor(colorHex: customization.customTextDarkColor, hint: Constants.hintDarkColor)
-                            }
-                            .contextMenu {
-                                Button(action: { editCustomTextCustomization(customization: customization) }) {
-                                    Text(Constants.edit)
-                                }
-                                Button(action: { deleteCustomTextCustomization(customization: customization) }) {
-                                    Text(Constants.delete)
-                                }
-                            }
-                        }
+            hintSection
+            Spacer().frame(height: 15)
+            customTextCustomizationsSection
+        }
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var hintSection: some View {
+        HStack {
+            Image(systemName: Constants.iconInfo)
+                .asInfoIcon()
+            Text(Constants.hintCustomTextCustomization)
+                .padding(.top)
+                .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var customTextCustomizationsSection: some View {
+        VStack(alignment: .center) {
+            Text(Constants.settingsElementCustomTextCustomization)
+                .font(.title3)
+                .multilineTextAlignment(.center)
+            NavigationStack {
+                List {
+                    ForEach(appState.userData.customTextCustomizations, id: \.id) { customization in
+                        customizationRow(customization)
                     }
                 }
-                .padding(10)
-                .safeAreaInset(edge: .bottom) {
-                    VStack {
-                        HStack {
-                            Text("\(Constants.informationType):")
-                                .frame(width: 110, alignment: .leading)
-                            Picker(String(), selection: $selectedType) {
-                                ForEach(CustomizableItemType.pickerCases, id: \.self) { type in
-                                    Text(type.displayName).tag(type)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .onChange(of: selectedType) {
-                                isCustomizationTypeValid = selectedType != .unknown
-                            }
-                        }
-                        HStack {
-                            Text("\(Constants.matcher):")
-                                .frame(width: 118, alignment: .leading)
-                            TextField(Constants.hintNewVaildMatcher, text: $newMatcher)
-                                .onChange(of: newMatcher) {
-                                    newMatcher = escapeCustomText(text: newMatcher as NSString)
-                                }
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                        }
-                        HStack {
-                            Text("\(Constants.customText):")
-                                .frame(width: 118, alignment: .leading)
-                            TextField(Constants.hintNewCustomText, text: $newCustomText)
-                                .onChange(of: newCustomText) {
-                                    newCustomText = escapeCustomText(text: newCustomText as NSString)
-                                }
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding(.trailing, 10)
-                            Text("\(Constants.light):")
-                            PopoverColorPicker(color: $newCustomTextLightColor)
-                                .asCircle()
-                            Text("\(Constants.dark):")
-                            PopoverColorPicker(color: $newCustomTextDarkColor)
-                                .asCircle()
-                        }
-                        AsyncButton(
-                            customizationId == nil ? Constants.add : Constants.save,
-                            action: upsertCustomTextCustomizationAsync)
-                            .disabled(!isCustomizationTypeValid)
-                            .alert(isPresented: $isCustomizationTypeInvalid) {
-                                Alert(title: Text(Constants.dialogHeaderIpAddressIsNotValid),
-                                      message: Text(Constants.dialogBodyIpAddressIsNotValid),
-                                      dismissButton: .default(Text(Constants.ok)))
-                            }
-                            .bold()
-                            .pointerOnHover()
-                    }
-                    .padding(10)
+            }
+            .padding(10)
+            .safeAreaInset(edge: .bottom) {
+                customizationFormSection
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func customizationRow(_ customization: Customization) -> some View {
+        HStack {
+            Text(customization.type.displayName)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer().frame(width: 70)
+            Text(customization.value)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer().frame(width: 70)
+            Text(customization.customText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Circle()
+                .asSelectedColor(colorHex: customization.customTextLightColor, hint: Constants.hintLightColor)
+            Circle()
+                .asSelectedColor(colorHex: customization.customTextDarkColor, hint: Constants.hintDarkColor)
+        }
+        .contextMenu {
+            Button(Constants.edit) { editCustomTextCustomization(customization: customization) }
+            Button(Constants.delete) { deleteCustomTextCustomization(customization: customization) }
+        }
+    }
+    
+    @ViewBuilder
+    private var customizationFormSection: some View {
+        VStack {
+            typePickerRow
+            matcherRow
+            customTextRow
+            AsyncButton(
+                customizationId == nil ? Constants.add : Constants.save,
+                action: upsertCustomTextCustomizationAsync
+            )
+            .disabled(!isCustomizationTypeValid)
+            .alert(isPresented: $isCustomizationTypeInvalid) {
+                Alert(
+                    title: Text(Constants.dialogHeaderIpAddressIsNotValid),
+                    message: Text(Constants.dialogBodyIpAddressIsNotValid),
+                    dismissButton: .default(Text(Constants.ok))
+                )
+            }
+            .bold()
+            .pointerOnHover()
+        }
+        .padding(10)
+    }
+    
+    @ViewBuilder
+    private var typePickerRow: some View {
+        HStack {
+            Text("\(Constants.informationType):")
+                .frame(width: 110, alignment: .leading)
+            Picker(String(), selection: $selectedType) {
+                ForEach(CustomizableItemType.pickerCases, id: \.self) { type in
+                    Text(type.displayName).tag(type)
                 }
             }
+            .pickerStyle(.segmented)
+            .onChange(of: selectedType) {
+                isCustomizationTypeValid = selectedType != .unknown
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var matcherRow: some View {
+        HStack {
+            Text("\(Constants.matcher):")
+                .frame(width: 118, alignment: .leading)
+            TextField(Constants.hintNewVaildMatcher, text: $newMatcher)
+                .onChange(of: newMatcher) {
+                    newMatcher = escapeCustomText(text: newMatcher as NSString)
+                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+        }
+    }
+    
+    @ViewBuilder
+    private var customTextRow: some View {
+        HStack {
+            Text("\(Constants.customText):")
+                .frame(width: 118, alignment: .leading)
+            TextField(Constants.hintNewCustomText, text: $newCustomText)
+                .onChange(of: newCustomText) {
+                    newCustomText = escapeCustomText(text: newCustomText as NSString)
+                }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.trailing, 10)
+            Text("\(Constants.light):")
+            PopoverColorPicker(color: $newCustomTextLightColor)
+                .asCircle()
+            Text("\(Constants.dark):")
+            PopoverColorPicker(color: $newCustomTextDarkColor)
+                .asCircle()
         }
     }
     

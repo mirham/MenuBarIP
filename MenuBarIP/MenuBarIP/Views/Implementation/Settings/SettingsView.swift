@@ -32,28 +32,28 @@ struct SettingsView : View {
                 }
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementMenubar,
-                    icon: "menubar.rectangle"
+                    icon: Constants.iconMenubar
                 ) {
                     MenuBarStatusEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpCustomization,
-                    icon: "paintbrush"
+                    icon: Constants.iconPaintbrush
                 ) {
                     IpCustomizationsEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementCustomTextCustomization,
-                    icon: "paintbrush"
+                    icon: Constants.iconPaintbrush
                 ) {
                     CustomTextCustomizationsEditView()
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpAddressApis,
-                    icon: "list.bullet.rectangle"
+                    icon: Constants.iconBulletRectangle
                 ) {
                     IpApisEditView()
                         .environmentObject(appState)
@@ -61,7 +61,7 @@ struct SettingsView : View {
                 }
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementIpInfoApi,
-                    icon: "list.bullet.rectangle"
+                    icon: Constants.iconBulletRectangle
                 ) {
                     IpInfoApiEditView()
                         .environmentObject(appState)

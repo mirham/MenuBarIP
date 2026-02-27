@@ -31,110 +31,130 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: Constants.iconInfo)
-                    .asInfoIcon()
-                Text(Constants.hintIps)
-                    .padding(.top)
-                    .padding(.trailing)
+            hintSection
+            Spacer().frame(height: 15)
+            ipCustomizationsSection
+        }
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var hintSection: some View {
+        HStack {
+            Image(systemName: Constants.iconInfo)
+                .asInfoIcon()
+            Text(Constants.hintIps)
+                .padding(.top)
+                .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var ipCustomizationsSection: some View {
+        VStack(alignment: .center) {
+            Text(Constants.settingsElementIps)
+                .font(.title3)
+                .multilineTextAlignment(.center)
+            NavigationStack {
+                List {
+                    ForEach(appState.userData.ipCustomizations, id: \.id) { ipCustomization in
+                        ipCustomizationRow(ipCustomization)
+                    }
+                }
             }
-            Spacer()
-                .frame(height: 15)
-            VStack(alignment: .center) {
-                Text(Constants.settingsElementIps)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                NavigationStack() {
-                    List {
-                        ForEach(appState.userData.ipCustomizations, id: \.id) { ipCustomization in
-                            HStack {
-                                Text(ipCustomization.value)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Circle()
-                                    .asSelectedColor(colorHex: ipCustomization.customLightColor, hint: Constants.hintLightColor)
-                                Circle()
-                                    .asSelectedColor(colorHex: ipCustomization.customDarkColor, hint: Constants.hintDarkColor)
-                                Spacer()
-                                    .frame(width: 70)
-                                Text(ipCustomization.customText)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                Circle()
-                                    .asSelectedColor(colorHex: ipCustomization.customTextLightColor, hint: Constants.hintLightColor)
-                                Circle()
-                                    .asSelectedColor(colorHex: ipCustomization.customTextDarkColor, hint: Constants.hintDarkColor)
-                            }
-                            .contextMenu {
-                                Button(action: { editIpCustomization(ipCustomization: ipCustomization) }) {
-                                    Text(Constants.edit)
-                                }
-                                Button(action: { deleteIpCustomization(ipCustomization: ipCustomization) }) {
-                                    Text(Constants.delete)
-                                }
-                            }
-                        }
-                    }
-                }
-                .padding(10)
-                .safeAreaInset(edge: .bottom) {
-                    VStack {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 15) {
-                                Text("\(Constants.ip):")
-                                Text("\(Constants.customText):")
-                            }
-                            VStack(alignment: .leading, spacing: 12) {
-                                TextField(Constants.hintNewVaildIpAddress, text: $newIp)
-                                    .onChange(of: newIp) {
-                                        isNewIpValid = newIp.isValidIp()
-                                    }
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                TextField(Constants.hintNewCustomText, text: $newCustomText)
-                                    .onChange(of: newCustomText) {
-                                        newCustomText = escapeCustomText(text: newCustomText as NSString)
-                                    }
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                            }
-                            .padding(.trailing, 10)
-                            VStack(alignment: .leading, spacing: 15) {
-                                Text("\(Constants.light):")
-                                Text("\(Constants.light):")
-                            }
-                            VStack(alignment: .leading, spacing: 12) {
-                                PopoverColorPicker(color: $newIpLightColor)
-                                    .asCircle()
-                                PopoverColorPicker(color: $newCustomTextLightColor)
-                                    .asCircle()
-                            }
-                            VStack(alignment: .leading, spacing: 15) {
-                                Text("\(Constants.dark):")
-                                Text("\(Constants.dark):")
-                            }
-                            VStack(alignment: .leading, spacing: 12) {
-                                PopoverColorPicker(color: $newIpDarkColor)
-                                    .asCircle()
-                                PopoverColorPicker(color: $newCustomTextDarkColor)
-                                    .asCircle()
-                            }
-                        }
-                        AsyncButton(
-                            customizationId == nil ? Constants.add : Constants.save,
-                            action: upsertIpCustomizationAsync)
-                            .disabled(!isNewIpValid)
-                            .alert(isPresented: $isNewIpInvalid) {
-                                Alert(title: Text(Constants.dialogHeaderIpAddressIsNotValid),
-                                      message: Text(Constants.dialogBodyIpAddressIsNotValid),
-                                      dismissButton: .default(Text(Constants.ok)))
-                            }
-                            .bold()
-                            .pointerOnHover()
-                    }
-                    .padding(10)
-                }
+            .padding(10)
+            .safeAreaInset(edge: .bottom) {
+                ipCustomizationFormSection
             }
         }
     }
     
+    @ViewBuilder
+    private func ipCustomizationRow(_ ipCustomization: Customization) -> some View {
+        HStack {
+            Text(ipCustomization.value)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Circle()
+                .asSelectedColor(colorHex: ipCustomization.customLightColor, hint: Constants.hintLightColor)
+            Circle()
+                .asSelectedColor(colorHex: ipCustomization.customDarkColor, hint: Constants.hintDarkColor)
+            Spacer().frame(width: 70)
+            Text(ipCustomization.customText)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Circle()
+                .asSelectedColor(colorHex: ipCustomization.customTextLightColor, hint: Constants.hintLightColor)
+            Circle()
+                .asSelectedColor(colorHex: ipCustomization.customTextDarkColor, hint: Constants.hintDarkColor)
+        }
+        .contextMenu {
+            Button(Constants.edit) { editIpCustomization(ipCustomization: ipCustomization) }
+            Button(Constants.delete) { deleteIpCustomization(ipCustomization: ipCustomization) }
+        }
+    }
+    
+    @ViewBuilder
+    private var ipCustomizationFormSection: some View {
+        VStack {
+            customizableValueRow(
+                label: "\(Constants.ip):",
+                text: $newIp,
+                placeholder: Constants.hintNewVaildIpAddress,
+                onTextChange: { isNewIpValid = newIp.isValidIp() },
+                lightColor: $newIpLightColor,
+                darkColor: $newIpDarkColor
+            )
+            customizableValueRow(
+                label: "\(Constants.customText):",
+                text: $newCustomText,
+                placeholder: Constants.hintNewCustomText,
+                onTextChange: { newCustomText = escapeCustomText(text: newCustomText as NSString) },
+                lightColor: $newCustomTextLightColor,
+                darkColor: $newCustomTextDarkColor
+            )
+            AsyncButton(
+                customizationId == nil ? Constants.add : Constants.save,
+                action: upsertIpCustomizationAsync
+            )
+            .disabled(!isNewIpValid)
+            .alert(isPresented: $isNewIpInvalid) {
+                Alert(
+                    title: Text(Constants.dialogHeaderIpAddressIsNotValid),
+                    message: Text(Constants.dialogBodyIpAddressIsNotValid),
+                    dismissButton: .default(Text(Constants.ok))
+                )
+            }
+            .bold()
+            .pointerOnHover()
+        }
+        .padding(10)
+    }
+    
     // MARK: Private functions
+    
+    @ViewBuilder
+    private func customizableValueRow(
+        label: String,
+        text: Binding<String>,
+        placeholder: String,
+        onTextChange: @escaping () -> Void,
+        lightColor: Binding<Color>,
+        darkColor: Binding<Color>
+    ) -> some View {
+        HStack {
+            Text(label)
+                .frame(width: 80, alignment: .leading)
+            TextField(placeholder, text: text)
+                .onChange(of: text.wrappedValue) { onTextChange() }
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Text("\(Constants.light):")
+            PopoverColorPicker(color: lightColor)
+                .asCircle()
+            Text("\(Constants.dark):")
+            PopoverColorPicker(color: darkColor)
+                .asCircle()
+        }
+    }
     
     private func upsertIpCustomizationAsync() async {
         let isLocalIp = ipService.isLocalIp(ipString: newIp)

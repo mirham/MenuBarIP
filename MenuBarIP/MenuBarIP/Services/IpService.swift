@@ -15,15 +15,21 @@ class IpService : ApiCallable, IpServiceType {
     
     func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
         guard !Task.isCancelled
-        else { return OperationResult(error: Constants.errorTaskCancelled) }
+        else {
+            return OperationResult(error: Constants.errorTaskCancelled)
+        }
         
         guard let apiUrl = ipApiUrl ?? ipApiService.getRandomActiveIpApi()?.url
-        else { return OperationResult(error: Constants.errorNoActiveIpApiFound) }
+        else {
+            return OperationResult(error: Constants.errorNoActiveIpApiFound)
+        }
         
         let ipAddress = try? await fetchIpAddressAsync(from: apiUrl)
         
         guard let ipAddress
-        else { return OperationResult(error: Constants.errorIpApiResponseIsInvalid) }
+        else {
+            return OperationResult(error: Constants.errorIpApiResponseIsInvalid)
+        }
         
         if withInfo {
             return await getPublicIpInfoAsync(

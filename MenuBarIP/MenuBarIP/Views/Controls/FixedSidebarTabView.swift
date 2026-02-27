@@ -16,7 +16,10 @@ struct FixedSidebarTabView: View {
         let icon: String
         let view: AnyView
         
-        init(title: String, icon: String = "folder", @ViewBuilder content: () -> some View) {
+        init(
+            title: String,
+            icon: String = Constants.iconFolder,
+            @ViewBuilder content: () -> some View) {
             self.title = title
             self.icon = icon
             self.view = AnyView(content())

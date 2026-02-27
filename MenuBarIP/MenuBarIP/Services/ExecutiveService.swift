@@ -56,36 +56,23 @@ class ExecutiveService: ExecutiveServiceType {
     
     func determineInterpreterPath (fileUrl: URL) throws -> URL {
         let pathExtension = fileUrl.pathExtension.lowercased()
-        let interpreterCommand: String
+        let interpreterCommand = try getInterpreterCommand(
+            for: fileUrl,
+            extension: pathExtension)
         
-        if let shebangInterpreterCommand = try parseShebang(from: fileUrl){
-            interpreterCommand = shebangInterpreterCommand
-        }
-        else if let mappedInterpreter = interpreterMap[pathExtension] {
-            interpreterCommand = mappedInterpreter
-        }
-        else if pathExtension == Constants.fileExtTxt {
-            guard isScriptContent(url: fileUrl) else {
-                throw String(format: Constants.errorScriptNotExecutable, fileUrl.path)
-            }
-            interpreterCommand = Constants.pathZsh
-        }
+        guard let finalInterpreterPath = try resolveInterpreterCommandToPath(
+            command: interpreterCommand)
         else {
-            throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
+            throw String(
+                format: Constants.errorInterpreterNotFound,
+                interpreterCommand)
         }
         
-        guard let finalInterpreterPath = try resolveInterpreterCommandToPath(command: interpreterCommand)
-        else { throw String(format: Constants.errorInterpreterNotFound, interpreterCommand) }
+        try validateInterpreter(
+            at: finalInterpreterPath,
+            command: interpreterCommand)
         
-        let resultURL = URL(fileURLWithPath: finalInterpreterPath)
-        
-        guard fileManager.fileExists(atPath: resultURL.path)
-        else { throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath) }
-        
-        guard fileManager.isExecutableFile(atPath: resultURL.path)
-        else { throw String(format: Constants.errorInterpreterNotFound, finalInterpreterPath) }
-        
-        return resultURL
+        return URL(fileURLWithPath: finalInterpreterPath)
     }
     
     // MARK: Private functions
@@ -119,7 +106,38 @@ class ExecutiveService: ExecutiveServiceType {
         return result
     }
     
-    func resolveInterpreterCommandToPath(command: String) throws -> String? {
+    private func getInterpreterCommand(for fileUrl: URL, extension pathExtension: String) throws -> String {
+        if let shebangCommand = try parseShebang(from: fileUrl) {
+            return shebangCommand
+        }
+        
+        if let mappedInterpreter = interpreterMap[pathExtension] {
+            return mappedInterpreter
+        }
+        
+        if pathExtension == Constants.fileExtTxt {
+            guard isScriptContent(url: fileUrl)
+            else {
+                throw String(format: Constants.errorScriptNotExecutable, fileUrl.path)
+            }
+            
+            return Constants.pathZsh
+        }
+        
+        throw String(format: Constants.errorScriptTypeNotSupported, pathExtension)
+    }
+    
+    private func validateInterpreter(at path: String, command: String) throws {
+        guard fileManager.fileExists(atPath: path) else {
+            throw String(format: Constants.errorInterpreterNotFound, command)
+        }
+        
+        guard fileManager.isExecutableFile(atPath: path) else {
+            throw String(format: Constants.errorInterpreterNotFound, command)
+        }
+    }
+    
+    private func resolveInterpreterCommandToPath(command: String) throws -> String? {
         if command.hasPrefix(Constants.pathEnv) {
             let components = command
                 .split(separator: Constants.space, maxSplits: 1)
