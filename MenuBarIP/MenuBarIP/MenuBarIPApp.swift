@@ -10,7 +10,7 @@ import Factory
 
 @main
 struct MenuBarIPApp: App {
-    let appState = AppState.shared
+    @Injected(\.appState) private var appState
     
     var body: some Scene {
         MenuBarExtra {

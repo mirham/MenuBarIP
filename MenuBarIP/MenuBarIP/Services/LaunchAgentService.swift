@@ -6,13 +6,14 @@
 //
 
 import Foundation
+import Factory
 
-class LaunchAgentService : ServiceBase, ShellAccessible, LaunchAgentServiceType {
+class LaunchAgentService : ShellAccessible, LaunchAgentServiceType {
+    @Injected(\.appState) private var appState
+    
     var isInstalled: Bool = false
     
-    override init() {
-        super.init()
-        
+    init() {
         let fileManager = FileManager.default
         let plistFilePath = getPlistFilePath()
         

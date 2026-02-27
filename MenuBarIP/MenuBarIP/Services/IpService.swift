@@ -9,7 +9,8 @@ import Foundation
 import Factory
 import Network
 
-class IpService : ServiceBase, ApiCallable, IpServiceType {
+class IpService : ApiCallable, IpServiceType {
+    @Injected(\.appState) private var appState
     @Injected(\.ipApiService) private var ipApiService
     
     func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {

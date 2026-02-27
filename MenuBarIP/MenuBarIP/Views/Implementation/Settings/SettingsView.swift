@@ -21,7 +21,7 @@ struct SettingsView : View {
                     .font(.headline)
                 Spacer()
             }
-            .offset(y: -22)
+            .offset(y: -25)
             FixedSidebarTabView {
                 FixedSidebarTabView.TabItem(
                     title: Constants.settingsElementGeneral,

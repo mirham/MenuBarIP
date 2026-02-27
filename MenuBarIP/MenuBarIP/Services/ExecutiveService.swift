@@ -9,7 +9,8 @@ import Foundation
 import Factory
 import AppKit
 
-class ExecutiveService: ServiceBase, ExecutiveServiceType {
+class ExecutiveService: ExecutiveServiceType {
+    @Injected(\.appState) private var appState
     @Injected(\.loggingService) private var loggingService
     
     private let scriptPrefixLength = 2

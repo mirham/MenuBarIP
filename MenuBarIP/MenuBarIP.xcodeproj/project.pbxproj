@@ -21,7 +21,6 @@
 		354032652C5E67AE002624D2 /* Customization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032642C5E67AE002624D2 /* Customization.swift */; };
 		354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032662C5E682D002624D2 /* IpApiInfo.swift */; };
 		3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326A2C5E6899002624D2 /* CodableIgnored.swift */; };
-		354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326F2C5E69FB002624D2 /* ServiceBase.swift */; };
 		354032722C5E6A44002624D2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032712C5E6A44002624D2 /* NetworkService.swift */; };
 		354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032752C5E6C3F002624D2 /* NetworkInterface.swift */; };
 		354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */; };
@@ -97,7 +96,6 @@
 		354032642C5E67AE002624D2 /* Customization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customization.swift; sourceTree = "<group>"; };
 		354032662C5E682D002624D2 /* IpApiInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiInfo.swift; sourceTree = "<group>"; };
 		3540326A2C5E6899002624D2 /* CodableIgnored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableIgnored.swift; sourceTree = "<group>"; };
-		3540326F2C5E69FB002624D2 /* ServiceBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceBase.swift; sourceTree = "<group>"; };
 		354032712C5E6A44002624D2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		354032752C5E6C3F002624D2 /* NetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterface.swift; sourceTree = "<group>"; };
 		354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterfaceType.swift; sourceTree = "<group>"; };
@@ -273,7 +271,6 @@
 		3540326E2C5E69C8002624D2 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				3540326F2C5E69FB002624D2 /* ServiceBase.swift */,
 				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
 				35E1C7192D91C17B0014EB04 /* IpApiService.swift */,
@@ -597,7 +594,6 @@
 				358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */,
 				354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */,
 				354032722C5E6A44002624D2 /* NetworkService.swift in Sources */,
-				354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */,
 				3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

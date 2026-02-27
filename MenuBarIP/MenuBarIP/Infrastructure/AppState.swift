@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class AppState : ObservableObject {
+class AppState : ObservableObject, Observable {
     @Published var current = Current()
     @Published var views = Views(shownWindows: [String()])
     @Published var network = Network() { didSet { setCurrentState() } }

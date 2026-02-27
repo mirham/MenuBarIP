@@ -39,7 +39,7 @@ struct FixedSidebarTabView: View {
                             }
                             .tag(index)
                             .padding(.vertical, 6)
-                            //.padding(.horizontal, 4)
+                            .padding(.horizontal, 4)
                         }
                     }
                 }

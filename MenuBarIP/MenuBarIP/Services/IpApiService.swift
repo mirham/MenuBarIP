@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import Factory
 
-class IpApiService : ServiceBase, ApiCallable, IpApiServiceType {
+class IpApiService : ApiCallable, IpApiServiceType {
+    @Injected(\.appState) private var appState
+    
     func getRandomActiveIpApi() -> IpApiInfo? {
         let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
         
