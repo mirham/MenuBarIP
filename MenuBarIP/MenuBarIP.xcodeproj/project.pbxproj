@@ -18,10 +18,9 @@
 		3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */; };
 		354032602C5E6706002624D2 /* ApiCallable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540325F2C5E6706002624D2 /* ApiCallable.swift */; };
 		354032622C5E6730002624D2 /* Settable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032612C5E6730002624D2 /* Settable.swift */; };
-		354032652C5E67AE002624D2 /* IpCustomization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032642C5E67AE002624D2 /* IpCustomization.swift */; };
+		354032652C5E67AE002624D2 /* Customization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032642C5E67AE002624D2 /* Customization.swift */; };
 		354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032662C5E682D002624D2 /* IpApiInfo.swift */; };
 		3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326A2C5E6899002624D2 /* CodableIgnored.swift */; };
-		354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3540326F2C5E69FB002624D2 /* ServiceBase.swift */; };
 		354032722C5E6A44002624D2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032712C5E6A44002624D2 /* NetworkService.swift */; };
 		354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032752C5E6C3F002624D2 /* NetworkInterface.swift */; };
 		354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */; };
@@ -76,6 +75,10 @@
 		35BF309F2E015FE2003D9CE5 /* IpInfoApiEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */; };
 		35BF30A32E01A1BA003D9CE5 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35BF30A22E01A1B4003D9CE5 /* DataExtensions.swift */; };
 		35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C7192D91C17B0014EB04 /* IpApiService.swift */; };
+		35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */; };
+		35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */; };
+		35E989CB2F4F814900281A37 /* CustomizableItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */; };
+		35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,10 +93,9 @@
 		3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusType.swift; sourceTree = "<group>"; };
 		3540325F2C5E6706002624D2 /* ApiCallable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCallable.swift; sourceTree = "<group>"; };
 		354032612C5E6730002624D2 /* Settable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settable.swift; sourceTree = "<group>"; };
-		354032642C5E67AE002624D2 /* IpCustomization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpCustomization.swift; sourceTree = "<group>"; };
+		354032642C5E67AE002624D2 /* Customization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Customization.swift; sourceTree = "<group>"; };
 		354032662C5E682D002624D2 /* IpApiInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiInfo.swift; sourceTree = "<group>"; };
 		3540326A2C5E6899002624D2 /* CodableIgnored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableIgnored.swift; sourceTree = "<group>"; };
-		3540326F2C5E69FB002624D2 /* ServiceBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceBase.swift; sourceTree = "<group>"; };
 		354032712C5E6A44002624D2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		354032752C5E6C3F002624D2 /* NetworkInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterface.swift; sourceTree = "<group>"; };
 		354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkInterfaceType.swift; sourceTree = "<group>"; };
@@ -149,6 +151,10 @@
 		35BF30A22E01A1B4003D9CE5 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		35BF30A62E01B3F8003D9CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		35E1C7192D91C17B0014EB04 /* IpApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiService.swift; sourceTree = "<group>"; };
+		35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSidebarTabView.swift; sourceTree = "<group>"; };
+		35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextCustomizationsEditView.swift; sourceTree = "<group>"; };
+		35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizableItemsContainerView.swift; sourceTree = "<group>"; };
+		35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizableItemType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +218,7 @@
 			children = (
 				3540325C2C5E65EF002624D2 /* NetworkStatusType.swift */,
 				354032772C5E6C69002624D2 /* NetworkInterfaceType.swift */,
+				35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */,
 				358DDA252E00A6D6002DF782 /* LogDestination.swift */,
 			);
 			path = Enums;
@@ -232,7 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				35980E032C7380BC0036AB41 /* IpInfo.swift */,
-				354032642C5E67AE002624D2 /* IpCustomization.swift */,
+				354032642C5E67AE002624D2 /* Customization.swift */,
 				354032662C5E682D002624D2 /* IpApiInfo.swift */,
 				354032752C5E6C3F002624D2 /* NetworkInterface.swift */,
 				356A63962DE093830073DA39 /* NetworkStateUpdate.swift */,
@@ -264,7 +271,6 @@
 		3540326E2C5E69C8002624D2 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				3540326F2C5E69FB002624D2 /* ServiceBase.swift */,
 				354032712C5E6A44002624D2 /* NetworkService.swift */,
 				3540327C2C5E71F2002624D2 /* IpService.swift */,
 				35E1C7192D91C17B0014EB04 /* IpApiService.swift */,
@@ -328,6 +334,7 @@
 		354032942C5E79E4002624D2 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
+				35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */,
 				354032952C5E7A13002624D2 /* AsyncButton.swift */,
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
 				35980DF42C736B040036AB41 /* NoInsetHostingView.swift */,
@@ -339,6 +346,7 @@
 		354032A12C5E7E6F002624D2 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */,
 				354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */,
 				354032A22C5E7E81002624D2 /* IpAddressContainerView.swift */,
 			);
@@ -373,6 +381,7 @@
 				35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */,
 				35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */,
 				35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */,
+				35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */,
 				35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */,
 				35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */,
 			);
@@ -536,7 +545,7 @@
 				354032932C5E795C002624D2 /* CheckToggleStyle.swift in Sources */,
 				354032812C5E7338002624D2 /* Constants.swift in Sources */,
 				354032982C5E7A4C002624D2 /* MenuBarElement.swift in Sources */,
-				354032652C5E67AE002624D2 /* IpCustomization.swift in Sources */,
+				354032652C5E67AE002624D2 /* Customization.swift in Sources */,
 				3575CCA82DD7672C00102D4E /* LaunchAgentServiceType.swift in Sources */,
 				35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */,
 				3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */,
@@ -550,6 +559,7 @@
 				358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */,
 				354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */,
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
+				35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
 				354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */,
 				35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */,
@@ -560,11 +570,14 @@
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
 				35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */,
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
+				35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */,
 				35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */,
 				354032962C5E7A13002624D2 /* AsyncButton.swift in Sources */,
 				3540329C2C5E7AEC002624D2 /* LaunchAgentService.swift in Sources */,
 				358DDA202E00715B002DF782 /* LogEntry.swift in Sources */,
+				35E989CB2F4F814900281A37 /* CustomizableItemsContainerView.swift in Sources */,
 				354032A92C5E8362002624D2 /* SettingsView.swift in Sources */,
+				35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */,
 				3540329E2C5E7B51002624D2 /* ShellAccessible.swift in Sources */,
 				354032872C5E77A9002624D2 /* ViewExtensions.swift in Sources */,
 				352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */,
@@ -581,7 +594,6 @@
 				358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */,
 				354032782C5E6C69002624D2 /* NetworkInterfaceType.swift in Sources */,
 				354032722C5E6A44002624D2 /* NetworkService.swift in Sources */,
-				354032702C5E69FB002624D2 /* ServiceBase.swift in Sources */,
 				3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -735,7 +747,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -767,7 +779,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2.7;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

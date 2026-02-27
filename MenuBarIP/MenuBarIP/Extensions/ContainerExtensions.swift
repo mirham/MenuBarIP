@@ -10,6 +10,14 @@ import Factory
 // MARK: DI registrations
 
 extension Container {
+    
+    // MARK: App state
+    
+    var appState: Factory<AppState> {
+        Factory(self) { AppState.shared }
+            .singleton
+    }
+    
     // MARK: Services registrations
     
     var networkService: Factory<NetworkServiceType> {

@@ -11,7 +11,8 @@ import SystemConfiguration
 import AppKit
 import Factory
 
-class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
+class NetworkService: ApiCallable, NetworkServiceType {
+    @Injected(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     @Injected(\.ipApiService) private var ipApiService
     @Injected(\.executiveService) private var executiveService
@@ -23,9 +24,7 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     private var monitoringTask: Task<Void, Never>?
     private var periodicCheckIpTask: Task<Void, Never>?
     
-    override init() {
-        super.init()
-        
+    init() {
         startNetworkMonitoring()
         startConnectionHealthMonitoring()
         startPeriodicIpCheck()
@@ -74,7 +73,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     func refreshIpAddressesAsync(isManually: Bool = false) async {
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         let prevPublicIp = appState.network.publicIp
         var loadingTask: Task<Void, Never>?
@@ -116,36 +116,32 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     }
     
     func refreshIpAddressesManuallyAsync() async {
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         let builder = NetworkStateUpdateBuilder()
+        let hasInternetAccess = await checkIfInternetConnectionAsync()
         
-        do {
-            let hasInternetAccess = try await checkIfInternetConnectionAsync()
-            builder.withHasInternetAccess(hasInternetAccess)
-            
-            if hasInternetAccess {
-                await reactivateIpApisAsync()
-                await refreshIpAddressesAsync(isManually: true)
-                await refreshIpInfoIfNeededAsync()
-            } else {
-                builder.withPublicIp(nil)
-            }
-            
-            await updateStatusAsync(update: builder.build())
-        } catch {
-            await updateStatusAsync(update: builder
-                .withHasInternetAccess(false)
+        builder.withHasInternetAccess(hasInternetAccess)
+        
+        if hasInternetAccess {
+            await reactivateIpApisAsync()
+            await refreshIpAddressesAsync(isManually: true)
+            await refreshIpInfoIfNeededAsync()
+        } else {
+            builder.withHasInternetAccess(false)
                 .withPublicIp(nil)
-                .build())
         }
+        
+        await updateStatusAsync(update: builder.build())
     }
     
     // MARK: Private functions
     
     private func startNetworkMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in
-            guard let self else { return }
+            guard let self
+            else { return }
             
             let networkInterfaces = self.determineNetworkInterfaces(path: path)
             let status = self.determineNetworkStatusType(path: path, networkInterfaces: networkInterfaces)
@@ -153,7 +149,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
                 status: status,
                 activeNetworkInterfaces: networkInterfaces)
             
-            guard isConnectionChanged else { return }
+            guard isConnectionChanged
+            else { return }
             
             let updatedStatus = status
             let updatedNetworkInterfaces = networkInterfaces
@@ -187,7 +184,8 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: Constants.defaultCheckConnectionHealthIntervalNanoseconds)
                 
-                guard await shouldCheckConnectionWithRetryAsync() else { continue }
+                guard await shouldCheckConnectionWithRetryAsync()
+                else { continue }
                 
                 await performConnectionHealthCheckAsync()
             }
@@ -236,40 +234,45 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
     
     private func performConnectionHealthCheckAsync() async {
         let builder = NetworkStateUpdateBuilder()
+        let hasInternetAccess = await checkInternetAccessWithRetryAsync()
         
-        do {
-            var hasInternetAccess = try await checkIfInternetConnectionAsync()
-            
-            if !hasInternetAccess {
-                let startTime = Date()
-                
-                while Date().timeIntervalSince(startTime) < Constants.callTimeoutIpApiInSeconds {
-                    hasInternetAccess = try await checkIfInternetConnectionAsync()
-                    
-                    if hasInternetAccess {
-                        break
-                    }
-                    
-                    try? await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                }
-            }
-            
-            builder.withHasInternetAccess(hasInternetAccess)
-            
-            if hasInternetAccess {
-                await refreshIpAddressIfNeededAsync()
-                await refreshIpInfoIfNeededAsync()
-            } else {
-                builder.withPublicIp(nil)
-            }
-            
-            await updateStatusAsync(update: builder.build())
-        } catch {
-            await updateStatusAsync(update: builder
-                .withHasInternetAccess(false)
+        builder.withHasInternetAccess(hasInternetAccess)
+        
+        if hasInternetAccess {
+            await refreshIpAddressIfNeededAsync()
+            await refreshIpInfoIfNeededAsync()
+        } else {
+            builder.withHasInternetAccess(false)
                 .withPublicIp(nil)
-                .build())
         }
+        
+        await updateStatusAsync(update: builder.build())
+    }
+    
+    private func checkInternetAccessWithRetryAsync() async -> Bool {
+        if await checkIfInternetConnectionAsync() {
+            return true
+        }
+        
+        let startTime = ContinuousClock.now
+        let timeout = Duration.seconds(Constants.callTimeoutIpApiInSeconds)
+        let retryInterval = Duration.nanoseconds(Constants.defaultToleranceInNanoseconds)
+        
+        while true {
+            let elapsedTime = startTime.duration(to: ContinuousClock.now)
+            
+            if elapsedTime > timeout {
+                break
+            }
+            
+            try? await Task.sleep(for: retryInterval)
+            
+            if await checkIfInternetConnectionAsync() {
+                return true
+            }
+        }
+        
+        return false
     }
     
     private func reactivateIpApisAsync() async {
@@ -381,22 +384,28 @@ class NetworkService: ServiceBase, ApiCallable, NetworkServiceType {
             .build())
     }
     
-    private func checkIfInternetConnectionAsync() async throws -> Bool {
-        try await withThrowingTaskGroup(of: Bool.self, returning: Bool.self) { group in
-            group.addTask {
-                try await self.isUrlReachableAsync(
-                    url: self.appState.userData.internetCheckUrl1)
-            }
-            group.addTask {
-                try await self.isUrlReachableAsync(
-                    url: self.appState.userData.internetCheckUrl2)
-            }
-            group.addTask {
-                try await self.isUrlReachableAsync(
-                    url: self.appState.userData.internetCheckUrl3)
+    private func checkIfInternetConnectionAsync() async -> Bool {
+        await withTaskGroup(of: Bool?.self) { group in
+            let urls = [
+                appState.userData.internetCheckUrl1,
+                appState.userData.internetCheckUrl2,
+                appState.userData.internetCheckUrl3
+            ]
+            
+            for url in urls {
+                group.addTask {
+                    try? await self.isUrlReachableAsync(url: url)
+                }
             }
             
-            return try await group.first(where: { $0 }) ?? false
+            for await result in group {
+                if result == true {
+                    group.cancelAll()
+                    return true
+                }
+            }
+            
+            return false
         }
     }
     

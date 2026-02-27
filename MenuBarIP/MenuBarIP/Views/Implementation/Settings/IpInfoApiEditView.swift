@@ -5,8 +5,8 @@
 //  Created by UglyGeorge on 17.06.2025.
 //
 
-import Factory
 import SwiftUI
+import Factory
 
 struct IpInfoApiEditView: View {
     @EnvironmentObject var appState: AppState
@@ -22,66 +22,21 @@ struct IpInfoApiEditView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: Constants.iconInfo)
-                    .asInfoIcon()
-                Text(Constants.hintIpInfoApi)
-                    .padding(.top)
-                    .padding(.trailing)
-            }
-            Spacer()
-                .frame(height: 10)
+            hintSection
+            Spacer().frame(height: 10)
             VStack(alignment: .center) {
-                VStack(alignment: .leading) {
-                    Text("\(Constants.ipInfoApiUrl):")
-                    HStack {
-                        TextField(Constants.hintNewVaildApiUrl, text: $newUrl)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                    }
-                }
-                .padding()
-                VStack {
-                    Text(Constants.mappings)
-                        .font(.title3)
-                    List {
-                        ForEach(Array(keyMapping.keys.sorted()), id: \.self) { key in
-                            HStack {
-                                Text(Constants.readableIpInfoApiKeyMapping[key] ?? String())
-                                    .frame(width: 100, alignment: .leading)
-                                    .foregroundColor(.primary)
-                                TextField(Constants.hintJsonKey, text: Binding(
-                                    get: { keyMapping[key] ?? String() },
-                                    set: { keyMapping[key] = $0 }
-                                ))
-                                .textFieldStyle(.roundedBorder)
-                            }
-                            .padding(.vertical, 2)
-                        }
-                    }
-                }
-                .padding(.bottom, 5)
+                apiUrlSection
+                mappingsSection
             }
         }
         .safeAreaInset(edge: .bottom) {
-            VStack {
-                AsyncButton(Constants.save, action: saveChangesAsync)
-                    .disabled(!hasChanges())
-                    .pointerOnHover()
-                    .bold()
-            }
+            saveButtonSection
         }
         .alert(isPresented: Binding(
-            get: {
-                alertType != nil
-            },
-            set: { newValue in
-                if !newValue {
-                    alertType = pendingAlert
-                    pendingAlert = nil
-                }
-            }
+            get: { alertType != nil },
+            set: { if !$0 { alertType = pendingAlert; pendingAlert = nil } }
         )) {
-            Alert (
+            Alert(
                 title: Text(alertType?.alertContent.title ?? String()),
                 message: Text(alertType?.alertContent.message ?? String()),
                 dismissButton: .default(Text(Constants.ok)) {
@@ -90,8 +45,70 @@ struct IpInfoApiEditView: View {
                 }
             )
         }
-        .padding(5)
         .onAppear(perform: initValues)
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var hintSection: some View {
+        HStack {
+            Image(systemName: Constants.iconInfo)
+                .asInfoIcon()
+            Text(Constants.hintIpInfoApi)
+                .padding(.top)
+                .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var apiUrlSection: some View {
+        VStack(alignment: .leading) {
+            Text("\(Constants.ipInfoApiUrl):")
+            TextField(Constants.hintNewVaildApiUrl, text: $newUrl)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    private var mappingsSection: some View {
+        VStack {
+            Text(Constants.mappings)
+                .font(.title3)
+            List {
+                ForEach(Array(keyMapping.keys.sorted()), id: \.self) { key in
+                    mappingRow(key)
+                }
+            }
+        }
+        .padding(10)
+    }
+    
+    @ViewBuilder
+    private func mappingRow(_ key: String) -> some View {
+        HStack {
+            Text(Constants.readableIpInfoApiKeyMapping[key] ?? String())
+                .frame(width: 100, alignment: .leading)
+                .foregroundColor(.primary)
+            TextField(Constants.hintJsonKey, text: Binding(
+                get: { keyMapping[key] ?? String() },
+                set: { keyMapping[key] = $0 }
+            ))
+            .textFieldStyle(.roundedBorder)
+        }
+        .padding(.vertical, 2)
+    }
+    
+    @ViewBuilder
+    private var saveButtonSection: some View {
+        VStack {
+            AsyncButton(Constants.save, action: saveChangesAsync)
+                .disabled(!hasChanges())
+                .pointerOnHover()
+                .bold()
+        }
+        .padding(10)
     }
     
     // MARK: Private functions

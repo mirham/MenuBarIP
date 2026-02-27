@@ -61,17 +61,15 @@ private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
     }
     
     var body: some View {
-        if appState.network.status == .off {
-            makeOfflineView()
-        }
-        else if appState.network.isObtainingIp {
-            makeObtainingIpView()
-        }
-        else if !appState.userData.hasActiveIpApi() {
-            makeNoActiveIpApiView()
-        }
-        else {
-            makeDefaultView(appState: appState, colorScheme: colorScheme)
+        switch true {
+            case appState.network.status == .off:
+                makeOfflineView()
+            case appState.network.isObtainingIp:
+                makeObtainingIpView()
+            case !appState.userData.hasActiveIpApi():
+                makeNoActiveIpApiView()
+            default:
+                makeDefaultView(appState: appState, colorScheme: colorScheme)
         }
     }
     

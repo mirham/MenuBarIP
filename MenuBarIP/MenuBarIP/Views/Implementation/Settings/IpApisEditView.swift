@@ -20,65 +20,9 @@ struct IpApisEditView : View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Image(systemName: Constants.iconInfo)
-                    .asInfoIcon()
-                Text(Constants.hintIpApis)
-                    .padding(.top)
-                    .padding(.trailing)
-            }
-            Spacer()
-                .frame(height: 10)
-            VStack(alignment: .center) {
-                Text(Constants.settingsElementIpAddressApis)
-                    .font(.title3)
-                    .multilineTextAlignment(.center)
-                NavigationStack {
-                    List {
-                        ForEach(appState.userData.ipApis, id: \.id) { api in
-                            HStack {
-                                Text(api.url)
-                                Spacer()
-                                Circle()
-                                    .fill(api.isActive() ? .green : .red)
-                                    .frame(width: 10, height: 10)
-                                
-                            }
-                            .help(api.isActive() ? Constants.hintApiIsActive : Constants.hintApiIsInactive)
-                            .contextMenu {
-                                Button(action: { String.copyToClipboard(input: api.url) } ) {
-                                    Text(Constants.copy)
-                                }
-                                Button(action: { handleDeleteIpApiClick(ipApiUrl: api.url) }) {
-                                    Text(Constants.delete)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.bottom, 5)
-                }
-                .safeAreaInset(edge: .bottom) {
-                    VStack {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("\(Constants.apiUrl):")
-                            }
-                            VStack(alignment: .leading, spacing: 12) {
-                                TextField(Constants.hintNewVaildApiUrl, text: $newUrl)
-                                    .onChange(of: newUrl) {
-                                        isNewUrlValid = newUrl.isValidUrl()
-                                    }
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                            }
-                        }
-                        AsyncButton(Constants.add, action: handleAddIpApiClickAsync)
-                            .disabled(!isNewUrlValid)
-                            .pointerOnHover()
-                            .bold()
-                    }
-                }
-                .padding(5)
-            }
+            hintSection
+            Spacer().frame(height: 10)
+            ipApisSection
         }
         .alert(isPresented: Binding(
             get: { alertType != nil },
@@ -87,7 +31,7 @@ struct IpApisEditView : View {
                 pendingAlert = nil
             }
         )) {
-            Alert (
+            Alert(
                 title: Text(alertType?.alertContent.title ?? String()),
                 message: Text(alertType?.alertContent.message ?? String()),
                 dismissButton: .default(Text(Constants.ok)) {
@@ -96,6 +40,74 @@ struct IpApisEditView : View {
                 }
             )
         }
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var hintSection: some View {
+        HStack {
+            Image(systemName: Constants.iconInfo)
+                .asInfoIcon()
+            Text(Constants.hintIpApis)
+                .padding(.top)
+                .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var ipApisSection: some View {
+        VStack(alignment: .center) {
+            Text(Constants.settingsElementIpAddressApis)
+                .font(.title3)
+                .multilineTextAlignment(.center)
+            NavigationStack {
+                List {
+                    ForEach(appState.userData.ipApis, id: \.id) { api in
+                        ipApiRow(api)
+                    }
+                }
+                .padding(10)
+            }
+            .safeAreaInset(edge: .bottom) {
+                ipApiFormSection
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func ipApiRow(_ api: IpApiInfo) -> some View {
+        HStack {
+            Text(api.url)
+            Spacer()
+            Circle()
+                .fill(api.isActive() ? .green : .red)
+                .frame(width: 10, height: 10)
+        }
+        .help(api.isActive() ? Constants.hintApiIsActive : Constants.hintApiIsInactive)
+        .contextMenu {
+            Button(Constants.copy) { String.copyToClipboard(input: api.url) }
+            Button(Constants.delete) { handleDeleteIpApiClick(ipApiUrl: api.url) }
+        }
+    }
+    
+    @ViewBuilder
+    private var ipApiFormSection: some View {
+        VStack {
+            HStack {
+                Text("\(Constants.apiUrl):")
+                TextField(Constants.hintNewVaildApiUrl, text: $newUrl)
+                    .onChange(of: newUrl) {
+                        isNewUrlValid = newUrl.isValidUrl()
+                    }
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            AsyncButton(Constants.add, action: handleAddIpApiClickAsync)
+                .disabled(!isNewUrlValid)
+                .pointerOnHover()
+                .bold()
+        }
+        .padding(10)
     }
     
     // MARK: Private functions

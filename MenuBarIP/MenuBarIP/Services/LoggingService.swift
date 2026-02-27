@@ -6,9 +6,12 @@
 //
 
 import Foundation
+import Factory
 import os.log
 
-class LoggingService: ServiceBase, LoggingServiceType {
+class LoggingService: LoggingServiceType {
+    @Injected(\.appState) private var appState
+    
     private let subsystem = Bundle.main.bundleIdentifier ?? Constants.defaultAppBundleName
     private let fileQueue = DispatchQueue(label: Constants.loggerQueueLabel, qos: .background)
     
@@ -21,7 +24,7 @@ class LoggingService: ServiceBase, LoggingServiceType {
     
     private let loggers: [LogLevel: OSLog]
     
-    override init() {
+    init() {
         loggers = [
             .debug: OSLog(
                 subsystem: subsystem,

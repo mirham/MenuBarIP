@@ -12,4 +12,3 @@ class NoInsetHostingView<V>: NSHostingView<V> where V: View {
         return .init()
     }
 }
-

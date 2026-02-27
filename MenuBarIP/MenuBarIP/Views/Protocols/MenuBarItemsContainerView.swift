@@ -21,196 +21,225 @@ extension MenuBarItemsContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
-        isExampleAllowed: Bool = false) -> [MenuBarElement] {
-            var result = [MenuBarElement]()
-            
-            let baseColor = getBaseColor(colorScheme: colorScheme)
-            let ipColor = appState.userData.menuBarUseThemeColor
-                ? baseColor
-                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
-            let customTextColor = appState.userData.menuBarUseThemeColor
-                ? baseColor
-                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.ipCustomization)
-            let localIpColor = appState.userData.menuBarUseThemeColor
-                ? baseColor
-                : getIpColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
-            let localIpCustomTextColor = appState.userData.menuBarUseThemeColor
-                ? baseColor
-                : getCustomTextColor(colorScheme: colorScheme, currentIpCustomization: appState.current.localIpCustomization)
-            
-            for key in keys {
-                switch key {
-                    case Constants.mbItemKeyInternetStatus:
-                        let internetAccess = getInternetStatusItem(
-                            networkStatus: appState.network.status,
-                            hasNetworkAccess: appState.network.hasInternetAccess,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: internetAccess),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyPublicIpAddress:
-                        let publicIpAddress = getIpAddressItem(
-                            ipAddress: getEffectivePublicIpString(appState: appState),
-                            color: ipColor,
-                            isExampleAllowed: isExampleAllowed,
-                            isPublic: true,
-                            hasNetworkAccess: appState.network.hasInternetAccess,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: publicIpAddress),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyLocalIpAddress:
-                        let localIpAddress = getIpAddressItem(
-                            ipAddress: getEffectiveLocalIpString(appState: appState),
-                            color: localIpColor,
-                            isExampleAllowed: isExampleAllowed,
-                            isPublic: false,
-                            hasNetworkAccess: true,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: localIpAddress),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyBothIpAddressesPublicUpper:
-                        let view = getBothIpAddressessItem(
-                            ipAddressUpper: getEffectivePublicIpString(appState: appState),
-                            ipAddressLower: getEffectiveLocalIpString(appState: appState),
-                            colorUpper: ipColor,
-                            colorLower: localIpColor,
-                            isExampleAllowed: isExampleAllowed,
-                            isPublicUpper: true,
-                            hasNetworkAccess: appState.network.hasInternetAccess)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: view),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyCustomText:
-                        let view = getCustomTextItem(
-                            customText: appState.current.ipCustomization?.customText ?? String(),
-                            color: customTextColor,
-                            exampleAllowed: isExampleAllowed)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: view),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyPublicIpAddressWithCustomText:
-                        let view = getIpAddressWithCustomTextItem(
-                            ipAddress: getEffectivePublicIpString(appState: appState),
-                            customText: appState.current.ipCustomization?.customText ?? String(),
-                            color: ipColor,
-                            customTextColor: customTextColor,
-                            hasNetworkAccess: appState.network.hasInternetAccess,
-                            textSize: appState.userData.menuBarTextSize,
-                            isPublic: true,
-                            isExampleAllowed: isExampleAllowed)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: view),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyLocalIpAddressWithCustomText:
-                        let view = getIpAddressWithCustomTextItem(
-                            ipAddress: getEffectiveLocalIpString(appState: appState),
-                            customText: appState.current.localIpCustomization?.customText ?? String(),
-                            color: localIpColor,
-                            customTextColor: localIpCustomTextColor,
-                            hasNetworkAccess: appState.network.hasInternetAccess,
-                            textSize: appState.userData.menuBarTextSize,
-                            isPublic: false,
-                            isExampleAllowed: isExampleAllowed)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: view),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyCountryCode:
-                        let countryCode = getCountryCodeItem(
-                            countryCode: appState.network.publicIp == nil
-                            ? String()
-                            : appState.network.publicIp!.countryCode,
-                            color: ipColor,
-                            exampleAllowed: isExampleAllowed,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: countryCode),
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyCountryFlag:
-                        let countryFlag = getCountryFlagItem(
-                            countryCode: appState.network.publicIp == nil
-                            ? String()
-                            : appState.network.publicIp!.countryCode,
-                            isExampleAllowed: isExampleAllowed,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: countryFlag,
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeyBigCountryFlag:
-                        let countryFlag = getCountryFlagItem(
-                            countryCode: appState.network.publicIp == nil
-                            ? String()
-                            : appState.network.publicIp!.countryCode,
-                            isExampleAllowed: isExampleAllowed,
-                            scalable: false)
-                        let menuBarItem = MenuBarElement(
-                            image: countryFlag,
-                            key: key)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeySeparatorBullet:
-                        let bullet = getBulletItem(
-                            color: baseColor,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: bullet),
-                            key: key,
-                            isSeparator: true)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeySeparatorBigBullet:
-                        let bigBullet = getBulletItem(
-                            color: baseColor,
-                            textSize: 16.0)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: bigBullet),
-                            key: key,
-                            isSeparator: true)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeySeparatorPipe:
-                        let pipe = getPipeItem(
-                            color: baseColor,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: pipe),
-                            key: key,
-                            isSeparator: true)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeySeparatorLeftBracket:
-                        let leftBracket = getLeftBracketItem(
-                            color: baseColor,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: leftBracket),
-                            key: key,
-                            isSeparator: true)
-                        result.append(menuBarItem)
-                    case Constants.mbItemKeySeparatorRightBracket:
-                        let rightBracket = getRightBracketItem(
-                            color: baseColor,
-                            textSize: appState.userData.menuBarTextSize)
-                        let menuBarItem = MenuBarElement(
-                            image: renderMenuBarItemImage(view: rightBracket),
-                            key: key,
-                            isSeparator: true)
-                        result.append(menuBarItem)
-                    default:
-                        break
-                }
-            }
-            
-            return result
+        isExampleAllowed: Bool = false
+    ) -> [MenuBarElement] {
+        let colors = MenuBarColors(
+            base: getBaseColor(colorScheme: colorScheme),
+            ip: getIpColor(colorScheme: colorScheme, currentCustomization: appState.current.ipCustomization),
+            customText: getCustomTextColor(
+                colorScheme: colorScheme,
+                primaryCustomization: appState.current.ipCustomization,
+                optionalCustomization: appState.current.customTextCustomization),
+            localIp: getIpColor(colorScheme: colorScheme, currentCustomization: appState.current.localIpCustomization),
+            localIpCustomText: getCustomTextColor(
+                colorScheme: colorScheme,
+                primaryCustomization: appState.current.localIpCustomization,
+                optionalCustomization: appState.current.customTextCustomization),
+            useThemeColor: appState.userData.menuBarUseThemeColor
+        )
+        
+        return keys.compactMap { key in
+            createMenuBarElement(
+                for: key,
+                appState: appState,
+                colors: colors,
+                isExampleAllowed: isExampleAllowed
+            )
         }
+    }
     
     // MARK: Private functions
+    
+    @MainActor
+    private func createMenuBarElement(
+        for key: String,
+        appState: AppState,
+        colors: MenuBarColors,
+        isExampleAllowed: Bool
+    ) -> MenuBarElement? {
+        let textSize = appState.userData.menuBarTextSize
+        
+        switch key {
+            case Constants.mbItemKeyInternetStatus:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getInternetStatusItem(
+                        networkStatus: appState.network.status,
+                        hasNetworkAccess: appState.network.hasInternetAccess,
+                        textSize: textSize
+                    )
+                )
+                
+            case Constants.mbItemKeyPublicIpAddress:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getIpAddressItem(
+                        ipAddress: getEffectivePublicIpString(appState: appState),
+                        color: colors.effectiveIpColor,
+                        isExampleAllowed: isExampleAllowed,
+                        isPublic: true,
+                        hasNetworkAccess: appState.network.hasInternetAccess,
+                        textSize: textSize
+                    )
+                )
+                
+            case Constants.mbItemKeyLocalIpAddress:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getIpAddressItem(
+                        ipAddress: getEffectiveLocalIpString(appState: appState),
+                        color: colors.effectiveLocalIpColor,
+                        isExampleAllowed: isExampleAllowed,
+                        isPublic: false,
+                        hasNetworkAccess: true,
+                        textSize: textSize
+                    )
+                )
+                
+            case Constants.mbItemKeyBothIpAddressesPublicUpper:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getBothIpAddressessItem(
+                        ipAddressUpper: getEffectivePublicIpString(appState: appState),
+                        ipAddressLower: getEffectiveLocalIpString(appState: appState),
+                        colorUpper: colors.effectiveIpColor,
+                        colorLower: colors.effectiveLocalIpColor,
+                        isExampleAllowed: isExampleAllowed,
+                        isPublicUpper: true,
+                        hasNetworkAccess: appState.network.hasInternetAccess
+                    )
+                )
+                
+            case Constants.mbItemKeyCustomText:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getCustomTextItem(
+                        customText: appState.current.publicIpCustomText ?? String(),
+                        color: colors.effectiveCustomTextColor,
+                        exampleAllowed: isExampleAllowed
+                    )
+                )
+                
+            case Constants.mbItemKeyPublicIpAddressWithCustomText:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getIpAddressWithCustomTextItem(
+                        ipAddress: getEffectivePublicIpString(appState: appState),
+                        customText: appState.current.publicIpCustomText ?? String(),
+                        color: colors.effectiveIpColor,
+                        customTextColor: colors.effectiveCustomTextColor,
+                        hasNetworkAccess: appState.network.hasInternetAccess,
+                        textSize: textSize,
+                        isPublic: true,
+                        isExampleAllowed: isExampleAllowed
+                    )
+                )
+                
+            case Constants.mbItemKeyLocalIpAddressWithCustomText:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getIpAddressWithCustomTextItem(
+                        ipAddress: getEffectiveLocalIpString(appState: appState),
+                        customText: appState.current.localIpCustomization?.customText ?? String(),
+                        color: colors.effectiveLocalIpColor,
+                        customTextColor: colors.effectiveLocalIpCustomTextColor,
+                        hasNetworkAccess: appState.network.hasInternetAccess,
+                        textSize: textSize,
+                        isPublic: false,
+                        isExampleAllowed: isExampleAllowed
+                    )
+                )
+                
+            case Constants.mbItemKeyCountryCode:
+                return makeMenuBarItem(
+                    key: key,
+                    view: getCountryCodeItem(
+                        countryCode: appState.network.publicIp?.countryCode ?? String(),
+                        color: colors.effectiveIpColor,
+                        exampleAllowed: isExampleAllowed,
+                        textSize: textSize
+                    )
+                )
+                
+            case Constants.mbItemKeyCountryFlag:
+                return makeMenuBarItemWithImage(
+                    key: key,
+                    image: getCountryFlagItem(
+                        countryCode: appState.network.publicIp?.countryCode ?? String(),
+                        isExampleAllowed: isExampleAllowed,
+                        textSize: textSize
+                    )
+                )
+                
+            case Constants.mbItemKeyBigCountryFlag:
+                return makeMenuBarItemWithImage(
+                    key: key,
+                    image: getCountryFlagItem(
+                        countryCode: appState.network.publicIp?.countryCode ?? String(),
+                        isExampleAllowed: isExampleAllowed,
+                        scalable: false
+                    )
+                )
+                
+            case Constants.mbItemKeySeparatorBullet:
+                return makeSeparatorItem(
+                    key: key,
+                    view: getBulletItem(color: colors.base, textSize: textSize)
+                )
+                
+            case Constants.mbItemKeySeparatorBigBullet:
+                return makeSeparatorItem(
+                    key: key,
+                    view: getBulletItem(color: colors.base, textSize: 16.0)
+                )
+                
+            case Constants.mbItemKeySeparatorPipe:
+                return makeSeparatorItem(
+                    key: key,
+                    view: getPipeItem(color: colors.base, textSize: textSize)
+                )
+                
+            case Constants.mbItemKeySeparatorLeftBracket:
+                return makeSeparatorItem(
+                    key: key,
+                    view: getLeftBracketItem(color: colors.base, textSize: textSize)
+                )
+                
+            case Constants.mbItemKeySeparatorRightBracket:
+                return makeSeparatorItem(
+                    key: key,
+                    view: getRightBracketItem(color: colors.base, textSize: textSize)
+                )
+                
+            default:
+                return nil
+        }
+    }
+    
+    @MainActor
+    private func makeMenuBarItem(key: String, view: some View) -> MenuBarElement {
+        MenuBarElement(
+            image: renderMenuBarItemImage(view: view),
+            key: key
+        )
+    }
+    
+    @MainActor
+    private func makeMenuBarItemWithImage(key: String, image: NSImage) -> MenuBarElement {
+        MenuBarElement(
+            image: image,
+            key: key
+        )
+    }
+    
+    @MainActor
+    private func makeSeparatorItem(key: String, view: some View) -> MenuBarElement {
+        MenuBarElement(
+            image: renderMenuBarItemImage(view: view),
+            key: key,
+            isSeparator: true
+        )
+    }
     
     private func getEffectivePublicIpString(appState: AppState) -> String {
         return appState.network.status == .off
@@ -438,6 +467,20 @@ extension MenuBarItemsContainerView {
         
         return result
     }
+}
+
+private struct MenuBarColors {
+    let base: Color
+    let ip: Color
+    let customText: Color
+    let localIp: Color
+    let localIpCustomText: Color
+    let useThemeColor: Bool
+    
+    var effectiveIpColor: Color { useThemeColor ? base : ip }
+    var effectiveCustomTextColor: Color { useThemeColor ? base : customText }
+    var effectiveLocalIpColor: Color { useThemeColor ? base : localIp }
+    var effectiveLocalIpCustomTextColor: Color { useThemeColor ? base : localIpCustomText }
 }
 
 private extension Text {

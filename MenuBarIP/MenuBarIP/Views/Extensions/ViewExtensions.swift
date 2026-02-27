@@ -28,6 +28,19 @@ extension View {
         
         return result
     }
+    
+    @ViewBuilder
+    func safeGlassEffect() -> some View {
+        if #available(macOS 26.0, *) {
+            self.background(
+                Color.clear
+                    .glassEffect(.regular, in: Rectangle())
+                    .ignoresSafeArea()
+            )
+        } else {
+            self.background(Color.clear)
+        }
+    }
 }
 
 public extension NSView {

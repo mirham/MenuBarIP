@@ -17,55 +17,35 @@ struct MenuBarMenuView : IpAddressContainerView {
     @Injected(\.networkService) private var networkService
     @Injected(\.launchAgentService) private var launchAgentService
     
+    private var publicIpString: String {
+        appState.network.publicIp?.ipAddress ?? Constants.none.uppercased()
+    }
+    
+    private var localIpString: String {
+        appState.network.localIp ?? Constants.none.uppercased()
+    }
+    
+    private var publicIpColor: Color {
+        getIpColor(
+            colorScheme: appState.current.colorScheme,
+            currentCustomization: appState.current.ipCustomization,
+            forMenu: true
+        )
+    }
+    
+    private var localIpColor: Color {
+        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+    }
+    
+    private var baseColor: Color {
+        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+    }
+    
     var body: some View {
         VStack {
-            Text(Constants.publicIp.uppercased())
-                .asMenuItemHeader()
-            Text(appState.network.publicIp?.ipAddress ?? Constants.none.uppercased())
-                .foregroundStyle(getIpColor(
-                    colorScheme: appState.current.colorScheme,
-                    currentIpCustomization: appState.current.ipCustomization,
-                    forMenu: true))
-                .asMenuItemIp()
-            VStack {
-                VStack() {
-                    Text(Constants.location.uppercased())
-                        .asMenuItemHeaderSmall()
-                    Text(appState.network.publicIp?.asPhysicalAddressString() ?? String())
-                        .font(.system(size: 10))
-                        .bold()
-                        .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                }
-                .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
-                VStack {
-                    Text(Constants.provider.uppercased())
-                        .asMenuItemHeaderSmall()
-                        .padding(0)
-                    Text(appState.network.publicIp?.asIspInfoString() ?? String())
-                        .font(.system(size: 10))
-                        .bold()
-                        .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                }
-                .isHidden(hidden: !(appState.network.publicIp?.hasIspInfo() ?? false), remove: true)
-                Button(Constants.menuItemCopy) {
-                    AppHelper.copyTextToClipboard(text: appState.network.publicIp?.ipAddress ?? String())
-                }
-                Button(Constants.menuItemShowOnMap, action: handlePublicIpLocationButtonClick)
-                    .isHidden(hidden: !(appState.network.publicIp?.hasPhysicalLocation() ?? false), remove: true)
-                Button(Constants.menuItemShowLog, action: handleLogButtonClick)
-                    .isHidden(hidden: !appState.userData.enableLogging, remove: true)
-            }
-            .isHidden(hidden: appState.network.publicIp == nil, remove: true)
+            publicIpSection
             Divider()
-            Text(Constants.localIp.uppercased())
-                .asMenuItemHeader()
-            Text(appState.network.localIp ?? Constants.none.uppercased())
-                .foregroundStyle(getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true))
-                .asMenuItemIp()
-            Button(Constants.menuItemCopy) {
-                AppHelper.copyTextToClipboard(text: appState.network.localIp ?? String())
-            }
-            .isHidden(hidden: appState.network.localIp == nil, remove: true)
+            localIpSection
             Divider()
             AsyncButton(Constants.menuItemRefresh, action: networkService.refreshIpAddressesManuallyAsync)
             Divider()
@@ -75,6 +55,83 @@ struct MenuBarMenuView : IpAddressContainerView {
             Divider()
             Button(Constants.menuItemQuit, action: handleQuitButtonClick)
         }
+    }
+    
+    // MARK: View sections
+    
+    @ViewBuilder
+    private var publicIpSection: some View {
+        VStack {
+            Text(Constants.publicIp.uppercased())
+                .asMenuItemHeader()
+            
+            Text(publicIpString)
+                .foregroundStyle(publicIpColor)
+                .asMenuItemIp()
+            
+            if let publicIp = appState.network.publicIp {
+                VStack {
+                    locationSection(for: publicIp)
+                    providerSection(for: publicIp)
+                    
+                    Button(Constants.menuItemCopy) {
+                        AppHelper.copyTextToClipboard(text: publicIp.ipAddress)
+                    }
+                    
+                    Button(Constants.menuItemShowOnMap, action: handlePublicIpLocationButtonClick)
+                        .isHidden(hidden: !publicIp.hasPhysicalLocation(), remove: true)
+                    
+                    Button(Constants.menuItemShowLog, action: handleLogButtonClick)
+                        .isHidden(hidden: !appState.userData.enableLogging, remove: true)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var localIpSection: some View {
+        VStack {
+            Text(Constants.localIp.uppercased())
+                .asMenuItemHeader()
+            
+            Text(localIpString)
+                .foregroundStyle(localIpColor)
+                .asMenuItemIp()
+            
+            if appState.network.localIp != nil {
+                Button(Constants.menuItemCopy) {
+                    AppHelper.copyTextToClipboard(text: appState.network.localIp ?? "")
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func locationSection(for ip: IpInfo) -> some View {
+        VStack {
+            Text(Constants.location.uppercased())
+                .asMenuItemHeaderSmall()
+            
+            Text(ip.asPhysicalAddressString())
+                .font(.system(size: 10))
+                .bold()
+                .foregroundStyle(baseColor)
+        }
+        .isHidden(hidden: !ip.hasPhysicalLocation(), remove: true)
+    }
+    
+    @ViewBuilder
+    private func providerSection(for ip: IpInfo) -> some View {
+        VStack {
+            Text(Constants.provider.uppercased())
+                .asMenuItemHeaderSmall()
+            
+            Text(ip.asIspInfoString())
+                .font(.system(size: 10))
+                .bold()
+                .foregroundStyle(baseColor)
+        }
+        .isHidden(hidden: !ip.hasIspInfo(), remove: true)
     }
     
     // MARK: Private functions
