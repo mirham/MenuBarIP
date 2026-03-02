@@ -76,6 +76,19 @@ Download the DMG installer from the [releases](https://github.com/mirham/MenuBar
   <img src="https://github.com/mirham/MenuBarIP/blob/main/Images/Settings6.png" width="600">
 </p>
 
+## Custom text customization guide
+- Custom text customization can be set up to display the ZIP, country, region, city, ASN, and ISP.
+- To keep values as they are, simply leave the matcher and custom text fields blank.
+- To customize values, configure both a matcher and the custom text.
+  
+  Example: You work in Palo Alto but live in Menlo Park and use a corporate VPN. While the workspace IP may change, the city remains the same. In this case, set up a case-insensitive matcher for "Palo Alto" (e.g., "palo") and set the custom text to "WORK" with your preferred color. This allows you to see at a glance whether you are connected to the VPN.
+
+### Understanding priority logic
+When multiple rules exist, they are applied in the following order:
+- IP customization: This has the highest priority. If a rule exists for your current IP address, it will always be applied first.
+- Match-based custom text customization: Rules with specific matchers take priority over those without them.
+- Order of creation: If multiple rules have the same priority level, the first one in the list will be applied.
+
 ## Scripting
 As an advanced user, you can run your own application or script whenever your public IP address changes. This allows you to gain even more benefits from the app. The new public IP address will be passed into your script as a parameter. 
 
