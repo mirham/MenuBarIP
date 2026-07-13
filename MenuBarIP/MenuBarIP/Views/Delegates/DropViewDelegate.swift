@@ -26,12 +26,13 @@ struct DropViewDelegate: DropDelegate {
     }
     
     func dropEntered(info: DropInfo) {
-        guard let draggedItem = self.draggedItem else { return }
+        guard let draggedItem = self.draggedItem
+        else { return }
         
         let from = sourceItems.firstIndex(of: draggedItem)
         let to = sourceItems.firstIndex(of: item)
-        ?? destinationItems.firstIndex(of: item)
-        ?? 0
+            ?? destinationItems.firstIndex(of: item)
+            ?? 0
         
         withAnimation(.default) {
             if let from = from {
@@ -47,7 +48,9 @@ struct DropViewDelegate: DropDelegate {
     // MARK: Private functions
     
     private func insertionIndex(to: Int, from: Int) -> Int {
-        to > from ? (to == 0 ? to : to + 1) : to
+        to > from
+            ? (to == 0 ? to : to + 1)
+            : to
     }
     
     private func handleCrossListDrop(draggedItem: MenuBarElement, to: Int) {

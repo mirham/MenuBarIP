@@ -92,8 +92,8 @@ struct IpInfo: Codable, Equatable {
         let emptyDouble = 0.0
         
         return !countryCode.isEmpty
-        || latitude != emptyDouble
-        || longitude != emptyDouble
+            || latitude != emptyDouble
+            || longitude != emptyDouble
     }
     
     func hasPhysicalLocation() -> Bool {
@@ -101,7 +101,9 @@ struct IpInfo: Codable, Equatable {
     }
     
     func hasIspInfo() -> Bool {
-        guard asn != nil || isp != nil else { return false }
+        guard asn != nil || isp != nil
+        else { return false }
+        
         guard !(asn?.isEmpty ?? true) || !(isp?.isEmpty ?? true)
         else { return false }
         
@@ -109,7 +111,8 @@ struct IpInfo: Codable, Equatable {
     }
     
     func asIspInfoString() -> String {
-        guard hasIspInfo() else { return String() }
+        guard hasIspInfo()
+        else { return String() }
         
         var data = [String]()
         

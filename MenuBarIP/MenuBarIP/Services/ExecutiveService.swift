@@ -33,8 +33,11 @@ class ExecutiveService: ExecutiveServiceType {
             let scriptPath = self.appState.userData.scriptPath
             let fileManager = FileManager.default
             
-            guard fileManager.fileExists(atPath: scriptPath) else { return}
-            guard fileManager.isReadableFile(atPath: scriptPath) else { return }
+            guard fileManager.fileExists(atPath: scriptPath)
+            else { return}
+            
+            guard fileManager.isReadableFile(atPath: scriptPath)
+            else { return }
             
             let url = URL(fileURLWithPath: scriptPath)
             let pathExtension = url.pathExtension.lowercased()

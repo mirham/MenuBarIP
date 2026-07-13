@@ -52,8 +52,8 @@ extension CustomizableItemsContainerView {
             else { return result }
             
             result = Color(hex: colorScheme == .dark
-                           ? effectiveCustomization.customTextDarkColor
-                           : effectiveCustomization.customTextLightColor)
+                ? effectiveCustomization.customTextDarkColor
+                : effectiveCustomization.customTextLightColor)
             
             return result
         }

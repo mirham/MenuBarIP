@@ -18,11 +18,11 @@ protocol Settable {
 
 extension Settable {
     func readSetting<T: Codable>(key: String) -> T? {
-        guard let data = UserDefaults.standard.data(forKey: key) else {
-            return nil
-        }
+        guard let data = UserDefaults.standard.data(forKey: key)
+        else { return nil }
         
         let result = try? JSONDecoder().decode(T.self, from: data)
+        
         return result
     }
     
@@ -66,6 +66,7 @@ extension Settable {
     
     func writeSettingsDictionary<K: Codable & Hashable, V: Codable>(newValues: [K: V], key: String) {
         let encoder = JSONEncoder()
+        
         if let encoded = try? encoder.encode(newValues) {
             UserDefaults.standard.set(encoded, forKey: key)
         }
