@@ -35,7 +35,8 @@ extension String {
     }
     
     static func copyToClipboard(input: String) {
-        guard !input.isEmpty else { return }
+        guard !input.isEmpty
+        else { return }
         
         NSPasteboard.general.declareTypes([.string], owner: nil)
         
@@ -45,7 +46,8 @@ extension String {
     }
     
     var firstLetterUppercased: String {
-        guard !isEmpty else { return self }
+        guard !isEmpty
+        else { return self }
         
         return prefix(1).uppercased() + dropFirst().lowercased()
     }

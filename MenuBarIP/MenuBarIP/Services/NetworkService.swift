@@ -19,7 +19,9 @@ class NetworkService: ApiCallable, NetworkServiceType {
     @Injected(\.loggingService) private var loggingSerevice
     
     private let monitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: Constants.networkMonitorQueryLabel, qos: .background)
+    private let queue = DispatchQueue(
+        label: Constants.networkMonitorQueryLabel,
+        qos: .background)
     private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
     private var periodicCheckIpTask: Task<Void, Never>?
@@ -85,14 +87,15 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 .build())
         }
         
-        if (isManually) {
+        if isManually {
             await showObtainingStatus()
         }
         else {
             loadingTask = Task {
                 try? await Task.sleep(nanoseconds: Constants.secondInNanoseconds)
                 
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled
+                else { return }
                 
                 await showObtainingStatus()
             }
@@ -103,13 +106,18 @@ class NetworkService: ApiCallable, NetworkServiceType {
         
         loadingTask?.cancel()
         
-        await updateStatusAsync(update: NetworkStateUpdateBuilder()
-            .withIsObtainingIp(false)
-            .withPublicIp(publicIp)
-            .withLocalIp(localIp)
-            .build())
+        defer {
+            Task { [publicIp, localIp] in
+                await updateStatusAsync(update: NetworkStateUpdateBuilder()
+                    .withIsObtainingIp(false)
+                    .withPublicIp(publicIp)
+                    .withLocalIp(localIp)
+                    .build())
+            }
+        }
         
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         writeLog(publicIp: publicIp)
         executeScript(prevPublicIp: prevPublicIp, publicIp: publicIp)
@@ -126,7 +134,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
         
         if hasInternetAccess {
             await reactivateIpApisAsync()
-            await refreshIpAddressesAsync(isManually: true)
+            await triggerRefresh(isManually: true).value
             await refreshIpInfoIfNeededAsync()
         } else {
             builder.withHasInternetAccess(false)
@@ -144,30 +152,28 @@ class NetworkService: ApiCallable, NetworkServiceType {
             else { return }
             
             let networkInterfaces = self.determineNetworkInterfaces(path: path)
-            let status = self.determineNetworkStatusType(path: path, networkInterfaces: networkInterfaces)
-            let isConnectionChanged = self.appState.network.isConnectionChanged (
-                status: status,
-                activeNetworkInterfaces: networkInterfaces)
+            let status = self.determineNetworkStatusType(
+                path: path,
+                networkInterfaces: networkInterfaces)
             
-            guard isConnectionChanged
-            else { return }
-            
-            let updatedStatus = status
-            let updatedNetworkInterfaces = networkInterfaces
-            
-            self.ipUpdateTask?.cancel()
-            
-            self.ipUpdateTask = Task {
+            Task { @MainActor in
+                let isConnectionChanged = self.appState.network.isConnectionChanged(
+                    status: status,
+                    activeNetworkInterfaces: networkInterfaces)
+                
+                guard isConnectionChanged
+                else { return }
+                
                 await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
-                    .withStatus(updatedStatus)
-                    .withActiveNetworkInterfaces(updatedNetworkInterfaces)
-                    .withIsDisconnected(updatedStatus != .on)
+                    .withStatus(status)
+                    .withActiveNetworkInterfaces(networkInterfaces)
+                    .withIsDisconnected(status != .on)
                     .build())
                 
                 if status == .on {
                     do {
                         try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                        await self.refreshIpAddressesAsync()
+                        self.triggerRefresh()
                     }
                     catch {
                         self.ipUpdateTask?.cancel()
@@ -232,6 +238,20 @@ class NetworkService: ApiCallable, NetworkServiceType {
         return shouldCheckConnection()
     }
     
+    @MainActor
+    @discardableResult
+    private func triggerRefresh(isManually: Bool = false) -> Task<Void, Never> {
+        ipUpdateTask?.cancel()
+        
+        let task = Task {
+            await refreshIpAddressesAsync(isManually: isManually)
+        }
+        
+        ipUpdateTask = task
+        
+        return task
+    }
+    
     private func performConnectionHealthCheckAsync() async {
         let builder = NetworkStateUpdateBuilder()
         let hasInternetAccess = await checkInternetAccessWithRetryAsync()
@@ -276,7 +296,8 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func reactivateIpApisAsync() async {
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         await MainActor.run {
             appState.userData.reactivateIpApis()
@@ -285,10 +306,10 @@ class NetworkService: ApiCallable, NetworkServiceType {
     
     private func refreshIpAddressIfNeededAsync() async {
         let requiresIpRefresh = appState.userData.hasActiveIpApi()
-            && appState.network.publicIp == nil
+        && appState.network.publicIp == nil
         
         if requiresIpRefresh {
-            await refreshIpAddressesAsync()
+            await triggerRefresh().value
         }
     }
     
@@ -302,17 +323,17 @@ class NetworkService: ApiCallable, NetworkServiceType {
     private func determineNetworkStatusType(
         path: NWPath,
         networkInterfaces: [NetworkInterface]) -> NetworkStatusType {
-        switch path.status {
-            case .satisfied:
-                return networkInterfaces.contains(where: {$0.isPhysical})
-                ? NetworkStatusType.on
-                : NetworkStatusType.wait
-            case .requiresConnection:
-                return NetworkStatusType.wait
-            default:
-                return NetworkStatusType.off
+            switch path.status {
+                case .satisfied:
+                    return networkInterfaces.contains(where: {$0.isPhysical})
+                    ? NetworkStatusType.on
+                    : NetworkStatusType.wait
+                case .requiresConnection:
+                    return NetworkStatusType.wait
+                default:
+                    return NetworkStatusType.off
+            }
         }
-    }
     
     private func determineNetworkInterfaces(path: NWPath) -> [NetworkInterface] {
         var result = [NetworkInterface]()
@@ -351,12 +372,13 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func fetchPublicIpAsync() async -> IpInfo? {
-        let shouldFetchPublicIp = !Task.isCancelled
-            && appState.network.hasInternetAccess
-            && appState.userData.ipApis.contains(where: { $0.isActive() })
-        
-        while shouldFetchPublicIp {
-            let result = await ipService.getPublicIpAsync(ipApiUrl: nil, withInfo: true)
+        while !Task.isCancelled
+                && appState.network.hasInternetAccess
+                && appState.userData.ipApis.contains(where: { $0.isActive() }) {
+            
+            let result = await ipService.getPublicIpAsync(
+                ipApiUrl: nil,
+                withInfo: true)
             
             if result.success {
                 return result.result
@@ -367,7 +389,8 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     func refreshPublicIpInfoAsync() async {
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         guard let publicIpAddress = appState.network.publicIp?.ipAddress
         else { return }
@@ -377,7 +400,8 @@ class NetworkService: ApiCallable, NetworkServiceType {
             publicIp: publicIpAddress,
             keyMapping: appState.userData.ipInfoApiKeyMapping)
         
-        guard publicIpInfoResult.success else { return }
+        guard publicIpInfoResult.success
+        else { return }
         
         await updateStatusAsync(update: NetworkStateUpdateBuilder()
             .withPublicIp(publicIpInfoResult.result)
@@ -411,14 +435,15 @@ class NetworkService: ApiCallable, NetworkServiceType {
     
     @objc private func systemDidWake() {
         if appState.network.publicIp == nil {
-            Task {
-                await refreshIpAddressesAsync()
+            Task { @MainActor in
+                triggerRefresh()
             }
         }
     }
     
     private func updateStatusAsync(update: NetworkStateUpdate) async {
-        guard !Task.isCancelled else { return }
+        guard !Task.isCancelled
+        else { return }
         
         await MainActor.run {
             appState.applyNetworkUpdate(update)
@@ -427,17 +452,25 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func writeLog(publicIp: IpInfo?) {
-        guard appState.userData.enableLogging else { return }
-        guard let ip = publicIp?.ipAddress else { return }
+        guard appState.userData.enableLogging
+        else { return }
+        
+        guard let ip = publicIp?.ipAddress
+        else { return }
         
         loggingSerevice.info(ip, LogDestination.file)
     }
     
     private func executeScript(prevPublicIp: IpInfo?, publicIp: IpInfo?) {
-        guard appState.userData.runScript else { return }
-        guard let ip = publicIp?.ipAddress else { return }
+        guard appState.userData.runScript
+        else { return }
+        
+        guard let ip = publicIp?.ipAddress
+        else { return }
+        
         guard publicIp != nil && prevPublicIp != nil
-              && publicIp?.ipAddress != prevPublicIp?.ipAddress else { return }
+                && publicIp?.ipAddress != prevPublicIp?.ipAddress
+        else { return }
         
         executiveService.execute(publicIp: ip)
     }

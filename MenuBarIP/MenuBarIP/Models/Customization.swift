@@ -18,7 +18,13 @@ struct Customization: Codable, Identifiable, Equatable {
     var customTextDarkColor: String
     
     static func == (lhs: Customization, rhs: Customization) -> Bool {
-        return  lhs.id == rhs.id || lhs.value == rhs.value
+        return  (lhs.id == rhs.id || lhs.value == rhs.value)
+            && lhs.type == rhs.type
+            && lhs.customText == rhs.customText
+            && lhs.customLightColor == rhs.customLightColor
+            && lhs.customDarkColor == rhs.customDarkColor
+            && lhs.customTextLightColor == rhs.customTextLightColor
+            && lhs.customTextDarkColor == rhs.customTextDarkColor
     }
     
     func hash(into hasher: inout Hasher) {

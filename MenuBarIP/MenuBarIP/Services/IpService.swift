@@ -83,8 +83,11 @@ class IpService : ApiCallable, IpServiceType {
 
         var ifaddr : UnsafeMutablePointer<ifaddrs>?
         
-        guard getifaddrs(&ifaddr) == 0 else { return nil }
-        guard let firstAddr = ifaddr else { return nil }
+        guard getifaddrs(&ifaddr) == 0
+        else { return nil }
+        
+        guard let firstAddr = ifaddr
+        else { return nil }
         
         for ifptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
             let interface = ifptr.pointee
@@ -118,7 +121,9 @@ class IpService : ApiCallable, IpServiceType {
             if ipv4.isLoopback || ipv4.isLinkLocal { return true }
             
             let octets = ipString.split(separator: Constants.dot).compactMap { Int($0) }
-            guard octets.count == 4 else { return false }
+           
+            guard octets.count == 4
+            else { return false }
             
             switch (octets[0], octets[1]) {
                 case (10, _), (192, 168):
