@@ -38,7 +38,7 @@ struct LogView: View {
                                     .frame(width: 60, alignment: .trailing)
                                 Text(entry.message)
                                     .font(.system(.body, design: .monospaced))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.primary)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             .id(entry.id)
