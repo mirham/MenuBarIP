@@ -13,6 +13,7 @@ struct MenuBarMenuView : IpAddressContainerView {
     
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     
     @Injected(\.networkService) private var networkService
     @Injected(\.launchAgentService) private var launchAgentService
@@ -27,18 +28,18 @@ struct MenuBarMenuView : IpAddressContainerView {
     
     private var publicIpColor: Color {
         getIpColor(
-            colorScheme: appState.current.colorScheme,
+            colorScheme: colorScheme,
             currentCustomization: appState.current.ipCustomization,
-            forMenu: true
+            forMenu: false
         )
     }
     
     private var localIpColor: Color {
-        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+        getBaseColor(colorScheme: colorScheme, forMenu: false)
     }
     
     private var baseColor: Color {
-        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+        getBaseColor(colorScheme: colorScheme, forMenu: false)
     }
     
     var body: some View {

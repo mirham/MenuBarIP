@@ -210,6 +210,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 
                 try? await Task.sleep(nanoseconds:UInt64(self.appState.userData.intervalBetweenChecks) * Constants.secondInNanoseconds)
                 
+                let prevPublicIp = self.appState.network.publicIp
                 let publicIp = await fetchPublicIpAsync()
                 
                 await updateStatusAsync(update: builder
@@ -217,6 +218,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                     .build())
                 
                 writeLog(publicIp: publicIp)
+                executeScript(prevPublicIp: prevPublicIp, publicIp: publicIp)
             }
         }
     }
