@@ -62,13 +62,6 @@ struct LogView: View {
             }
             .padding(.bottom, 5)
         }
-        .onAppear(perform: {
-            appState.views.shownWindows.append(Constants.windowIdLog)
-            AppHelper.activateView(viewId: Constants.windowIdLog)
-        })
-        .onDisappear(perform: {
-            appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdLog})
-        })
         .opacity(getViewOpacity(state: controlActiveState))
     }
     

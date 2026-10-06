@@ -49,6 +49,7 @@ struct Constants{
     static let ipV6: Int = 6
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
+    static let callIpApiRetryDelayInSeconds: Double = 0.3
     static let callTimeoutIpApiInSeconds: Double = 1.0
     static let callTimeoutIpApiTotalInSeconds: Double = 20.0
     static let callTimeoutIpInfoApiInSeconds: Double = 2.0
@@ -127,12 +128,6 @@ struct Constants{
     static let hyphen: String = "-"
     static let space = " "
     static let slash = "/"
-    
-    // MARK: Window IDs
-    static let windowIdSettings = "settings-view"
-    static let windowIdPublicIpLocation = "public-ip-location-view"
-    static let windowIdLog = "log-view"
-    static let windowIdInfo = "info-view"
     
     // MARK:  Settings key names
     static let settingsKeyPeriodicIpCheck = "periodic-ip-check"
@@ -228,7 +223,7 @@ struct Constants{
     static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)\n\(pathDotNetScript)"
     
     // MARK: Hints
-    static let hintPeriodicIpCheck = "Check the public IP address periodically when monitoring is enabled at the interval specified below."
+    static let hintPeriodicIpCheck = "Check the public IP address periodically at the interval specified below."
     static let hintInterval = "\(minTimeIntervalToCheck)..\(maxTimeIntervalToCheck)"
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
     static let hintRunScript = "Run a custom shell script when the public address changes, the new public IP address will be passed as the first argument as a string"

@@ -14,9 +14,29 @@ extension Container {
     // MARK: App state
     
     var appState: Factory<AppState> {
-        Factory(self) { AppState.shared }
-            .singleton
+        Factory(self) {
+            MainActor.assumeIsolated { AppState.shared }
+        }.singleton
     }
+    
+    // MARK: Windows management
+    
+    var windowManager: Factory<WindowManager> {
+        Factory(self) {
+            MainActor.assumeIsolated {
+                WindowManager()
+            }
+        }.singleton
+    }
+    
+    var windowRegistry: Factory<WindowRegistry> {
+        Factory(self) {
+            MainActor.assumeIsolated {
+                WindowRegistry(manager: self.windowManager())
+            }
+        }.singleton
+    }
+    
     
     // MARK: Services registrations
     

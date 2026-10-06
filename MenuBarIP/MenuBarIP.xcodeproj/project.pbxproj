@@ -54,6 +54,11 @@
 		3575CCAD2DD7691B00102D4E /* KeyedContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */; };
 		3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */; };
 		3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */; };
+		35779E8C30055A450054927B /* WindowType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8730055A450054927B /* WindowType.swift */; };
+		35779E8D30055A450054927B /* WindowRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8B30055A450054927B /* WindowRegistry.swift */; };
+		35779E8E30055A450054927B /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8930055A450054927B /* WindowController.swift */; };
+		35779E8F30055A450054927B /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8830055A450054927B /* ButtonType.swift */; };
+		35779E9030055A450054927B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8A30055A450054927B /* WindowManager.swift */; };
 		358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */; };
 		358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA182E001D27002DF782 /* LoggingServiceType.swift */; };
 		358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1A2E001D7C002DF782 /* LoggingService.swift */; };
@@ -129,6 +134,11 @@
 		3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyedContainerExtensions.swift; sourceTree = "<group>"; };
 		3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExtensions.swift; sourceTree = "<group>"; };
 		3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerExtensions.swift; sourceTree = "<group>"; };
+		35779E8730055A450054927B /* WindowType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowType.swift; sourceTree = "<group>"; };
+		35779E8830055A450054927B /* ButtonType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonType.swift; sourceTree = "<group>"; };
+		35779E8930055A450054927B /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
+		35779E8A30055A450054927B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		35779E8B30055A450054927B /* WindowRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowRegistry.swift; sourceTree = "<group>"; };
 		358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtensions.swift; sourceTree = "<group>"; };
 		358DDA182E001D27002DF782 /* LoggingServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingServiceType.swift; sourceTree = "<group>"; };
 		358DDA1A2E001D7C002DF782 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
@@ -285,6 +295,7 @@
 		354032852C5E7773002624D2 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				35779E8630055A2E0054927B /* Infrastructure */,
 				35980DFC2C736CC90036AB41 /* Delegates */,
 				354032A12C5E7E6F002624D2 /* Protocols */,
 				354032912C5E7945002624D2 /* Styles */,
@@ -420,9 +431,9 @@
 		3575CCA92DD7686200102D4E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */,
 				353EBC492EF195FC00B7A963 /* ArrayExtensions.swift */,
 				358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */,
-				3575CCB02DD76AA800102D4E /* ContainerExtensions.swift */,
 				3575CCAA2DD768CB00102D4E /* StringExtensions.swift */,
 				3575CCAC2DD7691400102D4E /* KeyedContainerExtensions.swift */,
 				3575CCAE2DD7697D00102D4E /* TaskExtensions.swift */,
@@ -431,6 +442,18 @@
 				3540327A2C5E6CE7002624D2 /* NWInterfaceExtension.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		35779E8630055A2E0054927B /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				35779E8730055A450054927B /* WindowType.swift */,
+				35779E8830055A450054927B /* ButtonType.swift */,
+				35779E8930055A450054927B /* WindowController.swift */,
+				35779E8A30055A450054927B /* WindowManager.swift */,
+				35779E8B30055A450054927B /* WindowRegistry.swift */,
+			);
+			path = Infrastructure;
 			sourceTree = "<group>";
 		};
 		358DDA1C2E004EC1002DF782 /* Log */ = {
@@ -481,7 +504,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					354032432C5E626D002624D2 = {
 						CreatedOnToolsVersion = 15.4;
@@ -568,6 +591,11 @@
 				35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */,
 				358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */,
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
+				35779E8C30055A450054927B /* WindowType.swift in Sources */,
+				35779E8D30055A450054927B /* WindowRegistry.swift in Sources */,
+				35779E8E30055A450054927B /* WindowController.swift in Sources */,
+				35779E8F30055A450054927B /* ButtonType.swift in Sources */,
+				35779E9030055A450054927B /* WindowManager.swift in Sources */,
 				35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */,
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
 				35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */,
@@ -661,6 +689,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -719,6 +748,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;

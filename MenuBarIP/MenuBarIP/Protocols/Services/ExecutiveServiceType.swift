@@ -8,6 +8,6 @@
 import Foundation
 
 protocol ExecutiveServiceType {
-    func execute(publicIp: String)
+    func executeAsync(publicIp: String) async
     func determineInterpreterPath (fileUrl: URL) throws -> URL
 }

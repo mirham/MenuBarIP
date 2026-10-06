@@ -26,14 +26,13 @@ struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
                 .scaledToFit()
         }
         .onAppear(){
-            appState.current.colorScheme = colorScheme
             updateDebouncedState()
         }
         .onChange(of: appState.network) {
             updateDebouncedState()
         }
         .onChange(of: colorScheme) {
-            appState.current.colorScheme = colorScheme
+            updateDebouncedState()
         }
     }
     

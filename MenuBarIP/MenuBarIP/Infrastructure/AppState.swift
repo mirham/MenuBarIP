@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 class AppState : ObservableObject, Observable {
     @Published var current = Current()
     @Published var views = Views(shownWindows: [String()])
@@ -137,12 +138,12 @@ extension AppState {
         var localIpCustomization: Customization? = nil
         var customTextCustomization: Customization? = nil
         var publicIpCustomText: String? = nil
-        var colorScheme: ColorScheme = .light
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
             && lhs.localIpCustomization == rhs.localIpCustomization
             && lhs.customTextCustomization == rhs.customTextCustomization
+            && lhs.publicIpCustomText == rhs.publicIpCustomText
             
             return result
         }

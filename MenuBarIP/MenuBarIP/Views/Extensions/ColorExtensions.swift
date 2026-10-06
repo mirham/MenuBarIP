@@ -22,6 +22,10 @@ extension Color {
         self.init(red: redValue, green: greenValue, blue: blueValue)
     }
     
+    static var menuBarText: Color {
+        Color(nsColor: .textColor)
+    }
+    
     func toHex() -> String? {
         let nsColor = NSColor(self)
         

@@ -29,8 +29,6 @@ struct InfoView: View {
             backgroundSection
         }
         .offset(y: -16)
-        .onAppear { openDialog() }
-        .onDisappear { closeDialog() }
         .opacity(getViewOpacity(state: controlActiveState))
     }
     
@@ -61,19 +59,6 @@ struct InfoView: View {
         Image(nsImage: NSImage(named: Constants.aboutBackground) ?? NSImage())
             .resizable()
             .frame(minWidth: 360, maxWidth: 360, minHeight: 220, maxHeight: 220)
-    }
-    
-    // MARK: Private functions
-    
-    private func openDialog() {
-        appState.views.shownWindows.append(Constants.windowIdInfo)
-        AppHelper.setUpView(
-            viewName: Constants.windowIdInfo,
-            onTop: true)
-    }
-    
-    private func closeDialog() {
-        appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdInfo})
     }
 }
 

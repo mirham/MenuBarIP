@@ -13,33 +13,50 @@ class IpService : ApiCallable, IpServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.ipApiService) private var ipApiService
     
-    func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
+    func getPublicIpAsync(
+        ipApiUrl: String? = nil,
+        withInfo: Bool = true
+    ) async -> OperationResult<IpInfo> {
         guard !Task.isCancelled
         else {
-            return OperationResult(error: Constants.errorTaskCancelled)
+            return OperationResult(
+                error: Constants.errorTaskCancelled)
         }
         
-        guard let apiUrl = ipApiUrl ?? ipApiService.getRandomActiveIpApi()?.url
+        let randomApiUrl = await ipApiService.getRandomActiveIpApiAsync()?.url
+        
+        let snapshot = await MainActor.run {(
+            apiUrl: ipApiUrl ?? randomApiUrl,
+            ipInfoUrl: appState.userData.ipInfoApiUrl,
+            keyMapping: appState.userData.ipInfoApiKeyMapping
+        )}
+        
+        guard let apiUrl = snapshot.apiUrl
         else {
-            return OperationResult(error: Constants.errorNoActiveIpApiFound)
+            return OperationResult(
+                error: Constants.errorNoActiveIpApiFound)
         }
         
-        let ipAddress = try? await fetchIpAddressAsync(from: apiUrl)
-        
-        guard let ipAddress
-        else {
-            return OperationResult(error: Constants.errorIpApiResponseIsInvalid)
+        do {
+            let ipAddress = try await fetchIpAddressAsync(from: apiUrl)
+            
+            guard !Task.isCancelled else {
+                return OperationResult(error: Constants.errorTaskCancelled)
+            }
+            
+            if withInfo {
+                return await getPublicIpInfoAsync(
+                    apiUrl: snapshot.ipInfoUrl,
+                    publicIp: ipAddress,
+                    keyMapping: snapshot.keyMapping
+                )
+            }
+            
+            return OperationResult(
+                result: IpInfo(ipAddress: ipAddress))
+        } catch {
+            return OperationResult(error: error.localizedDescription)
         }
-        
-        if withInfo {
-            return await getPublicIpInfoAsync(
-                apiUrl: appState.userData.ipInfoApiUrl,
-                publicIp: ipAddress,
-                keyMapping: appState.userData.ipInfoApiKeyMapping
-            )
-        }
-        
-        return OperationResult(result: IpInfo(ipAddress: ipAddress))
     }
     
     func getPublicIpInfoAsync(

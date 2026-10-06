@@ -11,10 +11,9 @@ import Factory
 class IpApiService : ApiCallable, IpApiServiceType {
     @Injected(\.appState) private var appState
     
-    func getRandomActiveIpApi() -> IpApiInfo? {
-        let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
-        
-        return result
+    func getRandomActiveIpApiAsync() async -> IpApiInfo? {
+        await MainActor.run { self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
+        }
     }
     
     func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String? {
@@ -50,18 +49,23 @@ class IpApiService : ApiCallable, IpApiServiceType {
     // MARK: Private functions
     
     private func deactivateIpApiAsync(ipApiUrl: String) async {
-        guard self.appState.network.status == .on
-                && self.appState.network.hasInternetAccess
+        guard !Task.isCancelled
         else { return }
         
-        if let inactiveApiIndex = self.appState.userData.ipApis
-            .firstIndex(where: { $0.url == ipApiUrl }) {
-            await MainActor.run() {
-                self.appState.userData.ipApis[inactiveApiIndex].active = false
-            }
+        await MainActor.run {
+            guard appState.network.status == .on,
+                  appState.network.hasInternetAccess
+            else { return }
+            
+            guard let index = appState.userData.ipApis
+                .firstIndex(where: { $0.url == ipApiUrl })
+            else { return }
+            
+            appState.userData.ipApis[index].active = false
         }
     }
     
+    @MainActor
     private func calculateCallTimeout() -> Double {
         let activeApisCount = self.appState.userData.ipApis.count(where: {$0.isActive()})
         

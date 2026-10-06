@@ -153,7 +153,9 @@ class LoggingService: LoggingServiceType {
                     fileHandle.write(data)
                 }
                 
-                self.trimLogFile(at: logFileUrl)
+                Task {
+                    await self.trimLogFileAsync(at: logFileUrl)
+                }
             } catch {
                 os_log(
                     .error,
@@ -164,8 +166,12 @@ class LoggingService: LoggingServiceType {
         }
     }
     
-    private func trimLogFile(at fileURL: URL) {
+    private func trimLogFileAsync(at fileURL: URL) async {
         var recentLines: [String] = []
+        
+        let logFileLimit = await MainActor.run {(
+            appState.userData.logFileLimit
+        )}
         
         do {
             guard let stream = InputStream(url: fileURL) else {
@@ -200,7 +206,7 @@ class LoggingService: LoggingServiceType {
                     
                     for line in lines.dropLast(1) {
                         recentLines.append(String(line))
-                        if recentLines.count > appState.userData.logFileLimit {
+                        if recentLines.count > logFileLimit {
                             recentLines.removeFirst()
                         }
                     }
@@ -209,13 +215,13 @@ class LoggingService: LoggingServiceType {
             
             if !partialLine.isEmpty {
                 recentLines.append(partialLine)
-                if recentLines.count > appState.userData.logFileLimit {
+                if recentLines.count > logFileLimit {
                     recentLines.removeFirst()
                 }
             }
             
-            if recentLines.count > appState.userData.logFileLimit {
-                recentLines = Array(recentLines.suffix(appState.userData.logFileLimit))
+            if recentLines.count > logFileLimit {
+                recentLines = Array(recentLines.suffix(logFileLimit))
             }
             
             let trimmedContent = recentLines.joined(separator: Constants.newLine)
