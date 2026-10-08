@@ -79,6 +79,7 @@
 		35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E052C75310B0036AB41 /* PublicIpLocationView.swift */; };
 		35BF309F2E015FE2003D9CE5 /* IpInfoApiEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */; };
 		35BF30A32E01A1BA003D9CE5 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35BF30A22E01A1B4003D9CE5 /* DataExtensions.swift */; };
+		35C89D343077CEE600851539 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C89D333077CEDC00851539 /* AppAppearance.swift */; };
 		35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C7192D91C17B0014EB04 /* IpApiService.swift */; };
 		35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */; };
 		35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */; };
@@ -160,6 +161,7 @@
 		35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfoApiEditView.swift; sourceTree = "<group>"; };
 		35BF30A22E01A1B4003D9CE5 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
 		35BF30A62E01B3F8003D9CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		35C89D333077CEDC00851539 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		35E1C7192D91C17B0014EB04 /* IpApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiService.swift; sourceTree = "<group>"; };
 		35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSidebarTabView.swift; sourceTree = "<group>"; };
 		35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextCustomizationsEditView.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 			children = (
 				354032802C5E7338002624D2 /* Constants.swift */,
 				354032592C5E64DB002624D2 /* AppState.swift */,
+				35C89D333077CEDC00851539 /* AppAppearance.swift */,
 				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
 				354032692C5E687A002624D2 /* Attributes */,
 				354032882C5E7841002624D2 /* Helpers */,
@@ -579,6 +582,7 @@
 				353EBC4A2EF1960300B7A963 /* ArrayExtensions.swift in Sources */,
 				358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */,
 				3575CCA22DD7658100102D4E /* NetworkServiceType.swift in Sources */,
+				35C89D343077CEE600851539 /* AppAppearance.swift in Sources */,
 				358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */,
 				354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */,
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,

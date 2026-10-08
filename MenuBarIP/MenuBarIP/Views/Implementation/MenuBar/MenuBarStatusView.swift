@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
     @EnvironmentObject var appState: AppState
     
-    @Environment(\.colorScheme) private var colorScheme
+    @Injected(\.appAppearance) private var appearance
     
     @State private var debouncedAppState: AppState?
     @State private var debounceTask: Task<Void, Never>?
@@ -20,7 +21,8 @@ struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
         HStack{
             let image = MenuBarStatusRawView(
                 appState: debouncedAppState ?? appState,
-                colorScheme: colorScheme).renderAsImage()
+                colorScheme: appearance.colorScheme)
+                .renderAsImage()
             Image(nsImage: image!)
                 .nonAntialiased()
                 .scaledToFit()
@@ -31,7 +33,7 @@ struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
         .onChange(of: appState.network) {
             updateDebouncedState()
         }
-        .onChange(of: colorScheme) {
+        .onChange(of: appearance.colorScheme) {
             updateDebouncedState()
         }
     }
@@ -41,7 +43,9 @@ struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
         
         debounceTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: Constants.minRefreshingTimeInterval)
-            guard !Task.isCancelled else { return }
+            
+            guard !Task.isCancelled
+            else { return }
             
             debouncedAppState = appState
         }

@@ -11,7 +11,7 @@ class AppHelper {
     static func setUpView(viewName: String, onTop: Bool) {
         for window in NSApplication.shared.windows {
             let windowId = String(window.identifier?.rawValue ?? String())
-            
+
             if windowId.starts(with: viewName) {
                 window.level = onTop ? .floating : .normal
                 window.standardWindowButton(.zoomButton)?.isHidden = true

@@ -19,6 +19,11 @@ extension Container {
         }.singleton
     }
     
+    @MainActor
+    var appAppearance: Factory<AppAppearance> {
+        self { @MainActor in AppAppearance() }.singleton
+    }
+    
     // MARK: Windows management
     
     var windowManager: Factory<WindowManager> {
