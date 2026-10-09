@@ -57,55 +57,43 @@ class AppState : ObservableObject, Observable {
         }
     }
     
+    func updateCustomizations() {
+        var next = current
+        
+        next.localIpCustomization = network.localIp.flatMap { ip in
+            userData.ipCustomizations.first { $0.value == ip }
+        }
+        
+        let publicIp = network.publicIp
+        next.ipCustomization = publicIp.flatMap { info in
+            userData.ipCustomizations.first { $0.value == info.ipAddress }
+        }
+        
+        if let ipCustomization = next.ipCustomization {
+            next.customTextCustomization = nil
+            next.publicIpCustomText = ipCustomization.customText
+        } else if let publicIp {
+            let match = findTextMatch(for: publicIp)
+            next.customTextCustomization = match?.customization
+            next.publicIpCustomText = match?.matchedValue
+        } else {
+            next.customTextCustomization = nil
+            next.publicIpCustomText = nil
+        }
+        
+        current = next
+    }
+    
     // MARK: Private functions
     
     private func setCurrentStateIfChanged<T: Equatable>(_ oldValue: T, _ newValue: T) {
         guard oldValue != newValue
         else { return }
         
-        setLocalIpCustomization()
-        setPublicIpCustomization()
-        setCustomTextCustomization()
+        updateCustomizations()
     }
     
-    private func setLocalIpCustomization() {
-        guard let localIp = network.localIp else {
-            current.localIpCustomization = nil
-            return
-        }
-        
-        current.localIpCustomization = userData.ipCustomizations
-            .first { $0.value == localIp }
-    }
-    
-    private func setPublicIpCustomization() {
-        var customization: Customization? = nil
-        
-        if let publicIp = network.publicIp?.ipAddress {
-            customization = userData.ipCustomizations
-                .first { $0.value == publicIp }
-        }
-        
-        current.ipCustomization = customization
-        current.publicIpCustomText = customization?.customText
-    }
-    
-    private func setCustomTextCustomization() {
-        guard let publicIp = network.publicIp else {
-            current.customTextCustomization = nil
-            current.publicIpCustomText = nil
-            
-            return
-        }
-        
-        guard current.ipCustomization == nil
-        else { return }
-        
-        findAndApplyCustomTextCustomization(for: publicIp)
-    }
-    
-    private func findAndApplyCustomTextCustomization(for ipInfo: IpInfo) {
-        var bestMatch: (customization: Customization, matchedValue: String)?
+    private func findTextMatch(for ipInfo: IpInfo) -> (customization: Customization, matchedValue: String)? {
         var fallbackMatch: (customization: Customization, matchedValue: String)?
         
         for customization in userData.customTextCustomizations {
@@ -113,21 +101,14 @@ class AppState : ObservableObject, Observable {
             else { continue }
             
             if !customization.customText.isEmpty {
-                bestMatch = (customization, matchedValue)
-                break
-            } else if fallbackMatch == nil {
+                return (customization, matchedValue)
+            }
+            if fallbackMatch == nil {
                 fallbackMatch = (customization, matchedValue)
             }
         }
         
-        applyTextCustomization(bestMatch ?? fallbackMatch)
-    }
-    
-    private func applyTextCustomization(_ match: (
-        customization: Customization,
-        matchedValue: String)?) {
-        current.customTextCustomization = match?.customization
-        current.publicIpCustomText = match?.matchedValue
+        return fallbackMatch
     }
 }
 

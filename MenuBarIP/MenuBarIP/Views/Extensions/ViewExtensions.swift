@@ -20,13 +20,12 @@ extension View {
         return state == .key ? 1 : 0.6
     }
     
-    func renderAsImage() -> NSImage? {
-        let view = NoInsetHostingView(rootView: self)
-        view.setFrameSize(view.fittingSize)
+    @MainActor
+    func renderAsImage(scale: CGFloat = NSScreen.main?.backingScaleFactor ?? 2) -> NSImage? {
+        let renderer = ImageRenderer(content: self)
+        renderer.scale = scale
         
-        let result = view.asImage()
-        
-        return result
+        return renderer.nsImage
     }
     
     @ViewBuilder

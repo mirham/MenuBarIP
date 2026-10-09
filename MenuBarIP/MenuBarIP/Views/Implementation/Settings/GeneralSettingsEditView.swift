@@ -9,10 +9,9 @@ import SwiftUI
 import Factory
 
 struct GeneralSettingsEditView: View {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) var controlActiveState
     
+    @InjectedObject(\.appState) private var appState
     @Injected(\.networkService) private var networkService
     @Injected(\.executiveService) private var executiveService
     @Injected(\.launchAgentService) private var launchAgentService

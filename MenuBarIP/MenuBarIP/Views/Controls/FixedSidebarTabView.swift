@@ -56,7 +56,7 @@ struct FixedSidebarTabView: View {
             )
             .padding(.leading, 10)
             .padding(.bottom, 10)
-            .frame(minWidth: 200, maxWidth: 200)
+            .frame(minWidth: 210, maxWidth: 210)
             .layoutPriority(0)
             
             VStack(spacing: 0) {

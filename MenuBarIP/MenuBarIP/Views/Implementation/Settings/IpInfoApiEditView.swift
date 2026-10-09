@@ -9,8 +9,7 @@ import SwiftUI
 import Factory
 
 struct IpInfoApiEditView: View {
-    @EnvironmentObject var appState: AppState
-    
+    @InjectedObject(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     @Injected(\.ipApiService) private var ipApiService
     @Injected(\.networkService) private var networkService

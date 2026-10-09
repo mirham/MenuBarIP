@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import Factory
 
 struct SettingsView : View {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) var controlActiveState
+    
+    @InjectedObject(\.appState) private var appState
 
     var body: some View {
         settingsTabView

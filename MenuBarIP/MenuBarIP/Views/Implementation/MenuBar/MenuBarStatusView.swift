@@ -8,46 +8,22 @@
 import SwiftUI
 import Factory
 
-struct MenuBarStatusView : @MainActor MenuBarItemsContainerView {
-    @EnvironmentObject var appState: AppState
-    
+struct MenuBarStatusView: @MainActor MenuBarItemsContainerView {
+    @InjectedObject(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
-    @State private var debouncedAppState: AppState?
-    @State private var debounceTask: Task<Void, Never>?
-    
-    @MainActor
     var body: some View {
-        HStack{
-            let image = MenuBarStatusRawView(
-                appState: debouncedAppState ?? appState,
-                colorScheme: appearance.colorScheme)
-                .renderAsImage()
-            Image(nsImage: image!)
-                .nonAntialiased()
-                .scaledToFit()
-        }
-        .onAppear(){
-            updateDebouncedState()
-        }
-        .onChange(of: appState.network) {
-            updateDebouncedState()
-        }
-        .onChange(of: appearance.colorScheme) {
-            updateDebouncedState()
-        }
-    }
-    
-    private func updateDebouncedState() {
-        debounceTask?.cancel()
+        let image = MenuBarStatusRawView(
+            appState: appState,
+            colorScheme: appearance.colorScheme)
+            .renderAsImage()
         
-        debounceTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: Constants.minRefreshingTimeInterval)
-            
-            guard !Task.isCancelled
-            else { return }
-            
-            debouncedAppState = appState
+        HStack {
+            if let image {
+                Image(nsImage: image)
+                    .nonAntialiased()
+                    .scaledToFit()
+            }
         }
     }
 }
@@ -102,6 +78,7 @@ private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
             Text(Constants.obtainingIp.uppercased())
                 .font(.system(size: appState.userData.menuBarTextSize))
         }
+        .foregroundStyle(getBaseColor(colorScheme: colorScheme))
     }
     
     @MainActor

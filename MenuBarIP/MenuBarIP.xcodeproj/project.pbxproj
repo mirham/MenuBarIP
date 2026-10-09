@@ -68,7 +68,6 @@
 		358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA232E00A3A6002DF782 /* ExecutiveService.swift */; };
 		358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA252E00A6D6002DF782 /* LogDestination.swift */; };
 		3594DE132E09F18B0040EA43 /* UTTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */; };
-		35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF42C736B040036AB41 /* NoInsetHostingView.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
 		35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */; };
@@ -149,7 +148,6 @@
 		358DDA232E00A3A6002DF782 /* ExecutiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveService.swift; sourceTree = "<group>"; };
 		358DDA252E00A6D6002DF782 /* LogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTTypeExtensions.swift; sourceTree = "<group>"; };
-		35980DF42C736B040036AB41 /* NoInsetHostingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoInsetHostingView.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusEditView.swift; sourceTree = "<group>"; };
@@ -351,7 +349,6 @@
 				35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */,
 				354032952C5E7A13002624D2 /* AsyncButton.swift */,
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
-				35980DF42C736B040036AB41 /* NoInsetHostingView.swift */,
 				352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */,
 			);
 			path = Controls;
@@ -562,7 +559,6 @@
 				3575CCB12DD76AAA00102D4E /* ContainerExtensions.swift in Sources */,
 				354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */,
 				358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */,
-				35980DF52C736B040036AB41 /* NoInsetHostingView.swift in Sources */,
 				3540329A2C5E7A95002624D2 /* MenuBarMenuView.swift in Sources */,
 				3540328E2C5E78F7002624D2 /* IsHiddenModifier.swift in Sources */,
 				354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */,

@@ -11,11 +11,10 @@ import RegexBuilder
 import Factory
 
 struct IpCustomizationsEditView : IpAddressContainerView {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) private var controlActiveState
-    @Environment(\.colorScheme) private var colorScheme
     
+    @InjectedObject(\.appState) private var appState
+    @Injected(\.appAppearance) private var appearance
     @Injected(\.ipService) private var ipService
     
     @State private var customizationId: UUID?
@@ -46,16 +45,12 @@ struct IpCustomizationsEditView : IpAddressContainerView {
                 .asInfoIcon()
             Text(Constants.hintIps)
                 .padding(.top)
-                .padding(.trailing)
         }
     }
     
     @ViewBuilder
     private var ipCustomizationsSection: some View {
         VStack(alignment: .center) {
-            Text(Constants.settingsElementIps)
-                .font(.title3)
-                .multilineTextAlignment(.center)
             NavigationStack {
                 List {
                     ForEach(appState.userData.ipCustomizations, id: \.id) { ipCustomization in
@@ -195,6 +190,8 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             appState.userData.ipCustomizations.append(ipCustomization)
         }
         
+        appState.current.refreshSignal.toggle()
+        
         customizationId = nil
         newIp = String()
         newCustomText = String()
@@ -217,12 +214,8 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     }
     
     private func deleteIpCustomization(ipCustomization: Customization) {
-        appState.userData.ipCustomizations.removeAll(where: {$0 == ipCustomization})
-        
-        if appState.userData.ipCustomizations.isEmpty {
-            appState.current.ipCustomization = nil
-            appState.current.publicIpCustomText = nil
-        }
+        appState.userData.ipCustomizations.removeAll { $0 == ipCustomization }
+        appState.updateCustomizations()
     }
     
     private func escapeCustomText(text: NSString) -> String {

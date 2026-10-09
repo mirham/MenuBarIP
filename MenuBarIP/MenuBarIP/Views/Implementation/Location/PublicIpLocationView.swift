@@ -7,9 +7,10 @@
 
 import SwiftUI
 import MapKit
+import Factory
 
 struct PublicIpLocationView : View {
-    @EnvironmentObject var appState: AppState
+    @InjectedObject(\.appState) private var appState
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -25,7 +26,7 @@ struct PublicIpLocationView : View {
     private var currentRegion: MKCoordinateRegion {
         MKCoordinateRegion(
             center: currentLocation,
-            span: MKCoordinateSpan(latitudeDelta: 0.3, longitudeDelta: 0.3)
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
     }
     

@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
+import Factory
 
 struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
-    @EnvironmentObject var appState: AppState
-    
-    @Environment(\.colorScheme) private var colorScheme
+    @InjectedObject(\.appState) private var appState
+    @Injected(\.appAppearance) private var appearance
     
     @State private var shownItems = [MenuBarElement]()
     @State private var hiddenItems = [MenuBarElement]()
@@ -157,13 +157,13 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
         let shownItems = getMenuBarElements(
             keys: appState.userData.menuBarShownItems,
             appState: appState,
-            colorScheme: colorScheme,
+            colorScheme: appearance.colorScheme,
             isExampleAllowed: true)
         
         let hiddenItems = getMenuBarElements(
             keys: appState.userData.menuBarHiddenItems,
             appState: appState,
-            colorScheme: colorScheme,
+            colorScheme: appearance.colorScheme,
             isExampleAllowed: true)
         
         self.shownItems.removeAll()

@@ -13,10 +13,9 @@ extension Container {
     
     // MARK: App state
     
+    @MainActor
     var appState: Factory<AppState> {
-        Factory(self) {
-            MainActor.assumeIsolated { AppState.shared }
-        }.singleton
+        self { @MainActor in AppState() }.singleton
     }
     
     @MainActor

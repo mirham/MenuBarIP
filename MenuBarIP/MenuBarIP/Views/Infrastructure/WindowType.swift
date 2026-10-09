@@ -97,9 +97,9 @@ enum WindowType: String, Hashable {
     var size: CGSize? {
         switch self {
             case .settings: return CGSize(width: 680, height: 550)
-            case .publicIpLocation: return CGSize(width: 680, height: 550)
-            case .log: return CGSize(width: 680, height: 550)
-            case .info: return CGSize(width: 360, height: 190)
+            case .publicIpLocation: return CGSize(width: 800, height: 600)
+            case .log: return CGSize(width: 800, height: 600)
+            case .info: return nil
             case .dialogIpAddressIsNotValid: return nil
             case .dialogNoAllowedIp: return nil
             case .dialogUrlIsNotValid: return nil

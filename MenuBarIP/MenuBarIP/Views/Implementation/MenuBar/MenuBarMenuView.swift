@@ -9,11 +9,9 @@ import SwiftUI
 import Factory
 
 struct MenuBarMenuView : IpAddressContainerView {
-    @EnvironmentObject var appState: AppState
-    
-    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) var dismiss
     
+    @InjectedObject(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     @Injected(\.networkService) private var networkService
     @Injected(\.launchAgentService) private var launchAgentService
@@ -44,7 +42,7 @@ struct MenuBarMenuView : IpAddressContainerView {
     }
     
     private var baseColor: Color {
-        return getBaseColor(colorScheme: appearance.colorScheme, forMenu: false)
+        return getBaseColor(colorScheme: appearance.colorScheme, forMenu: true)
     }
     
     var body: some View {

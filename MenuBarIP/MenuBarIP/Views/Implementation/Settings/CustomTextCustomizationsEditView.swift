@@ -9,10 +9,10 @@ import SwiftUI
 import Factory
 
 struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) private var controlActiveState
-    @Environment(\.colorScheme) private var colorScheme
+    
+    @InjectedObject(\.appState) private var appState
+    @Injected(\.appAppearance) private var appearance
     
     @State private var customizationId: UUID?
     @State private var newMatcher = String()
@@ -192,6 +192,8 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
         else {
             appState.userData.customTextCustomizations.append(customTextCustomization)
         }
+        
+        appState.current.refreshSignal.toggle()
         
         customizationId = nil
         selectedType = .unknown
