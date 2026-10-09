@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol ExecutiveServiceType {
     func executeAsync(publicIp: String) async
     func determineInterpreterPath (fileUrl: URL) throws -> URL

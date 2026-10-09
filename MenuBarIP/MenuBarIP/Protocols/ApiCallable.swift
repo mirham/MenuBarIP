@@ -12,7 +12,7 @@ protocol ApiCallable{
 }
 
 extension ApiCallable {
-    func callGetApiAsync(apiUrl: String, timeoutInterval: Double) async throws -> String {
+    nonisolated func callGetApiAsync(apiUrl: String, timeoutInterval: Double) async throws -> String {
         let defaultResponse = String()
         
         guard !Task.isCancelled

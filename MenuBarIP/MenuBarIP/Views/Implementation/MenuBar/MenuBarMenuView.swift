@@ -11,7 +11,7 @@ import Factory
 struct MenuBarMenuView : IpAddressContainerView {
     @Environment(\.dismiss) var dismiss
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     @Injected(\.networkService) private var networkService
     @Injected(\.launchAgentService) private var launchAgentService
@@ -180,5 +180,5 @@ private extension Text {
 }
 
 #Preview {
-    MenuBarMenuView().environmentObject(AppState())
+    MenuBarMenuView()
 }

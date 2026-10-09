@@ -11,7 +11,7 @@ import Factory
 struct GeneralSettingsEditView: View {
     @Environment(\.controlActiveState) var controlActiveState
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.networkService) private var networkService
     @Injected(\.executiveService) private var executiveService
     @Injected(\.launchAgentService) private var launchAgentService
@@ -97,6 +97,8 @@ struct GeneralSettingsEditView: View {
     
     @ViewBuilder
     private var periodicIpCheckSection: some View {
+        @Bindable var appState = appState
+        
         SettingToggleRow(
             label: Constants.settingsElementPeriodicIpCheck,
             hint: Constants.hintPeriodicIpCheck,
@@ -123,6 +125,8 @@ struct GeneralSettingsEditView: View {
     
     @ViewBuilder
     private var enableLoggingSection: some View {
+        @Bindable var appState = appState
+        
         SettingToggleRow(
             label: Constants.settingsElementEnableLogging,
             hint: Constants.hintEnableLogging,
@@ -148,6 +152,8 @@ struct GeneralSettingsEditView: View {
     
     @ViewBuilder
     private var runScriptSection: some View {
+        @Bindable var appState = appState
+        
         SettingToggleRow(
             label: Constants.settingsElementRunScript,
             hint: Constants.hintRunScript,
@@ -417,5 +423,5 @@ private extension Image {
 
 
 #Preview {
-    GeneralSettingsEditView().environmentObject(AppState())
+    GeneralSettingsEditView()
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 protocol MenuBarItemsContainerView : IpAddressContainerView {
     func getMenuBarElements(
         keys: [String],

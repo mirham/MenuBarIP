@@ -23,20 +23,16 @@ class WindowRegistry {
     
     private func registerAll() {
         manager.register(name: .settings) {
-            NSHostingView(rootView: SettingsView()
-                .environmentObject(self.appState))
+            NSHostingView(rootView: SettingsView())
         }
         manager.register(name: .publicIpLocation) {
-            NSHostingView(rootView: PublicIpLocationView()
-                .environmentObject(self.appState))
+            NSHostingView(rootView: PublicIpLocationView())
         }
         manager.register(name: .log) {
-            NSHostingView(rootView: LogView(container: Container())
-                .environmentObject(self.appState))
+            NSHostingView(rootView: LogView(container: Container()))
         }
         manager.register(name: .info) {
-            NSHostingView(rootView: InfoView()
-                .environmentObject(self.appState))
+            NSHostingView(rootView: InfoView())
         }
     }
 }

@@ -10,7 +10,7 @@ import MapKit
 import Factory
 
 struct PublicIpLocationView : View {
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),

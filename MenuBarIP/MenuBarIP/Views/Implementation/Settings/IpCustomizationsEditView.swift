@@ -13,7 +13,7 @@ import Factory
 struct IpCustomizationsEditView : IpAddressContainerView {
     @Environment(\.controlActiveState) private var controlActiveState
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     @Injected(\.ipService) private var ipService
     
@@ -250,6 +250,6 @@ private extension Circle {
 }
 
 #Preview {
-    IpCustomizationsEditView().environmentObject(AppState())
+    IpCustomizationsEditView()
 }
 

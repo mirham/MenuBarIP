@@ -5,6 +5,7 @@
 //  Created by UglyGeorge on 16.05.2025.
 //
 
+@MainActor
 protocol NetworkServiceType {
     func isUrlReachableAsync(url : String) async throws -> Bool
     func refreshIpAddressesAsync(isManually: Bool) async

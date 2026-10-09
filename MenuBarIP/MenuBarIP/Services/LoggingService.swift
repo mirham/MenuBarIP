@@ -50,7 +50,7 @@ class LoggingService: LoggingServiceType {
         log(message, level: .error, destination: destination)
     }
     
-    func getLogFileUrl() -> URL? {
+    nonisolated func getLogFileUrl() -> URL? {
         guard let appSupportDirectory = FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask).first
         else {
@@ -169,9 +169,7 @@ class LoggingService: LoggingServiceType {
     private func trimLogFileAsync(at fileURL: URL) async {
         var recentLines: [String] = []
         
-        let logFileLimit = await MainActor.run {(
-            appState.userData.logFileLimit
-        )}
+        let logFileLimit = appState.userData.logFileLimit
         
         do {
             guard let stream = InputStream(url: fileURL) else {
@@ -235,7 +233,7 @@ class LoggingService: LoggingServiceType {
         }
     }
     
-    private func isLogFileEmpty(fileUrl: URL) throws -> Bool {
+    private nonisolated func isLogFileEmpty(fileUrl: URL) throws -> Bool {
         let fileManager = FileManager.default
         let attribtues = try fileManager.attributesOfItem(atPath: fileUrl.path)
         let fileSize = attribtues[.size] as? Int

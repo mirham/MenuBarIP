@@ -5,6 +5,7 @@
 //  Created by UglyGeorge on 16.05.2025.
 //
 
+@MainActor
 protocol IpServiceType {
     func getPublicIpAsync(ipApiUrl: String?, withInfo: Bool) async -> OperationResult<IpInfo>
     func getPublicIpInfoAsync(

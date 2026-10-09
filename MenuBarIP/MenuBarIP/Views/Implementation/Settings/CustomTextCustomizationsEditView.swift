@@ -11,7 +11,7 @@ import Factory
 struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     @Environment(\.controlActiveState) private var controlActiveState
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
     @State private var customizationId: UUID?
@@ -255,6 +255,6 @@ private extension Circle {
 }
 
 #Preview {
-    CustomTextCustomizationsEditView().environmentObject(AppState())
+    CustomTextCustomizationsEditView()
 }
 

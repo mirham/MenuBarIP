@@ -11,7 +11,7 @@ import Factory
 struct SettingsView : View {
     @Environment(\.controlActiveState) var controlActiveState
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
 
     var body: some View {
         settingsTabView
@@ -57,7 +57,6 @@ struct SettingsView : View {
                 icon: Constants.iconBulletRectangle
             ) {
                 IpApisEditView()
-                    .environmentObject(appState)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             FixedSidebarTabView.TabItem(
@@ -65,7 +64,6 @@ struct SettingsView : View {
                 icon: Constants.iconBulletRectangle
             ) {
                 IpInfoApiEditView()
-                    .environmentObject(appState)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
@@ -73,6 +71,6 @@ struct SettingsView : View {
 }
 
 #Preview {
-    SettingsView().environmentObject(AppState())
+    SettingsView()
 }
 

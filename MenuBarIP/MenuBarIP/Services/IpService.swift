@@ -23,15 +23,12 @@ class IpService : ApiCallable, IpServiceType {
                 error: Constants.errorTaskCancelled)
         }
         
-        let randomApiUrl = await ipApiService.getRandomActiveIpApiAsync()?.url
+        let randomApiUrl = ipApiService.getRandomActiveIpApi()?.url
+        let apiUrl = ipApiUrl ?? randomApiUrl
+        let ipInfoUrl = appState.userData.ipInfoApiUrl
+        let keyMapping = appState.userData.ipInfoApiKeyMapping
         
-        let snapshot = await MainActor.run {(
-            apiUrl: ipApiUrl ?? randomApiUrl,
-            ipInfoUrl: appState.userData.ipInfoApiUrl,
-            keyMapping: appState.userData.ipInfoApiKeyMapping
-        )}
-        
-        guard let apiUrl = snapshot.apiUrl
+        guard let apiUrl = apiUrl
         else {
             return OperationResult(
                 error: Constants.errorNoActiveIpApiFound)
@@ -46,9 +43,9 @@ class IpService : ApiCallable, IpServiceType {
             
             if withInfo {
                 return await getPublicIpInfoAsync(
-                    apiUrl: snapshot.ipInfoUrl,
+                    apiUrl: ipInfoUrl,
                     publicIp: ipAddress,
-                    keyMapping: snapshot.keyMapping
+                    keyMapping: keyMapping
                 )
             }
             
@@ -59,7 +56,7 @@ class IpService : ApiCallable, IpServiceType {
         }
     }
     
-    func getPublicIpInfoAsync(
+    nonisolated func getPublicIpInfoAsync(
         apiUrl: String,
         publicIp: String,
         keyMapping: [String:String]) async -> OperationResult<IpInfo> {
@@ -67,7 +64,7 @@ class IpService : ApiCallable, IpServiceType {
         else { return OperationResult(error: Constants.errorTaskCancelled) }
         
         guard !keyMapping.isEmpty,
-              let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
+              let ipInfoUrl = await ipApiService.prepareIpInfoApiUrl(
                 publicIp: publicIp,
                 ipInfoApiUrl: apiUrl)
         else { return OperationResult(result: IpInfo(ipAddress: publicIp)) }
@@ -95,7 +92,7 @@ class IpService : ApiCallable, IpServiceType {
         }
     }
     
-    func getLocalIp() -> String? {
+    nonisolated func getLocalIp() -> String? {
         var result : String?
 
         var ifaddr : UnsafeMutablePointer<ifaddrs>?
@@ -133,7 +130,7 @@ class IpService : ApiCallable, IpServiceType {
         return result
     }
     
-    func isLocalIp(ipString: String) -> Bool {
+    nonisolated func isLocalIp(ipString: String) -> Bool {
         if let ipv4 = IPv4Address(ipString) {
             if ipv4.isLoopback || ipv4.isLinkLocal { return true }
             
@@ -161,7 +158,7 @@ class IpService : ApiCallable, IpServiceType {
     
     // MARK: Private functions
     
-    private func fetchIpAddressAsync(from apiUrl: String) async throws -> String {
+    private nonisolated func fetchIpAddressAsync(from apiUrl: String) async throws -> String {
         let result = await ipApiService.callIpApiAsync(ipApiUrl: apiUrl)
         
         guard result.success,

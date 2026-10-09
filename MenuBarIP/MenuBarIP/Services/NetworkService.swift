@@ -78,14 +78,11 @@ class NetworkService: ApiCallable, NetworkServiceType {
         guard !Task.isCancelled
         else { return }
         
-        let prevPublicIp = await MainActor.run {(
-            appState.network.publicIp
-        )}
-        
+        let prevPublicIp = appState.network.publicIp
         var loadingTask: Task<Void, Never>?
         
         func showObtainingStatus() async {
-            await updateStatusAsync(update: NetworkStateUpdateBuilder()
+            updateStatus(update: NetworkStateUpdateBuilder()
                 .withIsObtainingIp(true)
                 .build())
         }
@@ -109,20 +106,24 @@ class NetworkService: ApiCallable, NetworkServiceType {
         
         loadingTask?.cancel()
         
-        defer {
-            Task { [publicIp, localIp] in
-                await updateStatusAsync(update: NetworkStateUpdateBuilder()
-                    .withIsObtainingIp(false)
-                    .withPublicIp(publicIp)
-                    .withLocalIp(localIp)
-                    .build())
-            }
+        let update = NetworkStateUpdateBuilder()
+            .withIsObtainingIp(false)
+            .withPublicIp(publicIp)
+            .withLocalIp(localIp)
+            .build()
+        
+        guard !Task.isCancelled else {
+            updateStatus(update: update)
+            
+            return
         }
         
-        guard !Task.isCancelled
-        else { return }
+        updateStatus(update: update)
         
-        await writeLogAsync(publicIp: publicIp)
+        if isManually {
+            await writeLogAsync(publicIp: publicIp)
+        }
+        
         await executeScriptAsync(prevPublicIp: prevPublicIp, publicIp: publicIp)
     }
     
@@ -136,7 +137,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
         builder.withHasInternetAccess(hasInternetAccess)
         
         if hasInternetAccess {
-            await reactivateIpApisAsync()
+            appState.userData.reactivateIpApis()
             await triggerRefresh(isManually: true).value
             await refreshIpInfoIfNeededAsync()
         } else {
@@ -144,7 +145,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 .withPublicIp(nil)
         }
         
-        await updateStatusAsync(update: builder.build())
+        updateStatus(update: builder.build())
     }
     
     // MARK: Private functions
@@ -167,7 +168,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 guard isConnectionChanged
                 else { return }
                 
-                await self.updateStatusAsync(update: NetworkStateUpdateBuilder()
+                self.updateStatus(update: NetworkStateUpdateBuilder()
                     .withStatus(status)
                     .withActiveNetworkInterfaces(networkInterfaces)
                     .withIsDisconnected(status != .on)
@@ -204,13 +205,9 @@ class NetworkService: ApiCallable, NetworkServiceType {
     private func startPeriodicIpCheck() {
         periodicCheckIpTask = Task {
             while !Task.isCancelled {
-                let (isEnabled, interval, prevPublicIp) = await MainActor.run {
-                    (
-                        self.appState.userData.periodicIpCheck,
-                        self.appState.userData.intervalBetweenChecks,
-                        self.appState.network.publicIp
-                    )
-                }
+                let isEnabled = self.appState.userData.periodicIpCheck
+                let interval = self.appState.userData.intervalBetweenChecks
+                let prevPublicIp = self.appState.network.publicIp
                 
                 guard isEnabled else {
                     _ = await sleepAsync(seconds: Double(Constants.minTimeIntervalToCheck))
@@ -222,7 +219,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 
                 let publicIp = await fetchPublicIpAsync()
                 
-                await updateStatusAsync(update: NetworkStateUpdateBuilder()
+                updateStatus(update: NetworkStateUpdateBuilder()
                     .withPublicIp(publicIp)
                     .build())
                 
@@ -232,23 +229,21 @@ class NetworkService: ApiCallable, NetworkServiceType {
         }
     }
     
-    private func shouldCheckConnectionAsync() async -> Bool {
-        return await MainActor.run {
-            appState.network.status != .off
-            && !appState.network.isObtainingIp
-        }
+    private func shouldCheckConnection() async -> Bool {
+        appState.network.status != .off
+        && !appState.network.isObtainingIp
     }
     
     private func shouldCheckConnectionWithRetryAsync() async -> Bool {
         for _ in 0..<Constants.minMaxConnectionChecks {
-            if await shouldCheckConnectionAsync() {
+            if await shouldCheckConnection() {
                 return true
             }
             
             try? await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
         }
         
-        return await shouldCheckConnectionAsync()
+        return await shouldCheckConnection()
     }
     
     @MainActor
@@ -279,7 +274,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
                 .withPublicIp(nil)
         }
         
-        await updateStatusAsync(update: builder.build())
+        updateStatus(update: builder.build())
     }
     
     private func checkInternetAccessWithRetryAsync() async -> Bool {
@@ -308,20 +303,9 @@ class NetworkService: ApiCallable, NetworkServiceType {
         return false
     }
     
-    private func reactivateIpApisAsync() async {
-        guard !Task.isCancelled
-        else { return }
-        
-        await MainActor.run {
-            appState.userData.reactivateIpApis()
-        }
-    }
-    
     private func refreshIpAddressIfNeededAsync() async {
-        let requiresIpRefresh = await MainActor.run {(
-            appState.userData.hasActiveIpApi()
-            && appState.network.publicIp == nil
-        )}
+        let requiresIpRefresh = appState.userData.hasActiveIpApi()
+                                && appState.network.publicIp == nil
         
         if requiresIpRefresh {
             await triggerRefresh().value
@@ -329,9 +313,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func refreshIpInfoIfNeededAsync() async {
-        let publicIp = await MainActor.run {(
-            appState.network.publicIp
-        )}
+        let publicIp = appState.network.publicIp
         
         guard let publicIp = publicIp, !publicIp.hasLocation()
         else { return }
@@ -339,7 +321,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
         await refreshPublicIpInfoAsync()
     }
     
-    private func determineNetworkStatusType(
+    private nonisolated func determineNetworkStatusType(
         path: NWPath,
         networkInterfaces: [NetworkInterface]) -> NetworkStatusType {
             switch path.status {
@@ -354,7 +336,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
             }
         }
     
-    private func determineNetworkInterfaces(path: NWPath) -> [NetworkInterface] {
+    private nonisolated func determineNetworkInterfaces(path: NWPath) -> [NetworkInterface] {
         var result = [NetworkInterface]()
         
         for networkInterface in path.availableInterfaces {
@@ -392,12 +374,9 @@ class NetworkService: ApiCallable, NetworkServiceType {
     
     private func fetchPublicIpAsync() async -> IpInfo? {
         while !Task.isCancelled {
-            let (hasInternet, hasActiveApi) = await MainActor.run {
-                (
-                    self.appState.network.hasInternetAccess,
-                    self.appState.userData.ipApis.contains(where: { $0.isActive() })
-                )
-            }
+            let hasInternet = self.appState.network.hasInternetAccess
+            let hasActiveApi = self.appState.userData.ipApis
+                .contains(where: { $0.isActive() })
             
             guard hasInternet, hasActiveApi
             else { return nil }
@@ -422,9 +401,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
         guard !Task.isCancelled
         else { return }
         
-        let publicIpAddress = await MainActor.run {
-            appState.network.publicIp?.ipAddress
-        }
+        let publicIpAddress = appState.network.publicIp?.ipAddress
         
         guard let publicIpAddress = publicIpAddress
         else { return }
@@ -437,20 +414,18 @@ class NetworkService: ApiCallable, NetworkServiceType {
         guard publicIpInfoResult.success
         else { return }
         
-        await updateStatusAsync(update: NetworkStateUpdateBuilder()
+        updateStatus(update: NetworkStateUpdateBuilder()
             .withPublicIp(publicIpInfoResult.result)
             .build())
     }
     
     private func checkIfInternetConnectionAsync() async -> Bool {
         await withTaskGroup(of: Bool.self) { group in
-            let urls = await MainActor.run {
-                [
-                    self.appState.userData.internetCheckUrl1,
-                    self.appState.userData.internetCheckUrl2,
-                    self.appState.userData.internetCheckUrl3
-                ]
-            }
+            let urls = [
+                self.appState.userData.internetCheckUrl1,
+                self.appState.userData.internetCheckUrl2,
+                self.appState.userData.internetCheckUrl3
+            ]
             
             for url in urls {
                 group.addTask {
@@ -477,14 +452,8 @@ class NetworkService: ApiCallable, NetworkServiceType {
         }
     }
     
-    private func updateStatusAsync(update: NetworkStateUpdate) async {
-        guard !Task.isCancelled
-        else { return }
-        
-        await MainActor.run {
-            appState.applyNetworkUpdate(update)
-            appState.network.refreshSignal.toggle()
-        }
+    private func updateStatus(update: NetworkStateUpdate) {
+        appState.applyNetworkUpdate(update)
     }
     
     private func sleepAsync(seconds: Double) async -> Bool {
@@ -500,9 +469,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func writeLogAsync(publicIp: IpInfo?) async {
-        let isLoggingEnabled = await MainActor.run {
-            appState.userData.enableLogging
-        }
+        let isLoggingEnabled = appState.userData.enableLogging
         
         guard isLoggingEnabled
         else { return }
@@ -514,9 +481,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
     }
     
     private func executeScriptAsync(prevPublicIp: IpInfo?, publicIp: IpInfo?) async {
-        let shouldRunScript = await MainActor.run {
-            appState.userData.runScript
-        }
+        let shouldRunScript = appState.userData.runScript
         
         guard shouldRunScript
         else { return }

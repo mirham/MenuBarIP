@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
     @State private var shownItems = [MenuBarElement]()
@@ -235,5 +235,5 @@ private extension Toggle {
 }
 
 #Preview {
-    GeneralSettingsEditView().environmentObject(AppState())
+    GeneralSettingsEditView()
 }

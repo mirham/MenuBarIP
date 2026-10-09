@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct IpInfoApiEditView: View {
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     @Injected(\.ipApiService) private var ipApiService
     @Injected(\.networkService) private var networkService
@@ -162,24 +162,20 @@ struct IpInfoApiEditView: View {
     }
     
     private func updateAppState(with ipInfo: IpInfo) async {
-        await MainActor.run {
-            appState.userData.ipInfoApiUrl = newUrl
-            appState.userData.ipInfoApiKeyMapping = keyMapping
-        }
+        appState.userData.ipInfoApiUrl = newUrl
+        appState.userData.ipInfoApiKeyMapping = keyMapping
         
         await networkService.refreshIpAddressesAsync(isManually: false)
     }
     
     private func handleError(_ error: Error) async {
-        await MainActor.run {
-            switch error {
-                case IpInfoApiSettingsError.invalidUrl, IpInfoApiSettingsError.urlUnreachable:
-                    showAlert(.newUrlInvalid)
-                case IpInfoApiSettingsError.missingLocationData:
-                    showAlert(.keyMappingInvalid)
-                default:
-                    showAlert(.newUrlInvalid)
-            }
+        switch error {
+            case IpInfoApiSettingsError.invalidUrl, IpInfoApiSettingsError.urlUnreachable:
+                showAlert(.newUrlInvalid)
+            case IpInfoApiSettingsError.missingLocationData:
+                showAlert(.keyMappingInvalid)
+            default:
+                showAlert(.newUrlInvalid)
         }
     }
     
@@ -232,5 +228,5 @@ struct IpInfoApiEditView: View {
 }
 
 #Preview {
-    IpApisEditView().environmentObject(AppState())
+    IpApisEditView()
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import Factory
 
 struct IpApisEditView : View {
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     
     @State private var newUrl = String()
@@ -179,5 +179,5 @@ struct IpApisEditView : View {
 }
 
 #Preview {
-    IpApisEditView().environmentObject(AppState())
+    IpApisEditView()
 }

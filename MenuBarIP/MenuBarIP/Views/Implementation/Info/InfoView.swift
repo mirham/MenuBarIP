@@ -69,5 +69,5 @@ struct InfoView: View {
 }
 
 #Preview {
-    InfoView().environmentObject(AppState())
+    InfoView()
 }

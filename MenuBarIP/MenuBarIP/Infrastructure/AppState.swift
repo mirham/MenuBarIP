@@ -7,14 +7,15 @@
 
 import SwiftUI
 
-@MainActor
-class AppState : ObservableObject, Observable {
-    @Published var current = Current()
-    @Published var views = Views(shownWindows: [String()])
-    @Published var network = Network() { didSet { setCurrentStateIfChanged(oldValue, network) } }
-    @Published var userData = UserData()  { didSet { setCurrentStateIfChanged(oldValue, userData) } }
+@MainActor @Observable
+final class AppState {
+    var current = Current()
+    var network = Network() { didSet { setCurrentStateIfChanged(oldValue, network) } }
+    var userData = UserData()  { didSet { setCurrentStateIfChanged(oldValue, userData) } }
     
-    static let shared = AppState()
+    var menuBarRenderInput: (Current, Network, UserData) {
+        (current, network, userData)
+    }
     
     func applyNetworkUpdate(_ update: NetworkStateUpdate) {
         var areIpApisReactivated = false
@@ -161,12 +162,6 @@ extension AppState {
             
             return result
         }
-    }
-}
-
-extension AppState {
-    struct Views {
-        var shownWindows: [String]
     }
 }
 

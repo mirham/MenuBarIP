@@ -8,11 +8,13 @@
 import SwiftUI
 import Factory
 
-struct MenuBarStatusView: @MainActor MenuBarItemsContainerView {
-    @InjectedObject(\.appState) private var appState
+struct MenuBarStatusView: MenuBarItemsContainerView {
+    @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
     var body: some View {
+        let _ = appState.menuBarRenderInput
+        
         let image = MenuBarStatusRawView(
             appState: appState,
             colorScheme: appearance.colorScheme)
@@ -30,7 +32,7 @@ struct MenuBarStatusView: @MainActor MenuBarItemsContainerView {
 
 // MARK: Inner types
 
-private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
+private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     private let appState: AppState
     private let colorScheme: ColorScheme
     
@@ -98,5 +100,5 @@ private struct MenuBarStatusRawView: @MainActor MenuBarItemsContainerView {
 }
 
 #Preview {
-    MenuBarStatusView().environmentObject(AppState())
+    MenuBarStatusView()
 }

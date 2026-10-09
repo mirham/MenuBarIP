@@ -5,6 +5,7 @@
 //  Created by UglyGeorge on 16.05.2025.
 //
 
+@MainActor
 protocol LaunchAgentServiceType {
     var isInstalled: Bool { get }
     

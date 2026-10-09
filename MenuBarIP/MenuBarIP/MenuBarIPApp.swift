@@ -10,31 +10,24 @@ import Factory
 
 @main
 struct MenuBarIPApp: App {
-    @Injected(\.appState) private var appState
-    
     init() {
         _ = Container.shared.windowRegistry()
     }
     
     var body: some Scene {
-        let appState = Container.shared.appState()
-        
-        return menuBar(appState: appState)
+        return menuBar()
     }
     
     // MARK: View sections
     
-    private func menuBar(appState: AppState) -> some Scene {
+    private func menuBar() -> some Scene {
         MenuBarExtra {
             MenuBarMenuView()
-                .environmentObject(appState)
         } label: {
             HStack {
                 MenuBarStatusView()
-                    .environmentObject(appState)
             }
         }
         .menuBarExtraStyle(.menu)
     }
-
 }

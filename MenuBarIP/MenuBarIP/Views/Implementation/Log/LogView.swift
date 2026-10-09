@@ -13,7 +13,7 @@ import Factory
 struct LogView: View {
     @Environment(\.controlActiveState) var controlActiveState
     
-    @InjectedObject(\.appState) private var appState
+    @Injected(\.appState) private var appState
     
     @StateObject private var viewModel: LogViewModel
     
@@ -159,5 +159,5 @@ private extension Button {
 }
 
 #Preview {
-    LogView(container: Container()).environmentObject(AppState())
+    LogView(container: Container())
 }
