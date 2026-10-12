@@ -17,6 +17,7 @@ struct Constants{
     static let minTimeIntervalBetweenChecksSeconds: Int = 1
     static let maxTimeIntervalBetweenChecksSeconds: Int = 300
     static let secondInNanoseconds: UInt64 = 1_000_000_000
+    static let pathDebounceInterval: Duration = .milliseconds(300)
     static let fileExtApp = "app"
     static let fileExtSh = "sh"
     static let fileExtPy = "py"

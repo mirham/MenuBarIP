@@ -21,6 +21,8 @@ final class AppState {
         var areIpApisReactivated = false
         var updatedNetwork = Network()
         
+        updatedNetwork.lastKnownPublicIp = network.lastKnownPublicIp
+        
         if update.hasInternetAccess == nil {
             updatedNetwork.hasInternetAccess = network.hasInternetAccess
         }
@@ -136,8 +138,8 @@ extension AppState {
     struct Network : Equatable {
         var refreshSignal: Bool = false
         var status: NetworkStatusType = NetworkStatusType.unknown
-        var prevPublicIp: IpInfo? = nil
         var publicIp: IpInfo? = nil
+        var lastKnownPublicIp: IpInfo? = nil
         var localIp: String? = nil
         var isObtainingIp = false
         var hasInternetAccess = true
@@ -155,6 +157,8 @@ extension AppState {
         static func == (lhs: Network, rhs: Network) -> Bool {
             let result = lhs.status == rhs.status
                 && lhs.publicIp == rhs.publicIp
+                && lhs.lastKnownPublicIp == rhs.lastKnownPublicIp
+                && lhs.localIp == rhs.localIp
                 && lhs.publicIp?.hasLocation() == rhs.publicIp?.hasLocation()
                 && lhs.isObtainingIp == rhs.isObtainingIp
                 && lhs.hasInternetAccess == rhs.hasInternetAccess

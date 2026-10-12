@@ -25,6 +25,7 @@ final class NetworkService: ApiCallable, NetworkServiceType {
     private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
     private var periodicCheckIpTask: Task<Void, Never>?
+    private var pathDebounceTask: Task<Void, Never>?
     private nonisolated static let probeSession = URLSession(configuration: .ephemeral)
     
     init() {
@@ -63,7 +64,6 @@ final class NetworkService: ApiCallable, NetworkServiceType {
         guard !Task.isCancelled
         else { return }
         
-        let prevPublicIp = appState.network.publicIp
         var loadingTask: Task<Void, Never>?
         
         func showObtainingStatus() async {
@@ -104,9 +104,7 @@ final class NetworkService: ApiCallable, NetworkServiceType {
         }
         
         updateStatus(update: update)
-        
-        await writeLogAsync(publicIp: publicIp)
-        await executeScriptAsync(prevPublicIp: prevPublicIp, publicIp: publicIp)
+        await handlePublicIpChangeAsync(publicIp)
     }
     
     func refreshIpAddressesManuallyAsync() async {
@@ -137,34 +135,13 @@ final class NetworkService: ApiCallable, NetworkServiceType {
             guard let self
             else { return }
             
-            let networkInterfaces = self.determineNetworkInterfaces(path: path)
+            let interfaces = self.determineNetworkInterfaces(path: path)
             let status = self.determineNetworkStatusType(
                 path: path,
-                networkInterfaces: networkInterfaces)
+                networkInterfaces: interfaces)
             
             Task { @MainActor in
-                let isConnectionChanged = self.appState.network.isConnectionChanged(
-                    status: status,
-                    activeNetworkInterfaces: networkInterfaces)
-                
-                guard isConnectionChanged
-                else { return }
-                
-                self.updateStatus(update: NetworkStateUpdateBuilder()
-                    .withStatus(status)
-                    .withActiveNetworkInterfaces(networkInterfaces)
-                    .withIsDisconnected(status != .on)
-                    .build())
-                
-                if status == .on {
-                    do {
-                        try await Task.sleep(nanoseconds: Constants.defaultToleranceInNanoseconds)
-                        self.triggerRefresh()
-                    }
-                    catch {
-                        self.ipUpdateTask?.cancel()
-                    }
-                }
+                self.schedulePathChange(status: status, interfaces: interfaces)
             }
         }
         
@@ -189,7 +166,6 @@ final class NetworkService: ApiCallable, NetworkServiceType {
             while !Task.isCancelled {
                 let isEnabled = self.appState.userData.periodicIpCheck
                 let interval = self.appState.userData.intervalBetweenChecks
-                let prevPublicIp = self.appState.network.publicIp
                 
                 guard isEnabled else {
                     _ = await sleepAsync(seconds: Double(Constants.minTimeIntervalToCheck))
@@ -205,9 +181,42 @@ final class NetworkService: ApiCallable, NetworkServiceType {
                     .withPublicIp(publicIp)
                     .build())
                 
-                await writeLogAsync(publicIp: publicIp)
-                await executeScriptAsync(prevPublicIp: prevPublicIp, publicIp: publicIp)
+                await handlePublicIpChangeAsync(publicIp)
             }
+        }
+    }
+    
+    private func schedulePathChange(
+        status: NetworkStatusType,
+        interfaces: [NetworkInterface]) {
+        pathDebounceTask?.cancel()
+        
+        pathDebounceTask = Task {
+            try? await Task.sleep(for: Constants.pathDebounceInterval)
+            
+            guard !Task.isCancelled
+            else { return }
+            
+            applyPathChange(status: status, interfaces: interfaces)
+        }
+    }
+    
+    private func applyPathChange(
+        status: NetworkStatusType,
+        interfaces: [NetworkInterface]) {
+        guard appState.network.isConnectionChanged(
+            status: status,
+            activeNetworkInterfaces: interfaces)
+        else { return }
+        
+        updateStatus(update: NetworkStateUpdateBuilder()
+            .withStatus(status)
+            .withActiveNetworkInterfaces(interfaces)
+            .withIsDisconnected(status != .on)
+            .build())
+        
+        if status == .on {
+            triggerRefresh()
         }
     }
     
@@ -226,6 +235,20 @@ final class NetworkService: ApiCallable, NetworkServiceType {
         }
         
         return await shouldCheckConnection()
+    }
+    
+    private func handlePublicIpChangeAsync(_ publicIp: IpInfo?) async {
+        await writeLogAsync(publicIp: publicIp)
+        
+        let previous = appState.network.lastKnownPublicIp
+        
+        guard let publicIp,
+              publicIp.ipAddress != previous?.ipAddress
+        else { return }
+        
+        appState.network.lastKnownPublicIp = publicIp
+        
+        await executeScriptAsync(prevPublicIp: previous, publicIp: publicIp)
     }
     
     @discardableResult
@@ -286,7 +309,7 @@ final class NetworkService: ApiCallable, NetworkServiceType {
     
     private func refreshIpAddressIfNeededAsync() async {
         let requiresIpRefresh = appState.userData.hasActiveIpApi()
-                                && appState.network.publicIp == nil
+             && appState.network.publicIp == nil
         
         if requiresIpRefresh {
             await triggerRefresh().value
