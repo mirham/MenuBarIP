@@ -9,40 +9,54 @@ import Foundation
 import Factory
 import Network
 
-class IpService : ApiCallable, IpServiceType {
+final class IpService : ApiCallable, IpServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.ipApiService) private var ipApiService
     
-    func getPublicIpAsync(ipApiUrl: String? = nil, withInfo: Bool = true) async -> OperationResult<IpInfo> {
+    func getPublicIpAsync(
+        ipApiUrl: String? = nil,
+        withInfo: Bool = true
+    ) async -> OperationResult<IpInfo> {
         guard !Task.isCancelled
         else {
-            return OperationResult(error: Constants.errorTaskCancelled)
+            return OperationResult(
+                error: Constants.errorTaskCancelled)
         }
         
-        guard let apiUrl = ipApiUrl ?? ipApiService.getRandomActiveIpApi()?.url
+        let randomApiUrl = ipApiService.getRandomActiveIpApi()?.url
+        let apiUrl = ipApiUrl ?? randomApiUrl
+        let ipInfoUrl = appState.userData.ipInfoApiUrl
+        let keyMapping = appState.userData.ipInfoApiKeyMapping
+        
+        guard let apiUrl = apiUrl
         else {
-            return OperationResult(error: Constants.errorNoActiveIpApiFound)
+            return OperationResult(
+                error: Constants.errorNoActiveIpApiFound)
         }
         
-        let ipAddress = try? await fetchIpAddressAsync(from: apiUrl)
-        
-        guard let ipAddress
-        else {
-            return OperationResult(error: Constants.errorIpApiResponseIsInvalid)
+        do {
+            let ipAddress = try await fetchIpAddressAsync(from: apiUrl)
+            
+            guard !Task.isCancelled else {
+                return OperationResult(error: Constants.errorTaskCancelled)
+            }
+            
+            if withInfo {
+                return await getPublicIpInfoAsync(
+                    apiUrl: ipInfoUrl,
+                    publicIp: ipAddress,
+                    keyMapping: keyMapping
+                )
+            }
+            
+            return OperationResult(
+                result: IpInfo(ipAddress: ipAddress))
+        } catch {
+            return OperationResult(error: error.localizedDescription)
         }
-        
-        if withInfo {
-            return await getPublicIpInfoAsync(
-                apiUrl: appState.userData.ipInfoApiUrl,
-                publicIp: ipAddress,
-                keyMapping: appState.userData.ipInfoApiKeyMapping
-            )
-        }
-        
-        return OperationResult(result: IpInfo(ipAddress: ipAddress))
     }
     
-    func getPublicIpInfoAsync(
+    nonisolated func getPublicIpInfoAsync(
         apiUrl: String,
         publicIp: String,
         keyMapping: [String:String]) async -> OperationResult<IpInfo> {
@@ -50,7 +64,7 @@ class IpService : ApiCallable, IpServiceType {
         else { return OperationResult(error: Constants.errorTaskCancelled) }
         
         guard !keyMapping.isEmpty,
-              let ipInfoUrl = ipApiService.prepareIpInfoApiUrl(
+              let ipInfoUrl = await ipApiService.prepareIpInfoApiUrl(
                 publicIp: publicIp,
                 ipInfoApiUrl: apiUrl)
         else { return OperationResult(result: IpInfo(ipAddress: publicIp)) }
@@ -78,7 +92,7 @@ class IpService : ApiCallable, IpServiceType {
         }
     }
     
-    func getLocalIp() -> String? {
+    nonisolated func getLocalIp() -> String? {
         var result : String?
 
         var ifaddr : UnsafeMutablePointer<ifaddrs>?
@@ -116,7 +130,7 @@ class IpService : ApiCallable, IpServiceType {
         return result
     }
     
-    func isLocalIp(ipString: String) -> Bool {
+    nonisolated func isLocalIp(ipString: String) -> Bool {
         if let ipv4 = IPv4Address(ipString) {
             if ipv4.isLoopback || ipv4.isLinkLocal { return true }
             
@@ -144,7 +158,7 @@ class IpService : ApiCallable, IpServiceType {
     
     // MARK: Private functions
     
-    private func fetchIpAddressAsync(from apiUrl: String) async throws -> String {
+    private nonisolated func fetchIpAddressAsync(from apiUrl: String) async throws -> String {
         let result = await ipApiService.callIpApiAsync(ipApiUrl: apiUrl)
         
         guard result.success,

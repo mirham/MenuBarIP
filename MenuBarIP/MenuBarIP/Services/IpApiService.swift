@@ -8,16 +8,16 @@
 import Foundation
 import Factory
 
-class IpApiService : ApiCallable, IpApiServiceType {
+final class IpApiService : ApiCallable, IpApiServiceType {
     @Injected(\.appState) private var appState
     
     func getRandomActiveIpApi() -> IpApiInfo? {
-        let result = self.appState.userData.ipApis.filter({$0.isActive()}).randomElement()
-        
-        return result
+        self.appState.userData.ipApis
+            .filter({$0.isActive()})
+            .randomElement()
     }
     
-    func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String? {
+    nonisolated func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String? {
         guard !ipInfoApiUrl.isEmpty
         else { return nil }
         
@@ -34,7 +34,7 @@ class IpApiService : ApiCallable, IpApiServiceType {
         return result
     }
     
-    func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String> {
+    nonisolated func callIpApiAsync(ipApiUrl : String) async -> OperationResult<String> {
         do {
             let response = try await callGetApiAsync(
                 apiUrl: ipApiUrl,
@@ -49,17 +49,16 @@ class IpApiService : ApiCallable, IpApiServiceType {
     
     // MARK: Private functions
     
-    private func deactivateIpApiAsync(ipApiUrl: String) async {
-        guard self.appState.network.status == .on
-                && self.appState.network.hasInternetAccess
+    private func deactivateIpApi(ipApiUrl: String) {
+        guard appState.network.status == .on,
+              appState.network.hasInternetAccess
         else { return }
         
-        if let inactiveApiIndex = self.appState.userData.ipApis
-            .firstIndex(where: { $0.url == ipApiUrl }) {
-            await MainActor.run() {
-                self.appState.userData.ipApis[inactiveApiIndex].active = false
-            }
-        }
+        guard let index = appState.userData.ipApis
+            .firstIndex(where: { $0.url == ipApiUrl })
+        else { return }
+        
+        appState.userData.ipApis[index].active = false
     }
     
     private func calculateCallTimeout() -> Double {
@@ -79,7 +78,7 @@ class IpApiService : ApiCallable, IpApiServiceType {
             return OperationResult(result: String())
         }
         
-        await deactivateIpApiAsync(ipApiUrl: ipApiUrl)
+        deactivateIpApi(ipApiUrl: ipApiUrl)
         
         let errorMessage = String(
             format: Constants.errorWhenCallingIpAddressApi,

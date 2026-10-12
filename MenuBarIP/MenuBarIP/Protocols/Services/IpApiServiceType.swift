@@ -5,6 +5,7 @@
 //  Created by UglyGeorge on 16.05.2025.
 //
 
+@MainActor
 protocol IpApiServiceType {
     func getRandomActiveIpApi() -> IpApiInfo?
     func prepareIpInfoApiUrl(publicIp: String, ipInfoApiUrl: String) -> String?

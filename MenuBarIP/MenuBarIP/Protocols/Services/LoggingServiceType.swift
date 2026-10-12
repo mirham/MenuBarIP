@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 protocol LoggingServiceType {
     func debug(_ message: String, _ destination: LogDestination)
     func info(_ message: String, _ destination: LogDestination)

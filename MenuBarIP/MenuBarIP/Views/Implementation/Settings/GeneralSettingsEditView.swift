@@ -9,10 +9,9 @@ import SwiftUI
 import Factory
 
 struct GeneralSettingsEditView: View {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) var controlActiveState
     
+    @Injected(\.appState) private var appState
     @Injected(\.networkService) private var networkService
     @Injected(\.executiveService) private var executiveService
     @Injected(\.launchAgentService) private var launchAgentService
@@ -101,7 +100,7 @@ struct GeneralSettingsEditView: View {
         SettingToggleRow(
             label: Constants.settingsElementPeriodicIpCheck,
             hint: Constants.hintPeriodicIpCheck,
-            isOn: $appState.userData.periodicIpCheck
+            isOn: userDataBinding(\.periodicIpCheck)
         )
         
         if appState.userData.periodicIpCheck {
@@ -127,7 +126,7 @@ struct GeneralSettingsEditView: View {
         SettingToggleRow(
             label: Constants.settingsElementEnableLogging,
             hint: Constants.hintEnableLogging,
-            isOn: $appState.userData.enableLogging
+            isOn: userDataBinding(\.enableLogging)
         )
         
         if appState.userData.enableLogging {
@@ -149,10 +148,12 @@ struct GeneralSettingsEditView: View {
     
     @ViewBuilder
     private var runScriptSection: some View {
+        @Bindable var appState = appState
+        
         SettingToggleRow(
             label: Constants.settingsElementRunScript,
             hint: Constants.hintRunScript,
-            isOn: $appState.userData.runScript
+            isOn: userDataBinding(\.runScript)
         )
         
         if appState.userData.runScript {
@@ -210,6 +211,13 @@ struct GeneralSettingsEditView: View {
         self.newUrl1 = appState.userData.internetCheckUrl1
         self.newUrl2 = appState.userData.internetCheckUrl2
         self.newUrl3 = appState.userData.internetCheckUrl3
+    }
+    
+    private func userDataBinding<T>(_ keyPath: WritableKeyPath<AppState.UserData, T>) -> Binding<T> {
+        Binding(
+            get: { appState.userData[keyPath: keyPath] },
+            set: { appState.userData[keyPath: keyPath] = $0 }
+        )
     }
     
     private func checkIfLogIntervalValid(logLimit: Int) -> Bool {
@@ -285,7 +293,8 @@ struct GeneralSettingsEditView: View {
             return
         }
         
-        guard isValid.wrappedValue else { return }
+        guard isValid.wrappedValue
+        else { return }
         
         appState.userData[keyPath: userDataKeyPath] = url
         isEditMode.wrappedValue = false
@@ -418,5 +427,5 @@ private extension Image {
 
 
 #Preview {
-    GeneralSettingsEditView().environmentObject(AppState())
+    GeneralSettingsEditView()
 }

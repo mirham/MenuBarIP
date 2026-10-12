@@ -9,13 +9,11 @@ import Foundation
 import Factory
 import AppKit
 
-class ExecutiveService: ExecutiveServiceType {
+final class ExecutiveService: ExecutiveServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.loggingService) private var loggingService
     
     private let scriptPrefixLength = 2
-    private let fileManager = FileManager.default
-    private let scriptingQueue = DispatchQueue(label: Constants.scriptingQueueLabel, qos: .background)
     
     private let interpreterMap: [String: String] = [
         Constants.fileExtSh: Constants.pathZsh,
@@ -28,32 +26,11 @@ class ExecutiveService: ExecutiveServiceType {
         Constants.fileExtDotNetScript: Constants.pathDotNetScript
     ]
     
-    func execute(publicIp: String) {
-        scriptingQueue.async {
-            let scriptPath = self.appState.userData.scriptPath
-            let fileManager = FileManager.default
-            
-            guard fileManager.fileExists(atPath: scriptPath)
-            else { return}
-            
-            guard fileManager.isReadableFile(atPath: scriptPath)
-            else { return }
-            
-            let url = URL(fileURLWithPath: scriptPath)
-            let pathExtension = url.pathExtension.lowercased()
-            
-            do {
-                if pathExtension == Constants.fileExtApp {
-                    try self.runApp(at: url, publicIp: publicIp)
-                } else {
-                    try self.runScript(at: url, publicIp: publicIp)
-                }
-            } catch {
-                self.loggingService.error(
-                    String(format: Constants.errorScriptCannotBeExecuted,
-                           error.localizedDescription),
-                    LogDestination.console)
-            }
+    func executeAsync(publicIp: String) async {
+        let scriptPath = self.appState.userData.scriptPath
+        
+        Task(priority: .background) {
+            await self.run(scriptPath: scriptPath, publicIp: publicIp)
         }
     }
     
@@ -88,7 +65,7 @@ class ExecutiveService: ExecutiveServiceType {
     }
     
     private func parseShebang(from fileUrl: URL) throws -> String? {
-        guard fileManager.isReadableFile(atPath: fileUrl.path)
+        guard FileManager.default.isReadableFile(atPath: fileUrl.path)
         else { return nil }
         
         let content = try String(contentsOf: fileUrl, encoding: .utf8)
@@ -131,11 +108,11 @@ class ExecutiveService: ExecutiveServiceType {
     }
     
     private func validateInterpreter(at path: String, command: String) throws {
-        guard fileManager.fileExists(atPath: path) else {
+        guard FileManager.default.fileExists(atPath: path) else {
             throw String(format: Constants.errorInterpreterNotFound, command)
         }
         
-        guard fileManager.isExecutableFile(atPath: path) else {
+        guard FileManager.default.isExecutableFile(atPath: path) else {
             throw String(format: Constants.errorInterpreterNotFound, command)
         }
     }
@@ -158,7 +135,29 @@ class ExecutiveService: ExecutiveServiceType {
         }
     }
     
-    private func runApp(at url: URL, publicIp: String) throws {
+    @concurrent
+    private nonisolated func run(scriptPath: String, publicIp: String) async {
+        guard FileManager.default.fileExists(atPath: scriptPath),
+              FileManager.default.isReadableFile(atPath: scriptPath)
+        else { return }
+        
+        let url = URL(fileURLWithPath: scriptPath)
+        
+        do {
+            if url.pathExtension.lowercased() == Constants.fileExtApp {
+                try await runAppAsync(at: url, publicIp: publicIp)
+            } else {
+                try await runScriptAsync(at: url, publicIp: publicIp)
+            }
+        } catch {
+            await loggingService.error(
+                String(format: Constants.errorScriptCannotBeExecuted,
+                       error.localizedDescription),
+                LogDestination.console)
+        }
+    }
+    
+    private nonisolated func runAppAsync(at url: URL, publicIp: String) async throws {
         Task {
             do {
                 let configuration = NSWorkspace.OpenConfiguration()
@@ -173,12 +172,13 @@ class ExecutiveService: ExecutiveServiceType {
         }
     }
     
-    private func runScript(at url: URL, publicIp: String) throws {
+    @concurrent
+    private nonisolated func runScriptAsync(at url: URL, publicIp: String) async throws {
         var environment = ProcessInfo.processInfo.environment
         environment[Constants.envPathName] = Constants.envPossiblePathes
         let process = Process()
         process.environment = environment
-        let interpreterUrl = try determineInterpreterPath(fileUrl: url)
+        let interpreterUrl = try await determineInterpreterPath(fileUrl: url)
         
         process.executableURL = interpreterUrl
         process.arguments = [url.path, publicIp]
@@ -187,13 +187,13 @@ class ExecutiveService: ExecutiveServiceType {
         process.waitUntilExit()
         
         if process.terminationStatus != 0 {
-            self.loggingService.error(
+            await self.loggingService.error(
                 String(format: Constants.errorScriptFailed, process.terminationStatus),
                 LogDestination.console)
         }
     }
     
-    private func findExecutablePath(command: String) throws -> String? {
+    private nonisolated func findExecutablePath(command: String) throws -> String? {
         var environment = ProcessInfo.processInfo.environment
         environment[Constants.envPathName] = Constants.envPossiblePathes
         let process = Process()

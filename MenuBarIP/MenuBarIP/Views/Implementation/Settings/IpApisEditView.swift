@@ -9,8 +9,7 @@ import SwiftUI
 import Factory
 
 struct IpApisEditView : View {
-    @EnvironmentObject var appState: AppState
-    
+    @Injected(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     
     @State private var newUrl = String()
@@ -21,7 +20,6 @@ struct IpApisEditView : View {
     var body: some View {
         VStack(alignment: .leading) {
             hintSection
-            Spacer().frame(height: 10)
             ipApisSection
         }
         .alert(isPresented: Binding(
@@ -58,9 +56,6 @@ struct IpApisEditView : View {
     @ViewBuilder
     private var ipApisSection: some View {
         VStack(alignment: .center) {
-            Text(Constants.settingsElementIpAddressApis)
-                .font(.title3)
-                .multilineTextAlignment(.center)
             NavigationStack {
                 List {
                     ForEach(appState.userData.ipApis, id: \.id) { api in
@@ -180,5 +175,5 @@ struct IpApisEditView : View {
 }
 
 #Preview {
-    IpApisEditView().environmentObject(AppState())
+    IpApisEditView()
 }

@@ -9,13 +9,13 @@ import SwiftUI
 import Factory
 
 struct MenuBarMenuView : IpAddressContainerView {
-    @EnvironmentObject var appState: AppState
-    
-    @Environment(\.openWindow) private var openWindow
     @Environment(\.dismiss) var dismiss
     
+    @Injected(\.appState) private var appState
+    @Injected(\.appAppearance) private var appearance
     @Injected(\.networkService) private var networkService
     @Injected(\.launchAgentService) private var launchAgentService
+    @Injected(\.windowManager) private var windowManager
     
     private var publicIpString: String {
         appState.network.publicIp?.ipAddress ?? Constants.none.uppercased()
@@ -27,18 +27,22 @@ struct MenuBarMenuView : IpAddressContainerView {
     
     private var publicIpColor: Color {
         getIpColor(
-            colorScheme: appState.current.colorScheme,
+            colorScheme: appearance.colorScheme,
             currentCustomization: appState.current.ipCustomization,
             forMenu: true
         )
     }
     
     private var localIpColor: Color {
-        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+        getIpColor(
+            colorScheme: appearance.colorScheme,
+            currentCustomization: appState.current.localIpCustomization,
+            forMenu: true
+        )
     }
     
     private var baseColor: Color {
-        getBaseColor(colorScheme: appState.current.colorScheme, forMenu: true)
+        return getBaseColor(colorScheme: appearance.colorScheme, forMenu: true)
     }
     
     var body: some View {
@@ -137,27 +141,19 @@ struct MenuBarMenuView : IpAddressContainerView {
     // MARK: Private functions
     
     private func handleSettingsButtonClick() {
-        openWindowWithId(id: Constants.windowIdSettings)
+        windowManager.open(name: .settings, onTop: true)
     }
     
     private func handlePublicIpLocationButtonClick() {
-        openWindowWithId(id: Constants.windowIdPublicIpLocation)
+        windowManager.open(name: .publicIpLocation)
     }
     
     private func handleLogButtonClick() {
-        openWindowWithId(id: Constants.windowIdLog)
+        windowManager.open(name: .log)
     }
     
     private func handleAboutButtonClick() {
-        openWindowWithId(id: Constants.windowIdInfo)
-    }
-    
-    private func openWindowWithId (id: String) {
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        
-        if !appState.views.shownWindows.contains(where: {$0 == id}) {
-            openWindow(id: id)
-        }
+        windowManager.open(name: .info)
     }
     
     private func handleQuitButtonClick() {
@@ -184,5 +180,5 @@ private extension Text {
 }
 
 #Preview {
-    MenuBarMenuView().environmentObject(AppState())
+    MenuBarMenuView()
 }

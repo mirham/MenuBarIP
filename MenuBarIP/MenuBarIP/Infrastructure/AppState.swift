@@ -7,17 +7,21 @@
 
 import SwiftUI
 
-class AppState : ObservableObject, Observable {
-    @Published var current = Current()
-    @Published var views = Views(shownWindows: [String()])
-    @Published var network = Network() { didSet { setCurrentStateIfChanged(oldValue, network) } }
-    @Published var userData = UserData()  { didSet { setCurrentStateIfChanged(oldValue, userData) } }
+@MainActor @Observable
+final class AppState {
+    var current = Current()
+    var network = Network() { didSet { setCurrentStateIfChanged(oldValue, network) } }
+    var userData = UserData()  { didSet { setCurrentStateIfChanged(oldValue, userData) } }
     
-    static let shared = AppState()
+    var menuBarRenderInput: (Current, Network, UserData) {
+        (current, network, userData)
+    }
     
     func applyNetworkUpdate(_ update: NetworkStateUpdate) {
         var areIpApisReactivated = false
         var updatedNetwork = Network()
+        
+        updatedNetwork.lastKnownPublicIp = network.lastKnownPublicIp
         
         if update.hasInternetAccess == nil {
             updatedNetwork.hasInternetAccess = network.hasInternetAccess
@@ -56,55 +60,43 @@ class AppState : ObservableObject, Observable {
         }
     }
     
+    func updateCustomizations() {
+        var next = current
+        
+        next.localIpCustomization = network.localIp.flatMap { ip in
+            userData.ipCustomizations.first { $0.value == ip }
+        }
+        
+        let publicIp = network.publicIp
+        next.ipCustomization = publicIp.flatMap { info in
+            userData.ipCustomizations.first { $0.value == info.ipAddress }
+        }
+        
+        if let ipCustomization = next.ipCustomization {
+            next.customTextCustomization = nil
+            next.publicIpCustomText = ipCustomization.customText
+        } else if let publicIp {
+            let match = findTextMatch(for: publicIp)
+            next.customTextCustomization = match?.customization
+            next.publicIpCustomText = match?.matchedValue
+        } else {
+            next.customTextCustomization = nil
+            next.publicIpCustomText = nil
+        }
+        
+        if next != current { current = next }
+    }
+    
     // MARK: Private functions
     
     private func setCurrentStateIfChanged<T: Equatable>(_ oldValue: T, _ newValue: T) {
         guard oldValue != newValue
         else { return }
         
-        setLocalIpCustomization()
-        setPublicIpCustomization()
-        setCustomTextCustomization()
+        updateCustomizations()
     }
     
-    private func setLocalIpCustomization() {
-        guard let localIp = network.localIp else {
-            current.localIpCustomization = nil
-            return
-        }
-        
-        current.localIpCustomization = userData.ipCustomizations
-            .first { $0.value == localIp }
-    }
-    
-    private func setPublicIpCustomization() {
-        var customization: Customization? = nil
-        
-        if let publicIp = network.publicIp?.ipAddress {
-            customization = userData.ipCustomizations
-                .first { $0.value == publicIp }
-        }
-        
-        current.ipCustomization = customization
-        current.publicIpCustomText = customization?.customText
-    }
-    
-    private func setCustomTextCustomization() {
-        guard let publicIp = network.publicIp else {
-            current.customTextCustomization = nil
-            current.publicIpCustomText = nil
-            
-            return
-        }
-        
-        guard current.ipCustomization == nil
-        else { return }
-        
-        findAndApplyCustomTextCustomization(for: publicIp)
-    }
-    
-    private func findAndApplyCustomTextCustomization(for ipInfo: IpInfo) {
-        var bestMatch: (customization: Customization, matchedValue: String)?
+    private func findTextMatch(for ipInfo: IpInfo) -> (customization: Customization, matchedValue: String)? {
         var fallbackMatch: (customization: Customization, matchedValue: String)?
         
         for customization in userData.customTextCustomizations {
@@ -112,21 +104,14 @@ class AppState : ObservableObject, Observable {
             else { continue }
             
             if !customization.customText.isEmpty {
-                bestMatch = (customization, matchedValue)
-                break
-            } else if fallbackMatch == nil {
+                return (customization, matchedValue)
+            }
+            if fallbackMatch == nil {
                 fallbackMatch = (customization, matchedValue)
             }
         }
         
-        applyTextCustomization(bestMatch ?? fallbackMatch)
-    }
-    
-    private func applyTextCustomization(_ match: (
-        customization: Customization,
-        matchedValue: String)?) {
-        current.customTextCustomization = match?.customization
-        current.publicIpCustomText = match?.matchedValue
+        return fallbackMatch
     }
 }
 
@@ -137,12 +122,12 @@ extension AppState {
         var localIpCustomization: Customization? = nil
         var customTextCustomization: Customization? = nil
         var publicIpCustomText: String? = nil
-        var colorScheme: ColorScheme = .light
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
             && lhs.localIpCustomization == rhs.localIpCustomization
             && lhs.customTextCustomization == rhs.customTextCustomization
+            && lhs.publicIpCustomText == rhs.publicIpCustomText
             
             return result
         }
@@ -153,8 +138,8 @@ extension AppState {
     struct Network : Equatable {
         var refreshSignal: Bool = false
         var status: NetworkStatusType = NetworkStatusType.unknown
-        var prevPublicIp: IpInfo? = nil
         var publicIp: IpInfo? = nil
+        var lastKnownPublicIp: IpInfo? = nil
         var localIp: String? = nil
         var isObtainingIp = false
         var hasInternetAccess = true
@@ -172,6 +157,8 @@ extension AppState {
         static func == (lhs: Network, rhs: Network) -> Bool {
             let result = lhs.status == rhs.status
                 && lhs.publicIp == rhs.publicIp
+                && lhs.lastKnownPublicIp == rhs.lastKnownPublicIp
+                && lhs.localIp == rhs.localIp
                 && lhs.publicIp?.hasLocation() == rhs.publicIp?.hasLocation()
                 && lhs.isObtainingIp == rhs.isObtainingIp
                 && lhs.hasInternetAccess == rhs.hasInternetAccess
@@ -179,12 +166,6 @@ extension AppState {
             
             return result
         }
-    }
-}
-
-extension AppState {
-    struct Views {
-        var shownWindows: [String]
     }
 }
 

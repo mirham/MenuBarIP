@@ -17,6 +17,7 @@ struct Constants{
     static let minTimeIntervalBetweenChecksSeconds: Int = 1
     static let maxTimeIntervalBetweenChecksSeconds: Int = 300
     static let secondInNanoseconds: UInt64 = 1_000_000_000
+    static let pathDebounceInterval: Duration = .milliseconds(300)
     static let fileExtApp = "app"
     static let fileExtSh = "sh"
     static let fileExtPy = "py"
@@ -49,6 +50,7 @@ struct Constants{
     static let ipV6: Int = 6
     static let defaultToleranceInNanoseconds: UInt64 = 100_000_000
     static let menuBarItemTimeToleranceInSeconds: Int = 1
+    static let callIpApiRetryDelayInSeconds: Double = 0.3
     static let callTimeoutIpApiInSeconds: Double = 1.0
     static let callTimeoutIpApiTotalInSeconds: Double = 20.0
     static let callTimeoutIpInfoApiInSeconds: Double = 2.0
@@ -66,7 +68,7 @@ struct Constants{
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl1 = "https://google.com"
     static let defaultInternetCheckUrl2 = "https://duckduckgo.com"
-    static let defaultInternetCheckUrl3 = "https://www.yahoo.com"
+    static let defaultInternetCheckUrl3 = "https://www.bing.com"
     static let defaultIpInfoApiUrl = "http://ip-api.com/json/\(publicIpMask)"
     static let defaultLogFileLimit: Int = 1000
     static let minLogFileLimit: Int = 10
@@ -87,6 +89,7 @@ struct Constants{
     static let commaSeparator: String = ", "
     static let minRefreshingTimeInterval: UInt64 = 500_000_000
     static let minMaxConnectionChecks = 10
+    static let notificatinThemeChangedName = "AppleInterfaceThemeChangedNotification"
 
     
     // MARK: Regexes
@@ -127,12 +130,6 @@ struct Constants{
     static let hyphen: String = "-"
     static let space = " "
     static let slash = "/"
-    
-    // MARK: Window IDs
-    static let windowIdSettings = "settings-view"
-    static let windowIdPublicIpLocation = "public-ip-location-view"
-    static let windowIdLog = "log-view"
-    static let windowIdInfo = "info-view"
     
     // MARK:  Settings key names
     static let settingsKeyPeriodicIpCheck = "periodic-ip-check"
@@ -198,13 +195,13 @@ struct Constants{
     static let settingsElementEnableLogging = "Enable public IP address logging"
     static let settingsElementRunScript = "Run application or script when public IP address changes"
     static let settingsElementLogFileLimit = "Log file lines limit"
-    static let settingsElementIpCustomization = "IP customization"
-    static let settingsElementCustomTextCustomization = "Custom text customization"
+    static let settingsElementIpCustomization = "IP address styling"
+    static let settingsElementCustomTextCustomization = "Custom text styling"
     static let settingsElementShownItems = "Shown menu bar items"
     static let settingsElementHiddenItems = "Hidden menu bar items"
     static let settingsElementItemsSize = "Items size"
     static let settingsElementSpacing = "Spacing"
-    static let settingsElementIps = "IP addresses customization"
+    static let settingsElementIps = "IP addresses styling"
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
     static let settingsElementIpInfoApi = "IP info API"
@@ -228,7 +225,7 @@ struct Constants{
     static let dialogBodyNoInterpreter = "Install a proper interpreter for this script type (Python 3, Ruby, Perl, PHP or Node for JS files).\n\nThis application can work with these interpreters:\n\(pathZsh)\n\(pathPython)\n\(pathRuby)\n\(pathPerl)\n\(pathPhp)\n\(pathAppleScript)\n\(pathJs)\n\(pathDotNetScript)"
     
     // MARK: Hints
-    static let hintPeriodicIpCheck = "Check the public IP address periodically when monitoring is enabled at the interval specified below."
+    static let hintPeriodicIpCheck = "Check the public IP address periodically at the interval specified below."
     static let hintInterval = "\(minTimeIntervalToCheck)..\(maxTimeIntervalToCheck)"
     static let hintEnableLogging = "Changes to the public IP address will be logged in a file"
     static let hintRunScript = "Run a custom shell script when the public address changes, the new public IP address will be passed as the first argument as a string"
@@ -244,8 +241,8 @@ struct Constants{
     static let hintDarkColor = "Dark theme color"
     static let hintKeepApplicationRunning = "The application will be opened after the system starts or if it was closed"
     static let hintMenuBarAdjustment = "Drag menu bar item icons between the sections below to arrange item as you want."
-    static let hintIps = "Add an IP address customization with desired custom text and custom colors for light and dark theme. Right click on the customization to display the context menu."
-    static let hintCustomTextCustomization = "Configure custom text based on the IP address information. Define a matcher and its corresponding text and custom colors for light and dark theme. Custom text item must be added to shown items. If such IP address information is missing, the custom text element will not be displayed. IP customizations take priority over these settings. Right click on the customization to display the context menu."
+    static let hintIps = "Add an IP address styling with desired custom text and custom colors for light and dark theme. Right click on the styling to display the context menu."
+    static let hintCustomTextCustomization = "Configure custom text based on the IP address information. Define a matcher and its corresponding text and custom colors for light and dark theme. Custom text item must be added to shown items. If such IP address information is missing, the custom text element will not be displayed. IP stylings take priority over these settings. Right click on the styling to display the context menu."
     static let hintIpApis = "Add new public IP API addresses here, the more the better. Add an API that returns the public IP address in plain text. Right click on the API to display the context menu. If API marked green, it works properly and in use."
     static let hintIpInfoApi = "The IP info API is needed to get advanced information about a public IP address, such as its location. This allows you to display the country flag in the macOS menu bar, as well as show the address on a map. Typically, data from such APIs is in JSON format. Here, you can assign an API address and map the JSON data values to application values."
     static let hintNotSet = "Not set yet"

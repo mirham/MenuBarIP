@@ -11,9 +11,7 @@ import Combine
 import Factory
 
 struct LogView: View {
-    @EnvironmentObject var appState: AppState
-    
-    @Environment(\.controlActiveState) var controlActiveState
+    @Injected(\.appState) private var appState
     
     @StateObject private var viewModel: LogViewModel
     
@@ -38,7 +36,7 @@ struct LogView: View {
                                     .frame(width: 60, alignment: .trailing)
                                 Text(entry.message)
                                     .font(.system(.body, design: .monospaced))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.primary)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             .id(entry.id)
@@ -62,14 +60,7 @@ struct LogView: View {
             }
             .padding(.bottom, 5)
         }
-        .onAppear(perform: {
-            appState.views.shownWindows.append(Constants.windowIdLog)
-            AppHelper.activateView(viewId: Constants.windowIdLog)
-        })
-        .onDisappear(perform: {
-            appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdLog})
-        })
-        .opacity(getViewOpacity(state: controlActiveState))
+        .safeGlassEffect()
     }
     
     // MARK: Private functions
@@ -165,5 +156,5 @@ private extension Button {
 }
 
 #Preview {
-    LogView(container: Container()).environmentObject(AppState())
+    LogView(container: Container())
 }

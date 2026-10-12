@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 protocol MenuBarItemsContainerView : IpAddressContainerView {
     func getMenuBarElements(
         keys: [String],
@@ -241,6 +242,7 @@ extension MenuBarItemsContainerView {
         )
     }
     
+    @MainActor
     private func getEffectivePublicIpString(appState: AppState) -> String {
         return appState.network.status == .off
             ? Constants.offline
@@ -249,6 +251,7 @@ extension MenuBarItemsContainerView {
                 : appState.network.publicIp?.ipAddress ?? Constants.none
     }
     
+    @MainActor
     private func getEffectiveLocalIpString(appState: AppState) -> String {
         return appState.network.localIp == nil
             ? Constants.none

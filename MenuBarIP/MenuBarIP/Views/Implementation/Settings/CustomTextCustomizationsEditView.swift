@@ -9,10 +9,10 @@ import SwiftUI
 import Factory
 
 struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
-    @EnvironmentObject var appState: AppState
-    
     @Environment(\.controlActiveState) private var controlActiveState
-    @Environment(\.colorScheme) private var colorScheme
+    
+    @Injected(\.appState) private var appState
+    @Injected(\.appAppearance) private var appearance
     
     @State private var customizationId: UUID?
     @State private var newMatcher = String()
@@ -27,7 +27,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     var body: some View {
         VStack(alignment: .leading) {
             hintSection
-            Spacer().frame(height: 15)
             customTextCustomizationsSection
         }
     }
@@ -48,9 +47,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     @ViewBuilder
     private var customTextCustomizationsSection: some View {
         VStack(alignment: .center) {
-            Text(Constants.settingsElementCustomTextCustomization)
-                .font(.title3)
-                .multilineTextAlignment(.center)
             NavigationStack {
                 List {
                     ForEach(appState.userData.customTextCustomizations, id: \.id) { customization in
@@ -193,6 +189,8 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
             appState.userData.customTextCustomizations.append(customTextCustomization)
         }
         
+        appState.current.refreshSignal.toggle()
+        
         customizationId = nil
         selectedType = .unknown
         newMatcher = String()
@@ -253,6 +251,6 @@ private extension Circle {
 }
 
 #Preview {
-    CustomTextCustomizationsEditView().environmentObject(AppState())
+    CustomTextCustomizationsEditView()
 }
 

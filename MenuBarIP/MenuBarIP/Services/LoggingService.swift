@@ -9,7 +9,7 @@ import Foundation
 import Factory
 import os.log
 
-class LoggingService: LoggingServiceType {
+final class LoggingService: LoggingServiceType {
     @Injected(\.appState) private var appState
     
     private let subsystem = Bundle.main.bundleIdentifier ?? Constants.defaultAppBundleName
@@ -50,7 +50,7 @@ class LoggingService: LoggingServiceType {
         log(message, level: .error, destination: destination)
     }
     
-    func getLogFileUrl() -> URL? {
+    nonisolated func getLogFileUrl() -> URL? {
         guard let appSupportDirectory = FileManager.default.urls(
             for: .applicationSupportDirectory, in: .userDomainMask).first
         else {
@@ -72,6 +72,7 @@ class LoggingService: LoggingServiceType {
                 Constants.errorFailedToCreateAppFolder, error.localizedDescription)
             return nil
         }
+        
         return appDirectory.appendingPathComponent(Constants.logFileName)
     }
     
@@ -93,14 +94,12 @@ class LoggingService: LoggingServiceType {
     }
     
     // MARK: Private functions
-
+    
     private func log(_ message: String, level: LogLevel, destination: LogDestination) {
-        let logger = self.loggers[level] ?? .default
-        let timestamp = self.dateFormatter.string(from: Date())
-        let consoleMessage = "\(level.rawValue) \(message)"
-        let fileMessage = "\(timestamp)  \(message)"
-        
         if [LogDestination.console, LogDestination.both].contains(destination) {
+            let logger = loggers[level] ?? .default
+            let consoleMessage = "\(level.rawValue) \(message)"
+            
             switch level {
                 case .debug:
                     os_log(.debug, log: logger, Constants.logConsoleMessageMask, consoleMessage)
@@ -112,48 +111,23 @@ class LoggingService: LoggingServiceType {
         }
         
         if [LogDestination.file, LogDestination.both].contains(destination) {
-            self.writeToLogFile(fileMessage)
+            let timestamp = dateFormatter.string(from: Date())
+            
+            writeToLogFile("\(timestamp)  \(message)")
         }
     }
     
     private func writeToLogFile(_ message: String) {
+        let limit = appState.userData.logFileLimit
+        
         fileQueue.async {
             guard let logFileUrl = self.getLogFileUrl() else {
                 os_log(.error, log: .default, Constants.errorInvalidLogFileUrl)
                 return
             }
             
-            if !FileManager.default.fileExists(atPath: logFileUrl.path) {
-                do {
-                    try message.write(to: logFileUrl, atomically: true, encoding: .utf8)
-                    
-                    return
-                } catch {
-                    os_log(
-                        .error,
-                        log: .default,
-                        Constants.errorFailedToCreateLogFile,
-                        error.localizedDescription)
-                    return
-                }
-            }
-            
             do {
-                let fileHandle = try FileHandle(forWritingTo: logFileUrl)
-                
-                defer { fileHandle.closeFile() }
-                
-                fileHandle.seekToEndOfFile()
-                
-                let logMessage = try self.isLogFileEmpty(fileUrl: logFileUrl)
-                    ? message
-                    : "\((Constants.newLine))\(message)"
-                
-                if let data = logMessage.data(using: .utf8) {
-                    fileHandle.write(data)
-                }
-                
-                self.trimLogFile(at: logFileUrl)
+                try Self.append(message, to: logFileUrl, limit: limit)
             } catch {
                 os_log(
                     .error,
@@ -164,78 +138,28 @@ class LoggingService: LoggingServiceType {
         }
     }
     
-    private func trimLogFile(at fileURL: URL) {
-        var recentLines: [String] = []
-        
-        do {
-            guard let stream = InputStream(url: fileURL) else {
-                os_log(.error, log: .default, Constants.errorFailedToCreateInputStreamForLogFile)
-                return
+    private nonisolated static func append(
+        _ message: String,
+        to url: URL,
+        limit: Int) throws {
+            let existing = (try? String(contentsOf: url, encoding: .utf8)) ?? String()
+            
+            var lines = existing.isEmpty
+            ? [String]()
+            : existing
+                .split(separator: Constants.newLine, omittingEmptySubsequences: false)
+                .map(String.init)
+            
+            lines.append(message)
+            
+            if lines.count > limit {
+                lines.removeFirst(lines.count - limit)
             }
             
-            stream.open()
-            
-            defer { stream.close() }
-            
-            let bufferSize = 1024
-            let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-            defer { buffer.deallocate() }
-            
-            var partialLine = String()
-            
-            while stream.hasBytesAvailable {
-                let bytesRead = stream.read(buffer, maxLength: bufferSize)
-                
-                if bytesRead < 0 {
-                    throw stream.streamError ?? NSError(domain: Constants.loggerDomainName, code: -1, userInfo: nil)
-                }
-                
-                if bytesRead == 0 { break }
-                
-                if let chunk = String(bytes: UnsafeBufferPointer(start: buffer, count: bytesRead), encoding: .utf8) {
-                    let lines = (partialLine + chunk).split(
-                        separator: Constants.newLine,
-                        omittingEmptySubsequences: false)
-                    partialLine = lines.last.map { String($0) } ?? String()
-                    
-                    for line in lines.dropLast(1) {
-                        recentLines.append(String(line))
-                        if recentLines.count > appState.userData.logFileLimit {
-                            recentLines.removeFirst()
-                        }
-                    }
-                }
-            }
-            
-            if !partialLine.isEmpty {
-                recentLines.append(partialLine)
-                if recentLines.count > appState.userData.logFileLimit {
-                    recentLines.removeFirst()
-                }
-            }
-            
-            if recentLines.count > appState.userData.logFileLimit {
-                recentLines = Array(recentLines.suffix(appState.userData.logFileLimit))
-            }
-            
-            let trimmedContent = recentLines.joined(separator: Constants.newLine)
-            try trimmedContent.write(to: fileURL, atomically: true, encoding: .utf8)
-        } catch {
-            os_log(
-                .error,
-                log: .default,
-                Constants.errorFailedToTrimLogFile,
-                error.localizedDescription)
+            try lines
+                .joined(separator: Constants.newLine)
+                .write(to: url, atomically: true, encoding: .utf8)
         }
-    }
-    
-    private func isLogFileEmpty(fileUrl: URL) throws -> Bool {
-        let fileManager = FileManager.default
-        let attribtues = try fileManager.attributesOfItem(atPath: fileUrl.path)
-        let fileSize = attribtues[.size] as? Int
-        
-        return fileSize == 0
-    }
     
     // MARK: Inner types
     

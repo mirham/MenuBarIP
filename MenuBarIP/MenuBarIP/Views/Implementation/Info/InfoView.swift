@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct InfoView: View {
-    @EnvironmentObject var appState: AppState
-    
-    @Environment(\.controlActiveState) var controlActiveState
-    
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: Constants.aboutVersionKey) as? String ?? String()
+        Bundle.main.object(forInfoDictionaryKey: Constants.aboutVersionKey) as? String
+        ?? String()
     }
     
     private var supportMail: String {
@@ -22,27 +19,33 @@ struct InfoView: View {
     }
     
     var body: some View {
-        HStack(alignment: .top) {
-            aboutInfoSection
-        }
-        .background {
-            backgroundSection
-        }
-        .offset(y: -16)
-        .onAppear { openDialog() }
-        .onDisappear { closeDialog() }
-        .opacity(getViewOpacity(state: controlActiveState))
+        infoContent
+            .safeGlassEffect()
     }
     
     // MARK: View sections
+    
+    @ViewBuilder
+    private var infoContent: some View {
+        HStack(alignment: .top) {
+            Spacer()
+                .frame(width: 80)
+            aboutInfoSection
+            Spacer()
+        }
+        .frame(width: 380, height: 185)
+        .background {
+            backgroundSection
+        }
+        .offset(y: -18)
+    }
     
     @ViewBuilder
     private var aboutInfoSection: some View {
         VStack(alignment: .leading) {
             Text(String(format: Constants.aboutVersion, appVersion))
                 .font(.system(size: 18))
-                .padding(.bottom, 10)
-            Spacer().frame(height: 30)
+            Spacer().frame(height: 20)
             HStack {
                 Text(Constants.aboutGetSupport)
                 Link(supportMail, destination: URL(string: String(format: Constants.aboutMailTo, supportMail))!)
@@ -52,31 +55,17 @@ struct InfoView: View {
             Link(Constants.aboutGitHub, destination: URL(string: Constants.aboutGitHubLink)!)
                 .focusEffectDisabled()
         }
-        .padding(.top, 100)
-        .padding(.leading, 120)
+        .padding(.top, 130)
     }
     
     @ViewBuilder
     private var backgroundSection: some View {
         Image(nsImage: NSImage(named: Constants.aboutBackground) ?? NSImage())
             .resizable()
-            .frame(minWidth: 360, maxWidth: 360, minHeight: 220, maxHeight: 220)
-    }
-    
-    // MARK: Private functions
-    
-    private func openDialog() {
-        appState.views.shownWindows.append(Constants.windowIdInfo)
-        AppHelper.setUpView(
-            viewName: Constants.windowIdInfo,
-            onTop: true)
-    }
-    
-    private func closeDialog() {
-        appState.views.shownWindows.removeAll(where: {$0 == Constants.windowIdInfo})
+            .frame(minWidth: 380, maxWidth: 380, minHeight: 220, maxHeight: 220)
     }
 }
 
 #Preview {
-    InfoView().environmentObject(AppState())
+    InfoView()
 }
