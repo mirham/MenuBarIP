@@ -28,7 +28,10 @@ struct InfoView: View {
     @ViewBuilder
     private var infoContent: some View {
         HStack(alignment: .top) {
+            Spacer()
+                .frame(width: 80)
             aboutInfoSection
+            Spacer()
         }
         .frame(width: 380, height: 185)
         .background {
@@ -42,8 +45,7 @@ struct InfoView: View {
         VStack(alignment: .leading) {
             Text(String(format: Constants.aboutVersion, appVersion))
                 .font(.system(size: 18))
-                .padding(.bottom, 10)
-            Spacer().frame(height: 30)
+            Spacer().frame(height: 20)
             HStack {
                 Text(Constants.aboutGetSupport)
                 Link(supportMail, destination: URL(string: String(format: Constants.aboutMailTo, supportMail))!)
@@ -53,8 +55,7 @@ struct InfoView: View {
             Link(Constants.aboutGitHub, destination: URL(string: Constants.aboutGitHubLink)!)
                 .focusEffectDisabled()
         }
-        .padding(.top, 100)
-        .padding(.leading, 120)
+        .padding(.top, 130)
     }
     
     @ViewBuilder
