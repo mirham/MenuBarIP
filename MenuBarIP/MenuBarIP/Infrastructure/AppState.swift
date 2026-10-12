@@ -82,7 +82,7 @@ final class AppState {
             next.publicIpCustomText = nil
         }
         
-        current = next
+        if next != current { current = next }
     }
     
     // MARK: Private functions

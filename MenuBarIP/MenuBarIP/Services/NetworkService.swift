@@ -11,7 +11,7 @@ import SystemConfiguration
 import AppKit
 import Factory
 
-class NetworkService: ApiCallable, NetworkServiceType {
+final class NetworkService: ApiCallable, NetworkServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.ipService) private var ipService
     @Injected(\.ipApiService) private var ipApiService
@@ -25,6 +25,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
     private var ipUpdateTask: Task<Void, Never>?
     private var monitoringTask: Task<Void, Never>?
     private var periodicCheckIpTask: Task<Void, Never>?
+    private nonisolated static let probeSession = URLSession(configuration: .ephemeral)
     
     init() {
         startNetworkMonitoring()
@@ -41,37 +42,21 @@ class NetworkService: ApiCallable, NetworkServiceType {
         NSWorkspace.shared.notificationCenter.removeObserver(self)
     }
     
-    func isUrlReachableAsync(url : String) async throws -> Bool {
-        guard !Task.isCancelled
-        else { throw CancellationError() }
-        
+    nonisolated func isUrlReachableAsync(url: String) async throws -> Bool {
         guard let url = URL(string: url)
         else { throw URLError(.badURL) }
         
         var request = URLRequest(url: url)
         request.httpMethod = Constants.headHttpMethod
         request.timeoutInterval = Constants.callTimeoutSiteInSeconds
+        request.cachePolicy = .reloadIgnoringLocalCacheData
         
-        return try await withCheckedThrowingContinuation { continuation in
-            let task = URLSession.shared.dataTask(with: request) { _, response, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    
-                    return
-                }
-                
-                guard let httpResponse = response as? HTTPURLResponse
-                else {
-                    continuation.resume(throwing: URLError(.badServerResponse))
-                    
-                    return
-                }
-                
-                continuation.resume(returning: httpResponse.statusCode == 200)
-            }
-            
-            task.resume()
-        }
+        let (_, response) = try await Self.probeSession.data(for: request)
+        
+        guard let http = response as? HTTPURLResponse
+        else { throw URLError(.badServerResponse) }
+        
+        return (200..<400).contains(http.statusCode)
     }
     
     func refreshIpAddressesAsync(isManually: Bool = false) async {
@@ -120,10 +105,7 @@ class NetworkService: ApiCallable, NetworkServiceType {
         
         updateStatus(update: update)
         
-        if isManually {
-            await writeLogAsync(publicIp: publicIp)
-        }
-        
+        await writeLogAsync(publicIp: publicIp)
         await executeScriptAsync(prevPublicIp: prevPublicIp, publicIp: publicIp)
     }
     
@@ -246,7 +228,6 @@ class NetworkService: ApiCallable, NetworkServiceType {
         return await shouldCheckConnection()
     }
     
-    @MainActor
     @discardableResult
     private func triggerRefresh(isManually: Bool = false) -> Task<Void, Never> {
         ipUpdateTask?.cancel()

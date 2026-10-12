@@ -8,7 +8,7 @@
 import Foundation
 import Factory
 
-class IpApiService : ApiCallable, IpApiServiceType {
+final class IpApiService : ApiCallable, IpApiServiceType {
     @Injected(\.appState) private var appState
     
     func getRandomActiveIpApi() -> IpApiInfo? {

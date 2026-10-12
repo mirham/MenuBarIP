@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct InfoView: View {
-    @Environment(\.controlActiveState) var controlActiveState
-    
     private var appVersion: String {
         Bundle.main.object(forInfoDictionaryKey: Constants.aboutVersionKey) as? String
         ?? String()
@@ -33,7 +31,6 @@ struct InfoView: View {
             aboutInfoSection
         }
         .frame(width: 380, height: 185)
-        .opacity(getViewOpacity(state: controlActiveState))
         .background {
             backgroundSection
         }

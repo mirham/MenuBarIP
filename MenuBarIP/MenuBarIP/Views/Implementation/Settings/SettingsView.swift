@@ -9,13 +9,10 @@ import SwiftUI
 import Factory
 
 struct SettingsView : View {
-    @Environment(\.controlActiveState) var controlActiveState
-    
     @Injected(\.appState) private var appState
 
     var body: some View {
         settingsTabView
-        .opacity(getViewOpacity(state: controlActiveState))
         .safeGlassEffect()
     }
     

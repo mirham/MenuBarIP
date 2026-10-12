@@ -11,8 +11,6 @@ import Combine
 import Factory
 
 struct LogView: View {
-    @Environment(\.controlActiveState) var controlActiveState
-    
     @Injected(\.appState) private var appState
     
     @StateObject private var viewModel: LogViewModel
@@ -62,7 +60,6 @@ struct LogView: View {
             }
             .padding(.bottom, 5)
         }
-        .opacity(getViewOpacity(state: controlActiveState))
         .safeGlassEffect()
     }
     

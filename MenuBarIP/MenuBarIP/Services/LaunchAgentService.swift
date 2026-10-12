@@ -8,7 +8,7 @@
 import Foundation
 import Factory
 
-class LaunchAgentService : ShellAccessible, LaunchAgentServiceType {
+final class LaunchAgentService : ShellAccessible, LaunchAgentServiceType {
     @Injected(\.appState) private var appState
     
     var isInstalled: Bool = false

@@ -164,7 +164,7 @@ struct IpInfoApiEditView: View {
     private func updateAppState(with ipInfo: IpInfo) async {
         appState.userData.ipInfoApiUrl = newUrl
         appState.userData.ipInfoApiKeyMapping = keyMapping
-        
+
         await networkService.refreshIpAddressesAsync(isManually: false)
     }
     

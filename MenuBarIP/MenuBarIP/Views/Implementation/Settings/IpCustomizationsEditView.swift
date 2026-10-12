@@ -31,7 +31,6 @@ struct IpCustomizationsEditView : IpAddressContainerView {
     var body: some View {
         VStack(alignment: .leading) {
             hintSection
-            Spacer().frame(height: 15)
             ipCustomizationsSection
         }
     }

@@ -9,7 +9,7 @@ import Foundation
 import Factory
 import Network
 
-class IpService : ApiCallable, IpServiceType {
+final class IpService : ApiCallable, IpServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.ipApiService) private var ipApiService
     

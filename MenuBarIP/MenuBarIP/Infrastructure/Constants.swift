@@ -67,7 +67,7 @@ struct Constants{
     static let defaultDarkColor = "#000001"
     static let defaultInternetCheckUrl1 = "https://google.com"
     static let defaultInternetCheckUrl2 = "https://duckduckgo.com"
-    static let defaultInternetCheckUrl3 = "https://www.yahoo.com"
+    static let defaultInternetCheckUrl3 = "https://www.bing.com"
     static let defaultIpInfoApiUrl = "http://ip-api.com/json/\(publicIpMask)"
     static let defaultLogFileLimit: Int = 1000
     static let minLogFileLimit: Int = 10

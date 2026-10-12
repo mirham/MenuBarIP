@@ -27,7 +27,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     var body: some View {
         VStack(alignment: .leading) {
             hintSection
-            Spacer().frame(height: 15)
             customTextCustomizationsSection
         }
     }
@@ -48,9 +47,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     @ViewBuilder
     private var customTextCustomizationsSection: some View {
         VStack(alignment: .center) {
-            Text(Constants.settingsElementCustomTextCustomization)
-                .font(.title3)
-                .multilineTextAlignment(.center)
             NavigationStack {
                 List {
                     ForEach(appState.userData.customTextCustomizations, id: \.id) { customization in

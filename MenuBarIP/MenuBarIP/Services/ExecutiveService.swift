@@ -9,7 +9,7 @@ import Foundation
 import Factory
 import AppKit
 
-class ExecutiveService: ExecutiveServiceType {
+final class ExecutiveService: ExecutiveServiceType {
     @Injected(\.appState) private var appState
     @Injected(\.loggingService) private var loggingService
     
