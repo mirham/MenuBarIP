@@ -38,13 +38,10 @@ struct Constants{
     static let pathJs = "\(pathEnv) node"
     static let pathDotNetScript = "\(pathEnv) dotnet-script"
     static let headHttpMethod = "HEAD"
-    static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
-    static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
+    static let launchAgentPlistName = "\(defaultAppBundleName).launchagent.plist"
     static let logFileName = "public_ip.log"
     static let loggerQueueLabel = "\(Bundle.main.bundleIdentifier!).logger"
     static let scriptingQueueLabel = "\(Bundle.main.bundleIdentifier!).scripting"
-    static let launchAgents = "LaunchAgents"
-    static let launchAgentsFolderPath = "~/Library/LaunchAgents/"
     static let networkMonitorQueryLabel = "MBIPNetworkMonitor"
     static let ipV4: Int = 4
     static let ipV6: Int = 6
@@ -205,6 +202,8 @@ struct Constants{
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
     static let settingsElementIpInfoApi = "IP info API"
+    static let settingsElementApprovalNeeded = "Your approval in Login Items & Extensions is needed"
+    static let settingsElementOpenLoginItems = "Open Login Items…"
     
     // MARK: Dialogs
     static let dialogHeaderIpAddressIsNotValid = "IP Address is not valid"
@@ -303,10 +302,12 @@ struct Constants{
     static let errorInterpreterNotFound = "Interpreter not found: %@"
     static let errorFailedToLocateInterpreter = "Failed to locate interpreter for '%@'"
     
-    // MARK: Shell commands
-    static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"
-    static let shCommandEnableLaunchAgent = "launchctl enable %1$@"
-    static let shCommandRemoveLaunchAgent = "launchctl remove %1$@"
+    // MARK: Launch agent (legacy)
+    static let llaAgentName = "\(Bundle.main.bundleIdentifier!)"
+    static let llaPlistName = "\(Bundle.main.bundleIdentifier!).plist"
+    static let llaFolder = "LaunchAgents"
+    static let llaExec = "/bin/launchctl"
+    static let llaRemove = "remove"
     
     // MARK: About
     static let aboutSupportMail = "bWlyaGFtQGFidi5iZw=="
@@ -349,21 +350,6 @@ struct Constants{
         "https://ipcalf.com",
         "https://getip.cc"
     ]
-    
-    static let launchAgentXmlContent =
-        """
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-            <dict>
-                <key>Label</key>
-                <string>\(Bundle.main.bundleIdentifier!)</string>
-                <key>KeepAlive</key>
-                <true/>
-                <key>Program</key>
-                <string>%1$@</string>
-            </dict>
-        </plist>
-        """;
     
     static let defaultShownMenuBarItems = [
         mbItemKeyPublicIpAddress,

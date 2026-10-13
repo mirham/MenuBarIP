@@ -6,85 +6,78 @@
 //
 
 import Foundation
-import Factory
+import ServiceManagement
 
-final class LaunchAgentService : ShellAccessible, LaunchAgentServiceType {
-    @Injected(\.appState) private var appState
-    
+final class LaunchAgentService: LaunchAgentServiceType {
     var isInstalled: Bool = false
+    var status: SMAppService.Status { service.status }
+    
+    private let service = SMAppService.agent(plistName: Constants.launchAgentPlistName)
+    private(set) var lastError: Error?
+    private var desiredState = false
     
     init() {
-        let fileManager = FileManager.default
-        let plistFilePath = getPlistFilePath()
-        
-        if fileManager.fileExists(atPath: plistFilePath) {
-            isInstalled = true
-        }
+        refresh()
     }
     
-    func create() -> Bool {
-        let appPath = Bundle.main.executablePath
-        let plistFilePath = getPlistFilePath()
-        let xmlContent = String(format: Constants.launchAgentXmlContent, appPath!)
-        
-        do {
-            try xmlContent.write(toFile: plistFilePath, atomically: true, encoding: String.Encoding.utf8)
-            
-            return true
-        }
-        catch {
-            return false
-        }
+    func refresh() {
+        isInstalled = (service.status == .enabled)
+        desiredState = isInstalled
     }
     
     func setState(isInstalled: Bool) {
-        self.isInstalled = isInstalled
+        desiredState = isInstalled
     }
     
-    func apply() {
+    @discardableResult
+    func apply() -> Bool {
+        lastError = nil
+        
         do {
-            if self.isInstalled {
-                try safeShell(
-                    String(format: Constants.shCommandLoadLaunchAgent,
-                           Constants.launchAgentsFolderPath,
-                           Constants.launchAgentPlistName))
+            if desiredState {
+                if service.status != .enabled {
+                    try service.register()
+                }
+            } else if service.status == .enabled || service.status == .requiresApproval {
+                try service.unregister()
             }
-            else {
-                try safeShell(
-                    String(format: Constants.shCommandRemoveLaunchAgent,
-                           Constants.launchAgentName))
-            }
+        } catch {
+            lastError = error
         }
-        catch {}
+        
+        refresh()
+        
+        return lastError == nil
     }
     
-    func delete() -> Bool {
-        do {
-            let fileManager = FileManager.default
-            let plistFilePath = getPlistFilePath()
-            try fileManager.removeItem(atPath: plistFilePath)
-            
-            return true
-        }
-        catch {
-            return false
-        }
+    func openLoginItemsSettings() {
+        SMAppService.openSystemSettingsLoginItems()
     }
     
-    // MARK: Private functions
-    
-    private func getPlistFilePath() -> String {
-        let userDirectory = try! FileManager.default.url(
+    func removeLegacyAgent() {
+        guard let library = try? FileManager.default.url(
             for: .libraryDirectory,
             in: .userDomainMask,
-            appropriateFor:.libraryDirectory,
-            create: false)
-        let launchAgentsFolder = userDirectory
-            .appendingPathComponent(Constants.launchAgents)
-            .appendingPathComponent(Constants.launchAgentPlistName)
-        let filename = URL(fileURLWithPath: launchAgentsFolder.path(), isDirectory: false)
-        let result = filename.path()
+            appropriateFor: nil,
+            create: false
+        ) else { return }
         
-        return result
+        let plistURL = library
+            .appendingPathComponent(Constants.llaFolder)
+            .appendingPathComponent(Constants.llaPlistName)
+        
+        guard FileManager.default.fileExists(atPath: plistURL.path)
+        else { return }
+        
+        try? FileManager.default.removeItem(at: plistURL)
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: Constants.llaExec)
+        process.arguments = [
+            Constants.llaRemove,
+            Constants.llaAgentName
+        ]
+        
+        try? process.run()
     }
 }

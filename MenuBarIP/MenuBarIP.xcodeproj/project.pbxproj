@@ -42,6 +42,7 @@
 		354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */; };
 		354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */; };
 		354032A92C5E8362002624D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A82C5E8362002624D2 /* SettingsView.swift */; };
+		3547A75F307E73110021FC5F /* com.mirham.MenuBarIP.launchagent.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */; };
 		356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63962DE093830073DA39 /* NetworkStateUpdate.swift */; };
 		356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */; };
 		35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */; };
@@ -86,6 +87,19 @@
 		35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		3547A75E307E72B20021FC5F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = Contents/Library/LaunchAgents;
+			dstSubfolderSpec = 1;
+			files = (
+				3547A75F307E73110021FC5F /* com.mirham.MenuBarIP.launchagent.plist in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverColorPicker.swift; sourceTree = "<group>"; };
 		353EBC492EF195FC00B7A963 /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
@@ -122,6 +136,7 @@
 		354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusView.swift; sourceTree = "<group>"; };
 		354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemsContainerView.swift; sourceTree = "<group>"; };
 		354032A82C5E8362002624D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.mirham.MenuBarIP.launchagent.plist; sourceTree = "<group>"; };
 		356A63962DE093830073DA39 /* NetworkStateUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdate.swift; sourceTree = "<group>"; };
 		356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdateBuilder.swift; sourceTree = "<group>"; };
 		35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
@@ -203,6 +218,7 @@
 				3540324B2C5E6270002624D2 /* Assets.xcassets */,
 				354032502C5E6270002624D2 /* MenuBarIP.entitlements */,
 				35BF30A62E01B3F8003D9CE5 /* Info.plist */,
+				3547A75B307E6EEC0021FC5F /* Resources */,
 				354032682C5E6855002624D2 /* Infrastructure */,
 				3575CCA92DD7686200102D4E /* Extensions */,
 				3540325B2C5E65D4002624D2 /* Enums */,
@@ -364,6 +380,14 @@
 			path = Protocols;
 			sourceTree = "<group>";
 		};
+		3547A75B307E6EEC0021FC5F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		356A63912DE04F5B0073DA39 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
@@ -482,6 +506,7 @@
 				354032402C5E626D002624D2 /* Sources */,
 				354032412C5E626D002624D2 /* Frameworks */,
 				354032422C5E626D002624D2 /* Resources */,
+				3547A75E307E72B20021FC5F /* CopyFiles */,
 			);
 			buildRules = (
 			);
