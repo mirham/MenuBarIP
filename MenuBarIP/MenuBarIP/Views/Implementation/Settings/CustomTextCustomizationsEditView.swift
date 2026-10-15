@@ -19,8 +19,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     @State private var newCustomText = String()
     @State private var newCustomTextLightColor = Color.black
     @State private var newCustomTextDarkColor = Color.white
-    @State private var isCustomizationTypeValid = false
-    @State private var isCustomizationTypeInvalid: Bool = false
     @State private var isHovered = false
     @State private var selectedType: CustomizableItemType = .unknown
     
@@ -93,14 +91,7 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
                 customizationId == nil ? Constants.add : Constants.save,
                 action: upsertCustomTextCustomizationAsync
             )
-            .disabled(!isCustomizationTypeValid)
-            .alert(isPresented: $isCustomizationTypeInvalid) {
-                Alert(
-                    title: Text(Constants.dialogHeaderIpAddressIsNotValid),
-                    message: Text(Constants.dialogBodyIpAddressIsNotValid),
-                    dismissButton: .default(Text(Constants.ok))
-                )
-            }
+            .disabled(!isCustomizationValid())
             .bold()
             .pointerOnHover()
         }
@@ -118,9 +109,7 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
                 }
             }
             .pickerStyle(.segmented)
-            .onChange(of: selectedType) {
-                isCustomizationTypeValid = selectedType != .unknown
-            }
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -134,6 +123,7 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
                     newMatcher = escapeCustomText(text: newMatcher as NSString)
                 }
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(maxWidth: .infinity)
         }
     }
     
@@ -160,11 +150,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     // MARK: Private functions
     
     private func upsertCustomTextCustomizationAsync() async {
-        if selectedType == .unknown {
-            isCustomizationTypeInvalid = true
-            return
-        }
-        
         let customTextCustomization = Customization(
             id: customizationId ?? UUID(),
             type: selectedType,
@@ -189,14 +174,10 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
             appState.userData.customTextCustomizations.append(customTextCustomization)
         }
         
-        appState.current.refreshSignal.toggle()
-        
         customizationId = nil
         selectedType = .unknown
         newMatcher = String()
         newCustomText = String()
-        isCustomizationTypeValid = false
-        isCustomizationTypeInvalid = false
         newCustomTextLightColor = Color.black
         newCustomTextDarkColor = Color.white
     }
@@ -212,11 +193,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
     
     private func deleteCustomTextCustomization(customization: Customization) {
         appState.userData.customTextCustomizations.removeAll(where: {$0 == customization})
-        
-        if appState.userData.customTextCustomizations.isEmpty {
-            appState.current.customTextCustomization = nil
-            appState.current.publicIpCustomText = nil
-        }
     }
     
     private func escapeCustomText(text: NSString) -> String {
@@ -224,6 +200,12 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
         result = String(result.prefix(Constants.maxCustomTextSymbols))
         
         return result
+    }
+    
+    private func isCustomizationValid() -> Bool {
+        selectedType != .unknown
+        && escapeCustomText(text: newMatcher as NSString) != String()
+        && escapeCustomText(text: newCustomText as NSString) != String()
     }
 }
 

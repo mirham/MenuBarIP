@@ -117,7 +117,6 @@ final class AppState {
 
 extension AppState {
     struct Current : Settable, Equatable {
-        var refreshSignal: Bool = false
         var ipCustomization: Customization? = nil
         var localIpCustomization: Customization? = nil
         var customTextCustomization: Customization? = nil
