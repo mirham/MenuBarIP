@@ -103,13 +103,11 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
         HStack {
             Text("\(Constants.informationType):")
                 .frame(width: 110, alignment: .leading)
-            Picker(String(), selection: $selectedType) {
-                ForEach(CustomizableItemType.pickerCases, id: \.self) { type in
-                    Text(type.displayName).tag(type)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: .infinity)
+            FixedSegmentedPicker(
+                items: CustomizableItemType.pickerCases,
+                title: { $0.displayName },
+                selection: $selectedType,
+                width: 330)
         }
     }
     
@@ -123,7 +121,6 @@ struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
                     newMatcher = escapeCustomText(text: newMatcher as NSString)
                 }
                 .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(maxWidth: .infinity)
         }
     }
     
