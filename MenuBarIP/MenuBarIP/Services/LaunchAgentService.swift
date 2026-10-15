@@ -6,85 +6,115 @@
 //
 
 import Foundation
+import AppKit
+import ServiceManagement
 import Factory
 
-final class LaunchAgentService : ShellAccessible, LaunchAgentServiceType {
+final class LaunchAgentService: LaunchAgentServiceType {
     @Injected(\.appState) private var appState
     
-    var isInstalled: Bool = false
+    private let service = SMAppService.agent(plistName: Constants.launchAgentPlistName)
+    
+    private(set) var isInstalled = false
+    private(set) var isDesired = false
+    private(set) var hasPendingChange = false
+    private(set) var lastError: Error?
+    
+    var status: SMAppService.Status { service.status }
+    var persistedError: String? {
+        appState.current.launchAgentError
+    }
     
     init() {
-        let fileManager = FileManager.default
-        let plistFilePath = getPlistFilePath()
+        refresh()
         
-        if fileManager.fileExists(atPath: plistFilePath) {
-            isInstalled = true
-        }
-    }
-    
-    func create() -> Bool {
-        let appPath = Bundle.main.executablePath
-        let plistFilePath = getPlistFilePath()
-        let xmlContent = String(format: Constants.launchAgentXmlContent, appPath!)
-        
-        do {
-            try xmlContent.write(toFile: plistFilePath, atomically: true, encoding: String.Encoding.utf8)
-            
-            return true
-        }
-        catch {
-            return false
-        }
-    }
-    
-    func setState(isInstalled: Bool) {
-        self.isInstalled = isInstalled
-    }
-    
-    func apply() {
-        do {
-            if self.isInstalled {
-                try safeShell(
-                    String(format: Constants.shCommandLoadLaunchAgent,
-                           Constants.launchAgentsFolderPath,
-                           Constants.launchAgentPlistName))
-            }
-            else {
-                try safeShell(
-                    String(format: Constants.shCommandRemoveLaunchAgent,
-                           Constants.launchAgentName))
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, self.hasPendingChange
+                else { return }
+                
+                self.apply()
             }
         }
-        catch {}
     }
     
-    func delete() -> Bool {
+    func refresh() {
+        isInstalled = (service.status == .enabled)
+        
+        if !hasPendingChange {
+            isDesired = isInstalled
+        }
+    }
+    
+    func setState(isInstalled newValue: Bool) {
+        clearPersistedError()
+        isInstalled = (service.status == .enabled)
+        isDesired = newValue
+        hasPendingChange = (newValue != isInstalled)
+    }
+    
+    @discardableResult
+    func apply() -> Bool {
+        lastError = nil
+        clearPersistedError()
+        
+        let enabling = isDesired
+        
         do {
-            let fileManager = FileManager.default
-            let plistFilePath = getPlistFilePath()
-            try fileManager.removeItem(atPath: plistFilePath)
-            
-            return true
+            if enabling {
+                if service.status != .enabled {
+                    try service.register()
+                }
+            } else if service.status == .enabled || service.status == .requiresApproval {
+                try service.unregister()
+            }
+        } catch {
+            lastError = error
+            appState.current.launchAgentError = error.localizedDescription
         }
-        catch {
-            return false
-        }
+        
+        hasPendingChange = false
+        refresh()
+        
+        return lastError == nil
     }
     
-    // MARK: Private functions
+    func clearPersistedError() {
+        appState.current.launchAgentError = nil
+    }
     
-    private func getPlistFilePath() -> String {
-        let userDirectory = try! FileManager.default.url(
+    func openLoginItemsSettings() {
+        SMAppService.openSystemSettingsLoginItems()
+    }
+    
+    func removeLegacyAgent() {
+        guard let library = try? FileManager.default.url(
             for: .libraryDirectory,
             in: .userDomainMask,
-            appropriateFor:.libraryDirectory,
-            create: false)
-        let launchAgentsFolder = userDirectory
-            .appendingPathComponent(Constants.launchAgents)
-            .appendingPathComponent(Constants.launchAgentPlistName)
-        let filename = URL(fileURLWithPath: launchAgentsFolder.path(), isDirectory: false)
-        let result = filename.path()
+            appropriateFor: nil,
+            create: false
+        ) else { return }
         
-        return result
+        let plistURL = library
+            .appendingPathComponent(Constants.llaFolder)
+            .appendingPathComponent(Constants.llaPlistName)
+        
+        guard FileManager.default.fileExists(atPath: plistURL.path)
+        else { return }
+        
+        try? FileManager.default.removeItem(at: plistURL)
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: Constants.llaExec)
+        process.arguments = [
+            Constants.llaRemove,
+            Constants.llaAgentName
+        ]
+        
+        try? process.run()
     }
 }

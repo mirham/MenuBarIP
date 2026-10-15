@@ -17,6 +17,10 @@ struct GeneralSettingsEditView: View {
     @Injected(\.launchAgentService) private var launchAgentService
     
     @State private var isKeepRunningOn = false
+    @State private var keepRunningHasPendingChange = false
+    @State private var keepRunningNeedsApproval = false
+    @State private var keepRunningPlistMissing = false
+    @State private var keepRunningError: String?
     @State private var showOverPeriodicIpCheck = false
     @State private var interval: Int = 0
     @State private var showOverKeepApplicationRunning = false
@@ -68,30 +72,84 @@ struct GeneralSettingsEditView: View {
     
     @ViewBuilder
     private var keepAppRunningSection: some View {
-        HStack {
-            Toggle(Constants.settingsElementKeepAppRunning, isOn: .init(
-                get: { isKeepRunningOn },
-                set: { _, _ in
-                    if isKeepRunningOn {
-                        isKeepRunningOn = !launchAgentService.delete()
-                        launchAgentService.setState(isInstalled: false)
-                    } else {
-                        isKeepRunningOn = launchAgentService.create()
-                        launchAgentService.setState(isInstalled: true)
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Toggle(Constants.settingsElementKeepAppRunning, isOn: .init(
+                    get: { isKeepRunningOn },
+                    set: { newValue in
+                        launchAgentService.setState(isInstalled: newValue)
+                        syncKeepRunningState()
                     }
+                ))
+                .withSettingToggleStyle()
+                .onAppear {
+                    syncKeepRunningState()
                 }
-            ))
-            .withSettingToggleStyle()
-            .onAppear {
-                isKeepRunningOn = launchAgentService.isInstalled
+                .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                    syncKeepRunningState()
+                }
+                Spacer()
+                Image(systemName: Constants.iconQuestionMark)
+                    .asHelpIcon()
+                    .onHover { showOverKeepApplicationRunning = $0 && controlActiveState == .key }
+                    .popover(isPresented: $showOverKeepApplicationRunning, arrowEdge: .trailing) {
+                        helpHint(Constants.hintKeepApplicationRunning)
+                    }
             }
+            
+            hintApplyWhenAppQuitSection
+            keepRunningNeedsApprovalSection
+            keepRunningErrorSection
+        }
+    }
+    
+    @ViewBuilder
+    private var hintApplyWhenAppQuitSection: some View {
+        HStack {
             Spacer()
-            Image(systemName: Constants.iconQuestionMark)
-                .asHelpIcon()
-                .onHover { showOverKeepApplicationRunning = $0 && controlActiveState == .key }
-                .popover(isPresented: $showOverKeepApplicationRunning, arrowEdge: .trailing) {
-                    helpHint(Constants.hintKeepApplicationRunning)
+                .frame(width: 30)
+            if keepRunningHasPendingChange {
+                Text(Constants.hintApplyWhenAppQuits)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.leading)
+        .padding(.trailing)
+    }
+    
+    @ViewBuilder
+    private var keepRunningNeedsApprovalSection: some View {
+        if keepRunningNeedsApproval {
+            HStack {
+                Spacer()
+                    .frame(width: 30)
+                Text(Constants.settingsElementApprovalNeeded)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button(Constants.settingsElementOpenLoginItems) {
+                    launchAgentService.openLoginItemsSettings()
                 }
+                .buttonStyle(.link)
+                .font(.caption)
+            }
+            .padding(.leading)
+            .padding(.trailing)
+        }
+    }
+    
+    @ViewBuilder
+    private var keepRunningErrorSection: some View {
+        if let keepRunningError {
+            HStack {
+                Spacer()
+                    .frame(width: 30)
+                Text(keepRunningError)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.leading)
+                    .padding(.trailing)
+            }
         }
     }
     
@@ -231,6 +289,16 @@ struct GeneralSettingsEditView: View {
         
         return result
     }
+    
+    private func syncKeepRunningState() {
+        launchAgentService.refresh()
+        isKeepRunningOn = launchAgentService.isDesired
+        keepRunningHasPendingChange = launchAgentService.hasPendingChange
+        keepRunningNeedsApproval = launchAgentService.status == .requiresApproval
+        keepRunningPlistMissing = launchAgentService.status == .notFound
+        keepRunningError = launchAgentService.persistedError
+    }
+
     
     @ViewBuilder
     func urlInputView(

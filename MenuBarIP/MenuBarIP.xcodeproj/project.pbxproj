@@ -42,6 +42,7 @@
 		354032A52C5E7FF3002624D2 /* MenuBarStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */; };
 		354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */; };
 		354032A92C5E8362002624D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A82C5E8362002624D2 /* SettingsView.swift */; };
+		3547A75F307E73110021FC5F /* com.mirham.MenuBarIP.launchagent.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */; };
 		356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63962DE093830073DA39 /* NetworkStateUpdate.swift */; };
 		356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */; };
 		35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */; };
@@ -59,6 +60,7 @@
 		35779E8E30055A450054927B /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8930055A450054927B /* WindowController.swift */; };
 		35779E8F30055A450054927B /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8830055A450054927B /* ButtonType.swift */; };
 		35779E9030055A450054927B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8A30055A450054927B /* WindowManager.swift */; };
+		357EED693080BFD600288AC1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357EED683080BFD200288AC1 /* AppDelegate.swift */; };
 		358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */; };
 		358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA182E001D27002DF782 /* LoggingServiceType.swift */; };
 		358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1A2E001D7C002DF782 /* LoggingService.swift */; };
@@ -85,6 +87,19 @@
 		35E989CB2F4F814900281A37 /* CustomizableItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */; };
 		35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3547A75E307E72B20021FC5F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = Contents/Library/LaunchAgents;
+			dstSubfolderSpec = 1;
+			files = (
+				3547A75F307E73110021FC5F /* com.mirham.MenuBarIP.launchagent.plist in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverColorPicker.swift; sourceTree = "<group>"; };
@@ -122,6 +137,7 @@
 		354032A42C5E7FF3002624D2 /* MenuBarStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusView.swift; sourceTree = "<group>"; };
 		354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemsContainerView.swift; sourceTree = "<group>"; };
 		354032A82C5E8362002624D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.mirham.MenuBarIP.launchagent.plist; sourceTree = "<group>"; };
 		356A63962DE093830073DA39 /* NetworkStateUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdate.swift; sourceTree = "<group>"; };
 		356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdateBuilder.swift; sourceTree = "<group>"; };
 		35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
@@ -139,6 +155,7 @@
 		35779E8930055A450054927B /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		35779E8A30055A450054927B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		35779E8B30055A450054927B /* WindowRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowRegistry.swift; sourceTree = "<group>"; };
+		357EED683080BFD200288AC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtensions.swift; sourceTree = "<group>"; };
 		358DDA182E001D27002DF782 /* LoggingServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingServiceType.swift; sourceTree = "<group>"; };
 		358DDA1A2E001D7C002DF782 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
@@ -203,6 +220,7 @@
 				3540324B2C5E6270002624D2 /* Assets.xcassets */,
 				354032502C5E6270002624D2 /* MenuBarIP.entitlements */,
 				35BF30A62E01B3F8003D9CE5 /* Info.plist */,
+				3547A75B307E6EEC0021FC5F /* Resources */,
 				354032682C5E6855002624D2 /* Infrastructure */,
 				3575CCA92DD7686200102D4E /* Extensions */,
 				3540325B2C5E65D4002624D2 /* Enums */,
@@ -263,6 +281,7 @@
 			children = (
 				354032802C5E7338002624D2 /* Constants.swift */,
 				354032592C5E64DB002624D2 /* AppState.swift */,
+				357EED683080BFD200288AC1 /* AppDelegate.swift */,
 				35C89D333077CEDC00851539 /* AppAppearance.swift */,
 				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
 				354032692C5E687A002624D2 /* Attributes */,
@@ -362,6 +381,14 @@
 				354032A22C5E7E81002624D2 /* IpAddressContainerView.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		3547A75B307E6EEC0021FC5F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		356A63912DE04F5B0073DA39 /* Implementation */ = {
@@ -482,6 +509,7 @@
 				354032402C5E626D002624D2 /* Sources */,
 				354032412C5E626D002624D2 /* Frameworks */,
 				354032422C5E626D002624D2 /* Resources */,
+				3547A75E307E72B20021FC5F /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -600,6 +628,7 @@
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
 				35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */,
 				35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */,
+				357EED693080BFD600288AC1 /* AppDelegate.swift in Sources */,
 				354032962C5E7A13002624D2 /* AsyncButton.swift in Sources */,
 				3540329C2C5E7AEC002624D2 /* LaunchAgentService.swift in Sources */,
 				358DDA202E00715B002DF782 /* LogEntry.swift in Sources */,

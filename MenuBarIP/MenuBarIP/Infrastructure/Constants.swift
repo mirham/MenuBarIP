@@ -38,13 +38,10 @@ struct Constants{
     static let pathJs = "\(pathEnv) node"
     static let pathDotNetScript = "\(pathEnv) dotnet-script"
     static let headHttpMethod = "HEAD"
-    static let launchAgentName = "\(Bundle.main.bundleIdentifier!)"
-    static let launchAgentPlistName = "\(Bundle.main.bundleIdentifier!).plist"
+    static let launchAgentPlistName = "\(defaultAppBundleName).launchagent.plist"
     static let logFileName = "public_ip.log"
     static let loggerQueueLabel = "\(Bundle.main.bundleIdentifier!).logger"
     static let scriptingQueueLabel = "\(Bundle.main.bundleIdentifier!).scripting"
-    static let launchAgents = "LaunchAgents"
-    static let launchAgentsFolderPath = "~/Library/LaunchAgents/"
     static let networkMonitorQueryLabel = "MBIPNetworkMonitor"
     static let ipV4: Int = 4
     static let ipV6: Int = 6
@@ -151,6 +148,7 @@ struct Constants{
     static let settingsKeyInternetCheckUrl3 = "internet-check-url-3"
     static let settingsKeyIpInfoApiUrl = "ip-info-api-url"
     static let settingsKeyIpInfoMapping = "ip-info-api-matches"
+    static let settingsKeyLaunchAgentError = "la-error"
     
     // MARK: Elements names
     static let info = "Info"
@@ -205,6 +203,8 @@ struct Constants{
     static let settingsElementIpAddressApis = "IP APIs"
     static let settingsElementThemeColor = "Use system theme color"
     static let settingsElementIpInfoApi = "IP info API"
+    static let settingsElementApprovalNeeded = "Your approval in Login Items & Extensions is needed"
+    static let settingsElementOpenLoginItems = "Open Login Items…"
     
     // MARK: Dialogs
     static let dialogHeaderIpAddressIsNotValid = "IP Address is not valid"
@@ -247,6 +247,7 @@ struct Constants{
     static let hintIpInfoApi = "The IP info API is needed to get advanced information about a public IP address, such as its location. This allows you to display the country flag in the macOS menu bar, as well as show the address on a map. Typically, data from such APIs is in JSON format. Here, you can assign an API address and map the JSON data values to application values."
     static let hintNotSet = "Not set yet"
     static let hintJsonKey = "JSON data key"
+    static let hintApplyWhenAppQuits = "This change will be applied when the app quits."
     
     // MARK: Menubar item keys
     static let mbItemKeyPublicIpAddress = "public-ip-address"
@@ -303,10 +304,12 @@ struct Constants{
     static let errorInterpreterNotFound = "Interpreter not found: %@"
     static let errorFailedToLocateInterpreter = "Failed to locate interpreter for '%@'"
     
-    // MARK: Shell commands
-    static let shCommandLoadLaunchAgent = "launchctl load %1$@%2$@"
-    static let shCommandEnableLaunchAgent = "launchctl enable %1$@"
-    static let shCommandRemoveLaunchAgent = "launchctl remove %1$@"
+    // MARK: Launch agent (legacy)
+    static let llaAgentName = "\(Bundle.main.bundleIdentifier!)"
+    static let llaPlistName = "\(Bundle.main.bundleIdentifier!).plist"
+    static let llaFolder = "LaunchAgents"
+    static let llaExec = "/bin/launchctl"
+    static let llaRemove = "remove"
     
     // MARK: About
     static let aboutSupportMail = "bWlyaGFtQGFidi5iZw=="
@@ -349,21 +352,6 @@ struct Constants{
         "https://ipcalf.com",
         "https://getip.cc"
     ]
-    
-    static let launchAgentXmlContent =
-        """
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-            <dict>
-                <key>Label</key>
-                <string>\(Bundle.main.bundleIdentifier!)</string>
-                <key>KeepAlive</key>
-                <true/>
-                <key>Program</key>
-                <string>%1$@</string>
-            </dict>
-        </plist>
-        """;
     
     static let defaultShownMenuBarItems = [
         mbItemKeyPublicIpAddress,
