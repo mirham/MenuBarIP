@@ -6,35 +6,66 @@
 //
 
 import Foundation
+import AppKit
 import ServiceManagement
+import Factory
 
 final class LaunchAgentService: LaunchAgentServiceType {
-    var isInstalled: Bool = false
-    var status: SMAppService.Status { service.status }
+    @Injected(\.appState) private var appState
     
     private let service = SMAppService.agent(plistName: Constants.launchAgentPlistName)
+    
+    private(set) var isInstalled = false
+    private(set) var isDesired = false
+    private(set) var hasPendingChange = false
     private(set) var lastError: Error?
-    private var desiredState = false
+    
+    var status: SMAppService.Status { service.status }
+    var persistedError: String? {
+        appState.current.launchAgentError
+    }
     
     init() {
         refresh()
+        
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.willTerminateNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, self.hasPendingChange
+                else { return }
+                
+                self.apply()
+            }
+        }
     }
     
     func refresh() {
         isInstalled = (service.status == .enabled)
-        desiredState = isInstalled
+        
+        if !hasPendingChange {
+            isDesired = isInstalled
+        }
     }
     
-    func setState(isInstalled: Bool) {
-        desiredState = isInstalled
+    func setState(isInstalled newValue: Bool) {
+        clearPersistedError()
+        isInstalled = (service.status == .enabled)
+        isDesired = newValue
+        hasPendingChange = (newValue != isInstalled)
     }
     
     @discardableResult
     func apply() -> Bool {
         lastError = nil
+        clearPersistedError()
+        
+        let enabling = isDesired
         
         do {
-            if desiredState {
+            if enabling {
                 if service.status != .enabled {
                     try service.register()
                 }
@@ -43,11 +74,17 @@ final class LaunchAgentService: LaunchAgentServiceType {
             }
         } catch {
             lastError = error
+            appState.current.launchAgentError = error.localizedDescription
         }
         
+        hasPendingChange = false
         refresh()
         
         return lastError == nil
+    }
+    
+    func clearPersistedError() {
+        appState.current.launchAgentError = nil
     }
     
     func openLoginItemsSettings() {

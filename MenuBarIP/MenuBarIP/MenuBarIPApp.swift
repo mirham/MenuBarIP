@@ -12,9 +12,6 @@ import Factory
 struct MenuBarIPApp: App {
     init() {
         _ = Container.shared.windowRegistry()
-        
-        let lls = Container.shared.launchAgentService()
-        lls.removeLegacyAgent()
     }
     
     var body: some Scene {

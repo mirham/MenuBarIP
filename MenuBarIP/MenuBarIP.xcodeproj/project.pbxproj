@@ -60,6 +60,7 @@
 		35779E8E30055A450054927B /* WindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8930055A450054927B /* WindowController.swift */; };
 		35779E8F30055A450054927B /* ButtonType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8830055A450054927B /* ButtonType.swift */; };
 		35779E9030055A450054927B /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35779E8A30055A450054927B /* WindowManager.swift */; };
+		357EED693080BFD600288AC1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357EED683080BFD200288AC1 /* AppDelegate.swift */; };
 		358D101B2E12B3CF00BD67C2 /* DictionaryExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */; };
 		358DDA192E001D38002DF782 /* LoggingServiceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA182E001D27002DF782 /* LoggingServiceType.swift */; };
 		358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA1A2E001D7C002DF782 /* LoggingService.swift */; };
@@ -154,6 +155,7 @@
 		35779E8930055A450054927B /* WindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowController.swift; sourceTree = "<group>"; };
 		35779E8A30055A450054927B /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		35779E8B30055A450054927B /* WindowRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowRegistry.swift; sourceTree = "<group>"; };
+		357EED683080BFD200288AC1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		358D101A2E12B3C100BD67C2 /* DictionaryExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryExtensions.swift; sourceTree = "<group>"; };
 		358DDA182E001D27002DF782 /* LoggingServiceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingServiceType.swift; sourceTree = "<group>"; };
 		358DDA1A2E001D7C002DF782 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			children = (
 				354032802C5E7338002624D2 /* Constants.swift */,
 				354032592C5E64DB002624D2 /* AppState.swift */,
+				357EED683080BFD200288AC1 /* AppDelegate.swift */,
 				35C89D333077CEDC00851539 /* AppAppearance.swift */,
 				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
 				354032692C5E687A002624D2 /* Attributes */,
@@ -625,6 +628,7 @@
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
 				35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */,
 				35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */,
+				357EED693080BFD600288AC1 /* AppDelegate.swift in Sources */,
 				354032962C5E7A13002624D2 /* AsyncButton.swift in Sources */,
 				3540329C2C5E7AEC002624D2 /* LaunchAgentService.swift in Sources */,
 				358DDA202E00715B002DF782 /* LogEntry.swift in Sources */,

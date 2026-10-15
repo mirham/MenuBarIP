@@ -17,7 +17,9 @@ struct GeneralSettingsEditView: View {
     @Injected(\.launchAgentService) private var launchAgentService
     
     @State private var isKeepRunningOn = false
+    @State private var keepRunningHasPendingChange = false
     @State private var keepRunningNeedsApproval = false
+    @State private var keepRunningPlistMissing = false
     @State private var keepRunningError: String?
     @State private var showOverPeriodicIpCheck = false
     @State private var interval: Int = 0
@@ -76,8 +78,6 @@ struct GeneralSettingsEditView: View {
                     get: { isKeepRunningOn },
                     set: { newValue in
                         launchAgentService.setState(isInstalled: newValue)
-                        launchAgentService.apply()
-                        keepRunningError = launchAgentService.lastError?.localizedDescription
                         syncKeepRunningState()
                     }
                 ))
@@ -97,9 +97,25 @@ struct GeneralSettingsEditView: View {
                     }
             }
             
+            hintApplyWhenAppQuitSection
             keepRunningNeedsApprovalSection
             keepRunningErrorSection
         }
+    }
+    
+    @ViewBuilder
+    private var hintApplyWhenAppQuitSection: some View {
+        HStack {
+            Spacer()
+                .frame(width: 30)
+            if keepRunningHasPendingChange {
+                Text(Constants.hintApplyWhenAppQuits)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.leading)
+        .padding(.trailing)
     }
     
     @ViewBuilder
@@ -276,8 +292,11 @@ struct GeneralSettingsEditView: View {
     
     private func syncKeepRunningState() {
         launchAgentService.refresh()
-        isKeepRunningOn = launchAgentService.isInstalled
+        isKeepRunningOn = launchAgentService.isDesired
+        keepRunningHasPendingChange = launchAgentService.hasPendingChange
         keepRunningNeedsApproval = launchAgentService.status == .requiresApproval
+        keepRunningPlistMissing = launchAgentService.status == .notFound
+        keepRunningError = launchAgentService.persistedError
     }
 
     

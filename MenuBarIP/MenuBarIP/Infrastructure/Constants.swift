@@ -148,6 +148,7 @@ struct Constants{
     static let settingsKeyInternetCheckUrl3 = "internet-check-url-3"
     static let settingsKeyIpInfoApiUrl = "ip-info-api-url"
     static let settingsKeyIpInfoMapping = "ip-info-api-matches"
+    static let settingsKeyLaunchAgentError = "la-error"
     
     // MARK: Elements names
     static let info = "Info"
@@ -246,6 +247,7 @@ struct Constants{
     static let hintIpInfoApi = "The IP info API is needed to get advanced information about a public IP address, such as its location. This allows you to display the country flag in the macOS menu bar, as well as show the address on a map. Typically, data from such APIs is in JSON format. Here, you can assign an API address and map the JSON data values to application values."
     static let hintNotSet = "Not set yet"
     static let hintJsonKey = "JSON data key"
+    static let hintApplyWhenAppQuits = "This change will be applied when the app quits."
     
     // MARK: Menubar item keys
     static let mbItemKeyPublicIpAddress = "public-ip-address"

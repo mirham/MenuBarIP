@@ -116,18 +116,31 @@ final class AppState {
 }
 
 extension AppState {
-    struct Current : Equatable {
+    struct Current : Settable, Equatable {
         var refreshSignal: Bool = false
         var ipCustomization: Customization? = nil
         var localIpCustomization: Customization? = nil
         var customTextCustomization: Customization? = nil
         var publicIpCustomText: String? = nil
+        var launchAgentError: String? = nil {
+            didSet {
+                writeSetting(
+                    newValue: launchAgentError,
+                    key: Constants.settingsKeyLaunchAgentError)
+            }
+        }
+        
+        init(){
+            launchAgentError = readSetting(key: Constants.settingsKeyLaunchAgentError)
+            ?? nil
+        }
         
         static func == (lhs: Current, rhs: Current) -> Bool {
             let result = lhs.ipCustomization == rhs.ipCustomization
             && lhs.localIpCustomization == rhs.localIpCustomization
             && lhs.customTextCustomization == rhs.customTextCustomization
             && lhs.publicIpCustomText == rhs.publicIpCustomText
+            && lhs.launchAgentError == rhs.launchAgentError
             
             return result
         }
