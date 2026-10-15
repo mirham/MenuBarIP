@@ -43,6 +43,7 @@
 		354032A72C5E8037002624D2 /* MenuBarItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */; };
 		354032A92C5E8362002624D2 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 354032A82C5E8362002624D2 /* SettingsView.swift */; };
 		3547A75F307E73110021FC5F /* com.mirham.MenuBarIP.launchagent.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */; };
+		355E4A203081650F00A06FC6 /* FixedSegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355E4A1F3081650B00A06FC6 /* FixedSegmentedPicker.swift */; };
 		356A63972DE093960073DA39 /* NetworkStateUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63962DE093830073DA39 /* NetworkStateUpdate.swift */; };
 		356A63992DE094420073DA39 /* NetworkStateUpdateBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */; };
 		35747A8B2C79E68200935C82 /* GeneralSettingsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */; };
@@ -138,6 +139,7 @@
 		354032A62C5E8037002624D2 /* MenuBarItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarItemsContainerView.swift; sourceTree = "<group>"; };
 		354032A82C5E8362002624D2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		3547A75C307E6F2D0021FC5F /* com.mirham.MenuBarIP.launchagent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = com.mirham.MenuBarIP.launchagent.plist; sourceTree = "<group>"; };
+		355E4A1F3081650B00A06FC6 /* FixedSegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSegmentedPicker.swift; sourceTree = "<group>"; };
 		356A63962DE093830073DA39 /* NetworkStateUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdate.swift; sourceTree = "<group>"; };
 		356A63982DE0943F0073DA39 /* NetworkStateUpdateBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStateUpdateBuilder.swift; sourceTree = "<group>"; };
 		35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsEditView.swift; sourceTree = "<group>"; };
@@ -366,6 +368,7 @@
 			isa = PBXGroup;
 			children = (
 				35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */,
+				355E4A1F3081650B00A06FC6 /* FixedSegmentedPicker.swift */,
 				354032952C5E7A13002624D2 /* AsyncButton.swift */,
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
 				352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */,
@@ -619,6 +622,7 @@
 				35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */,
 				358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */,
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
+				355E4A203081650F00A06FC6 /* FixedSegmentedPicker.swift in Sources */,
 				35779E8C30055A450054927B /* WindowType.swift in Sources */,
 				35779E8D30055A450054927B /* WindowRegistry.swift in Sources */,
 				35779E8E30055A450054927B /* WindowController.swift in Sources */,
@@ -793,8 +797,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MenuBarIP/Preview Content\"";
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MenuBarIP/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Menu Bar IP";
@@ -825,8 +830,9 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MenuBarIP/Preview Content\"";
+				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MenuBarIP/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Menu Bar IP";

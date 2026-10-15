@@ -189,8 +189,6 @@ struct IpCustomizationsEditView : IpAddressContainerView {
             appState.userData.ipCustomizations.append(ipCustomization)
         }
         
-        appState.current.refreshSignal.toggle()
-        
         customizationId = nil
         newIp = String()
         newCustomText = String()
