@@ -9,6 +9,8 @@ import SwiftUI
 import Factory
 
 struct MenuBarStatusView: MenuBarItemsContainerView {
+    @Environment(\.displayScale) private var displayScale
+    
     @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
@@ -17,14 +19,18 @@ struct MenuBarStatusView: MenuBarItemsContainerView {
         
         let image = MenuBarStatusRawView(
             appState: appState,
-            colorScheme: appearance.colorScheme)
-            .renderAsImage()
+            colorScheme: appearance.colorScheme,
+            displayScale: displayScale)
+            .fixedSize()
+            .frame(height: min(
+                NSStatusBar.system.thickness,
+                Constants.defaultMenuBarHeight)
+            )
+            .renderAsImage(scale: displayScale)
         
         HStack {
             if let image {
                 Image(nsImage: image)
-                    .nonAntialiased()
-                    .scaledToFit()
             }
         }
     }
@@ -35,9 +41,11 @@ struct MenuBarStatusView: MenuBarItemsContainerView {
 private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     private let appState: AppState
     private let colorScheme: ColorScheme
+    private let displayScale: CGFloat
     
-    init(appState: AppState, colorScheme: ColorScheme) {
+    init(appState: AppState, colorScheme: ColorScheme, displayScale: CGFloat) {
         self.appState = appState
+        self.displayScale = displayScale
         self.colorScheme = colorScheme
     }
     
@@ -88,12 +96,12 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
         let shownItems = getMenuBarElements(
             keys: appState.userData.menuBarShownItems,
             appState: appState,
-            colorScheme: colorScheme)
+            colorScheme: colorScheme,
+            displayScale: displayScale)
         
         return HStack(spacing: appState.userData.menuBarSpacing) {
             ForEach(shownItems, id: \.id) { item in
                 Image(nsImage: item.image)
-                    .nonAntialiased()
             }
         }
     }

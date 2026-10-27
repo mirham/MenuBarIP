@@ -13,6 +13,7 @@ protocol MenuBarItemsContainerView : IpAddressContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
+        displayScale: CGFloat,
         isExampleAllowed: Bool) -> [MenuBarElement]
 }
 
@@ -22,10 +23,12 @@ extension MenuBarItemsContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
+        displayScale: CGFloat,
         isExampleAllowed: Bool = false
     ) -> [MenuBarElement] {
         let colors = MenuBarColors(
             base: getBaseColor(colorScheme: colorScheme),
+            baseInverted: getBaseColor(colorScheme: colorScheme, inverted: true),
             ip: getIpColor(colorScheme: colorScheme, currentCustomization: appState.current.ipCustomization),
             customText: getCustomTextColor(
                 colorScheme: colorScheme,
@@ -44,6 +47,7 @@ extension MenuBarItemsContainerView {
                 for: key,
                 appState: appState,
                 colors: colors,
+                displayScale: displayScale,
                 isExampleAllowed: isExampleAllowed
             )
         }
@@ -56,6 +60,7 @@ extension MenuBarItemsContainerView {
         for key: String,
         appState: AppState,
         colors: MenuBarColors,
+        displayScale: CGFloat,
         isExampleAllowed: Bool
     ) -> MenuBarElement? {
         let textSize = appState.userData.menuBarTextSize
@@ -67,6 +72,8 @@ extension MenuBarItemsContainerView {
                     view: getInternetStatusItem(
                         networkStatus: appState.network.status,
                         hasNetworkAccess: appState.network.hasInternetAccess,
+                        borderColor: colors.baseInverted,
+                        displayScale: displayScale,
                         textSize: textSize
                     )
                 )
@@ -168,6 +175,7 @@ extension MenuBarItemsContainerView {
                     image: getCountryFlagItem(
                         countryCode: appState.network.publicIp?.countryCode ?? String(),
                         isExampleAllowed: isExampleAllowed,
+                        displayScale: displayScale,
                         textSize: textSize
                     )
                 )
@@ -178,6 +186,7 @@ extension MenuBarItemsContainerView {
                     image: getCountryFlagItem(
                         countryCode: appState.network.publicIp?.countryCode ?? String(),
                         isExampleAllowed: isExampleAllowed,
+                        displayScale: displayScale,
                         scalable: false
                     )
                 )
@@ -324,16 +333,16 @@ extension MenuBarItemsContainerView {
             isExampleAllowed: isExampleAllowed,
             isPublic: isPublicUpper,
             hasNetworkAccess: hasNetworkAccess,
-            textSize: 9)
+            textSize: 9.8)
         let lowerItem = getIpAddressItem(
             ipAddress: ipAddressLower,
             color: colorLower,
             isExampleAllowed: isExampleAllowed,
             isPublic: !isPublicUpper,
             hasNetworkAccess: true,
-            textSize: 9)
+            textSize: 9.8)
             
-            let result = VStack(alignment: .leading, spacing: -2) {
+            let result = VStack(alignment: .leading, spacing: -1) {
             upperItem
             lowerItem
         }
@@ -398,42 +407,47 @@ extension MenuBarItemsContainerView {
     private func getCountryFlagItem(
         countryCode: String,
         isExampleAllowed: Bool,
+        displayScale: CGFloat,
         textSize: Double = Constants.defaultMenuBarTextSize,
         scalable: Bool = true) -> NSImage {
-        let scale = scalable ? 0.9 * textSize / 16 :  0.9
+        let factor = scalable ? 0.9 * textSize / 16 : 0.9
         let effectiveCountryCode = countryCode.isEmpty && isExampleAllowed
             ? Constants.defaultCountryCode
             : countryCode
-        let result = getCountryFlag(countryCode: effectiveCountryCode)
-        result.size.width = result.size.width * scale
-        result.size.height = result.size.height * scale
-        
-        return result
+            
+        let original = getCountryFlag(countryCode: effectiveCountryCode)
+        let target = NSSize(width: original.size.width * factor,
+                            height: original.size.height * factor)
+            
+        return original.pixelSnapped(to: target, scale: displayScale)
     }
     
     private func getInternetStatusItem(
         networkStatus: NetworkStatusType,
         hasNetworkAccess: Bool,
-        textSize: Double = Constants.defaultMenuBarTextSize) -> some View {
-            let color: Color = networkStatus == .on && hasNetworkAccess
-                ? .green
-                : networkStatus != .off
-                    ? .orange
-                    : .red
+        borderColor: Color,
+        displayScale: CGFloat,
+        textSize: Double = Constants.defaultMenuBarTextSize,
+        sizeRatio: Double = 1.0) -> some View {
             
-            let scale = 1 * textSize / 16
-            let result = Circle()
-                .fill(color)
-                .frame(width: 20, height: 20)
-                .overlay(content: {
-                    Circle()
-                        .stroke(Color.primary, lineWidth: 1)
-                        .padding(1)
-                })
-                .scaleEffect(scale)
+        let color: Color = networkStatus == .on && hasNetworkAccess
+            ? .green
+            : networkStatus != .off ? .orange : .red
             
-            return result
-        }
+        let rawPixels = textSize * sizeRatio * displayScale
+        let pixels = max((rawPixels / 2).rounded() * 2, 4)
+        let diameter = pixels / displayScale
+        let lineWidth = 1.0 / displayScale
+            
+        return Circle()
+            .fill(color)
+            .padding(lineWidth / 2)
+            .overlay {
+                Circle()
+                    .strokeBorder(borderColor, lineWidth: lineWidth)
+            }
+            .frame(width: diameter, height: diameter)
+    }
     
     private func getBulletItem(
         color: Color,
@@ -474,6 +488,7 @@ extension MenuBarItemsContainerView {
 
 private struct MenuBarColors {
     let base: Color
+    let baseInverted: Color
     let ip: Color
     let customText: Color
     let localIp: Color

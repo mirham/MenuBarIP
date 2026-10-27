@@ -71,6 +71,7 @@
 		358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA232E00A3A6002DF782 /* ExecutiveService.swift */; };
 		358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA252E00A6D6002DF782 /* LogDestination.swift */; };
 		3594DE132E09F18B0040EA43 /* UTTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */; };
+		359799263090F5F10061F907 /* ColorSchemeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799253090F5E80061F907 /* ColorSchemeExtensions.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
 		35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */; };
@@ -167,6 +168,7 @@
 		358DDA232E00A3A6002DF782 /* ExecutiveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecutiveService.swift; sourceTree = "<group>"; };
 		358DDA252E00A6D6002DF782 /* LogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTTypeExtensions.swift; sourceTree = "<group>"; };
+		359799253090F5E80061F907 /* ColorSchemeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeExtensions.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusEditView.swift; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 				354032862C5E77A9002624D2 /* ViewExtensions.swift */,
 				35980DF62C736B8B0036AB41 /* ImageExtensions.swift */,
 				35980DF82C736BB30036AB41 /* ColorExtensions.swift */,
+				359799253090F5E80061F907 /* ColorSchemeExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -615,6 +618,7 @@
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
 				35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
+				359799263090F5F10061F907 /* ColorSchemeExtensions.swift in Sources */,
 				354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */,
 				35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */,
 				354032602C5E6706002624D2 /* ApiCallable.swift in Sources */,
@@ -811,7 +815,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -844,7 +848,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.MirHam.MenuBarIP;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
