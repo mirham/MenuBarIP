@@ -12,16 +12,13 @@ protocol CustomizableItemsContainerView : View {}
 extension CustomizableItemsContainerView {
     func getBaseColor(
         colorScheme: ColorScheme,
-        forMenu: Bool = false) -> Color {
-        let result: Color = colorScheme == .dark
-            ? forMenu
-                ? Color(hex: Constants.defaultLightColor)
-                : .white
-            : forMenu
-                ? Color(hex: Constants.defaultDarkColor)
-                : .black
+        forMenu: Bool = false,
+        inverted: Bool = false) -> Color {
+        let effective = inverted ? colorScheme.inverted : colorScheme
             
-        return result
+        return effective == .dark
+            ? (forMenu ? Color(hex: Constants.defaultLightColor) : .white)
+            : (forMenu ? Color(hex: Constants.defaultDarkColor) : .black)
     }
     
     func getIpColor(

@@ -17,11 +17,27 @@ extension View {
     }
     
     @MainActor
-    func renderAsImage(scale: CGFloat = NSScreen.main?.backingScaleFactor ?? 2) -> NSImage? {
-        let renderer = ImageRenderer(content: self)
+    func renderAsImage(scale: CGFloat) -> NSImage? {
+        let hosting = NSHostingView(rootView: self)
+        let fitting = hosting.fittingSize
+        
+        guard fitting.width > 0, fitting.height > 0
+        else { return nil }
+        
+        let size = CGSize(
+            width: ceil(fitting.width * scale) / scale,
+            height: ceil(fitting.height * scale) / scale)
+        
+        let renderer = ImageRenderer(content: self.frame(
+            width: size.width,
+            height: size.height)
+        )
         renderer.scale = scale
         
-        return renderer.nsImage
+        guard let cgImage = renderer.cgImage
+        else { return nil }
+        
+        return NSImage(cgImage: cgImage, size: size)
     }
     
     @ViewBuilder

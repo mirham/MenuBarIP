@@ -13,6 +13,7 @@ struct Constants{
     static let defaultCountryCode = "US"
     static let defaultPublicIpAddress = "1.1.1.1"
     static let defaultLocalIpAddress = "192.168.1.2"
+    static let defaultMenuBarHeight: CGFloat = 22
     static let defaultIntervalBetweenChecksSeconds: Int = 60
     static let minTimeIntervalBetweenChecksSeconds: Int = 1
     static let maxTimeIntervalBetweenChecksSeconds: Int = 300

@@ -23,7 +23,6 @@ struct MenuBarElement: View, Equatable {
     
     var body: some View {
         Image(nsImage: image)
-            .resizable()
             .frame(width: image.size.width, height: image.size.height)
     }
     
