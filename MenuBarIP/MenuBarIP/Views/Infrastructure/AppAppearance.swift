@@ -13,18 +13,25 @@ import SwiftUI
 @MainActor
 @Observable
 final class AppAppearance {
-    private(set) var colorScheme: ColorScheme = .light
+    private(set) var systemColorScheme: ColorScheme = .light
+    private(set) var override: ColorScheme?
+    
+    var colorScheme: ColorScheme {
+        override ?? systemColorScheme
+    }
+    
     private var observation: NSKeyValueObservation?
     private var notificationTask: Task<Void, Never>?
     
-    init() {
+    init(option: ColorSchemeOption = .system) {
+        override = option.colorScheme
         refresh()
         
         observation = NSApplication.shared.observe(
             \.effectiveAppearance,
              options: [.new]) { [weak self] _, _ in
-            Task { @MainActor in self?.refresh() }
-        }
+                 Task { @MainActor in self?.refresh() }
+             }
         
         notificationTask = Task { @MainActor [weak self] in
             let center = DistributedNotificationCenter.default()
@@ -39,16 +46,25 @@ final class AppAppearance {
         }
     }
     
+    func apply(_ option: ColorSchemeOption) {
+        let newOverride = option.colorScheme
+        
+        if override != newOverride {
+            override = newOverride
+        }
+    }
+    
     // MARK: Private functions
     
     private func refresh() {
         let match = NSApplication.shared.effectiveAppearance
             .bestMatch(from: [.aqua, .darkAqua])
         let newScheme: ColorScheme = (match == .darkAqua)
-            ? .dark : .light
+            ? .dark
+            : .light
         
-        if colorScheme != newScheme {
-            colorScheme = newScheme
+        if systemColorScheme != newScheme {
+            systemColorScheme = newScheme
         }
     }
 }

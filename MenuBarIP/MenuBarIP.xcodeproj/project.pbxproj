@@ -74,12 +74,14 @@
 		359799263090F5F10061F907 /* ColorSchemeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799253090F5E80061F907 /* ColorSchemeExtensions.swift */; };
 		359799283091FD150061F907 /* NSScreenExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799273091FD0F0061F907 /* NSScreenExtensions.swift */; };
 		3597992A309209220061F907 /* WholePointLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799293092091E0061F907 /* WholePointLayout.swift */; };
+		3597992C309241BD0061F907 /* ColorSchemePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3597992B309241B70061F907 /* ColorSchemePicker.swift */; };
+		3597992E309242AA0061F907 /* ColorSchemeOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3597992D309242A70061F907 /* ColorSchemeOption.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
 		35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */; };
 		35980DFE2C736CDF0036AB41 /* DropViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFD2C736CDF0036AB41 /* DropViewDelegate.swift */; };
 		35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */; };
-		35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */; };
+		35980E022C7374F80036AB41 /* IpStylingEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E012C7374F80036AB41 /* IpStylingEditView.swift */; };
 		35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E032C7380BC0036AB41 /* IpInfo.swift */; };
 		35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980E052C75310B0036AB41 /* PublicIpLocationView.swift */; };
 		35BF309F2E015FE2003D9CE5 /* IpInfoApiEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */; };
@@ -87,7 +89,7 @@
 		35C89D343077CEE600851539 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C89D333077CEDC00851539 /* AppAppearance.swift */; };
 		35E1C71A2D91C17B0014EB04 /* IpApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E1C7192D91C17B0014EB04 /* IpApiService.swift */; };
 		35E989C72F4F4F4E00281A37 /* FixedSidebarTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */; };
-		35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */; };
+		35E989C92F4F7FC500281A37 /* CustomTextStylingEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989C82F4F7FC500281A37 /* CustomTextStylingEditView.swift */; };
 		35E989CB2F4F814900281A37 /* CustomizableItemsContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */; };
 		35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */; };
 /* End PBXBuildFile section */
@@ -173,12 +175,14 @@
 		359799253090F5E80061F907 /* ColorSchemeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeExtensions.swift; sourceTree = "<group>"; };
 		359799273091FD0F0061F907 /* NSScreenExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSScreenExtensions.swift; sourceTree = "<group>"; };
 		359799293092091E0061F907 /* WholePointLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholePointLayout.swift; sourceTree = "<group>"; };
+		3597992B309241B70061F907 /* ColorSchemePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemePicker.swift; sourceTree = "<group>"; };
+		3597992D309242A70061F907 /* ColorSchemeOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeOption.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusEditView.swift; sourceTree = "<group>"; };
 		35980DFD2C736CDF0036AB41 /* DropViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropViewDelegate.swift; sourceTree = "<group>"; };
 		35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApisEditView.swift; sourceTree = "<group>"; };
-		35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpCustomizationsEditView.swift; sourceTree = "<group>"; };
+		35980E012C7374F80036AB41 /* IpStylingEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpStylingEditView.swift; sourceTree = "<group>"; };
 		35980E032C7380BC0036AB41 /* IpInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfo.swift; sourceTree = "<group>"; };
 		35980E052C75310B0036AB41 /* PublicIpLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicIpLocationView.swift; sourceTree = "<group>"; };
 		35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpInfoApiEditView.swift; sourceTree = "<group>"; };
@@ -187,7 +191,7 @@
 		35C89D333077CEDC00851539 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		35E1C7192D91C17B0014EB04 /* IpApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IpApiService.swift; sourceTree = "<group>"; };
 		35E989C62F4F4F4B00281A37 /* FixedSidebarTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSidebarTabView.swift; sourceTree = "<group>"; };
-		35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextCustomizationsEditView.swift; sourceTree = "<group>"; };
+		35E989C82F4F7FC500281A37 /* CustomTextStylingEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextStylingEditView.swift; sourceTree = "<group>"; };
 		35E989CA2F4F814900281A37 /* CustomizableItemsContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizableItemsContainerView.swift; sourceTree = "<group>"; };
 		35E989CC2F4F8E7600281A37 /* CustomizableItemType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizableItemType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -290,7 +294,6 @@
 				354032802C5E7338002624D2 /* Constants.swift */,
 				354032592C5E64DB002624D2 /* AppState.swift */,
 				357EED683080BFD200288AC1 /* AppDelegate.swift */,
-				35C89D333077CEDC00851539 /* AppAppearance.swift */,
 				3540327E2C5E72DD002624D2 /* OperationResult.swift */,
 				354032692C5E687A002624D2 /* Attributes */,
 				354032882C5E7841002624D2 /* Helpers */,
@@ -381,6 +384,7 @@
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
 				352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */,
 				359799293092091E0061F907 /* WholePointLayout.swift */,
+				3597992B309241B70061F907 /* ColorSchemePicker.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -430,8 +434,8 @@
 				354032A82C5E8362002624D2 /* SettingsView.swift */,
 				35747A8A2C79E68200935C82 /* GeneralSettingsEditView.swift */,
 				35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */,
-				35980E012C7374F80036AB41 /* IpCustomizationsEditView.swift */,
-				35E989C82F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift */,
+				35980E012C7374F80036AB41 /* IpStylingEditView.swift */,
+				35E989C82F4F7FC500281A37 /* CustomTextStylingEditView.swift */,
 				35980DFF2C736E3E0036AB41 /* IpApisEditView.swift */,
 				35BF309E2E015FE2003D9CE5 /* IpInfoApiEditView.swift */,
 			);
@@ -491,6 +495,8 @@
 				35779E8930055A450054927B /* WindowController.swift */,
 				35779E8A30055A450054927B /* WindowManager.swift */,
 				35779E8B30055A450054927B /* WindowRegistry.swift */,
+				35C89D333077CEDC00851539 /* AppAppearance.swift */,
+				3597992D309242A70061F907 /* ColorSchemeOption.swift */,
 			);
 			path = Infrastructure;
 			sourceTree = "<group>";
@@ -623,13 +629,13 @@
 				358DDA242E00A3AD002DF782 /* ExecutiveService.swift in Sources */,
 				354032762C5E6C3F002624D2 /* NetworkInterface.swift in Sources */,
 				35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */,
-				35E989C92F4F7FC500281A37 /* CustomTextCustomizationsEditView.swift in Sources */,
+				35E989C92F4F7FC500281A37 /* CustomTextStylingEditView.swift in Sources */,
 				3540327D2C5E71F2002624D2 /* IpService.swift in Sources */,
 				359799263090F5F10061F907 /* ColorSchemeExtensions.swift in Sources */,
 				354032672C5E682D002624D2 /* IpApiInfo.swift in Sources */,
 				35980E042C7380BC0036AB41 /* IpInfo.swift in Sources */,
 				354032602C5E6706002624D2 /* ApiCallable.swift in Sources */,
-				35980E022C7374F80036AB41 /* IpCustomizationsEditView.swift in Sources */,
+				35980E022C7374F80036AB41 /* IpStylingEditView.swift in Sources */,
 				35980E002C736E3E0036AB41 /* IpApisEditView.swift in Sources */,
 				358DDA1B2E001D7F002DF782 /* LoggingService.swift in Sources */,
 				354032902C5E7921002624D2 /* PointerOnHoverModifier.swift in Sources */,
@@ -653,6 +659,7 @@
 				35E989CD2F4F8E7600281A37 /* CustomizableItemType.swift in Sources */,
 				3540329E2C5E7B51002624D2 /* ShellAccessible.swift in Sources */,
 				354032872C5E77A9002624D2 /* ViewExtensions.swift in Sources */,
+				3597992E309242AA0061F907 /* ColorSchemeOption.swift in Sources */,
 				352D59B72C7748DA0058B51B /* PopoverColorPicker.swift in Sources */,
 				354032482C5E626D002624D2 /* MenuBarIPApp.swift in Sources */,
 				3540327B2C5E6CE7002624D2 /* NWInterfaceExtension.swift in Sources */,
@@ -661,6 +668,7 @@
 				354032622C5E6730002624D2 /* Settable.swift in Sources */,
 				354032A32C5E7E81002624D2 /* IpAddressContainerView.swift in Sources */,
 				3540328A2C5E7860002624D2 /* AppHelper.swift in Sources */,
+				3597992C309241BD0061F907 /* ColorSchemePicker.swift in Sources */,
 				3575CCAB2DD768D100102D4E /* StringExtensions.swift in Sources */,
 				35BF309F2E015FE2003D9CE5 /* IpInfoApiEditView.swift in Sources */,
 				35BF30A32E01A1BA003D9CE5 /* DataExtensions.swift in Sources */,

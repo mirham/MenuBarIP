@@ -287,6 +287,14 @@ extension AppState {
             }
         }
         
+        var colorScheme: ColorSchemeOption = .system {
+            didSet {
+                writeSetting(
+                    newValue: colorScheme,
+                    key: Constants.settingsKeyColorScheme)
+            }
+        }
+        
         var menuBarUseThemeColor: Bool = false {
             didSet {
                 writeSetting(
@@ -339,6 +347,7 @@ extension AppState {
             let result = lhs.menuBarUseThemeColor == rhs.menuBarUseThemeColor
                 && lhs.ipCustomizations == rhs.ipCustomizations
                 && lhs.customTextCustomizations == rhs.customTextCustomizations
+                && lhs.colorScheme == rhs.colorScheme
             
             return result
         }
@@ -362,6 +371,8 @@ extension AppState {
                 ?? Constants.defaultInternetCheckUrl2
             internetCheckUrl3 = readSetting(key: Constants.settingsKeyInternetCheckUrl3)
                 ?? Constants.defaultInternetCheckUrl3
+            colorScheme = readSetting(key: Constants.settingsKeyColorScheme)
+                ?? .system
             menuBarUseThemeColor = readSetting(key: Constants.settingsKeyMenuBarUseThemeColor)
                 ?? false
             menuBarTextSize = readSetting(key: Constants.settingsKeyMenuBarTextSize)

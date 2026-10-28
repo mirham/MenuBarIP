@@ -21,8 +21,10 @@ extension Container {
     
     @MainActor
     var appAppearance: Factory<AppAppearance> {
-        self { @MainActor in AppAppearance() }
-            .singleton
+        self { @MainActor in
+            AppAppearance(option: self.appState().userData.colorScheme)
+        }
+        .singleton
     }
     
     // MARK: Windows management
