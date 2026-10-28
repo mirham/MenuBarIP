@@ -9,8 +9,6 @@ import SwiftUI
 import Factory
 
 struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
-    @Environment(\.displayScale) private var displayScale
-    
     @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
@@ -28,7 +26,8 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
             Spacer().frame(height: 10)
             textSizeSection
             spacingSection
-            themeColorSection
+            Spacer().frame(height: 10)
+            colorSchemeSection
             Spacer()
         }
         .onAppear {
@@ -47,6 +46,7 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
             Image(systemName: Constants.iconInfo)
                 .asInfoIcon()
             Text(Constants.hintMenuBarAdjustment)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top)
                 .padding(.trailing)
         }
@@ -67,6 +67,9 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
                 destinationItems: $shownItems,
                 keepLastItem: true
             )
+        }
+        .onChange(of: appearance.systemColorScheme) { _, _ in
+            fillMenuBarElementItems()
         }
     }
     
@@ -91,12 +94,31 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
     }
     
     @ViewBuilder
+    private var colorSchemeSection: some View {
+        VStack(alignment: .center) {
+            Text(Constants.colorScheme)
+                .asCenteredTitle()
+            ColorSchemePicker(selection: Binding(
+                get: { appState.userData.colorScheme },
+                set: { appState.userData.colorScheme = $0 }
+            ))
+            Spacer()
+                .frame(height: 10)
+            themeColorSection
+        }
+        .frame(width: 450, alignment: .center)
+        .padding(.leading)
+        .padding(.trailing)
+    }
+    
+    @ViewBuilder
     private var themeColorSection: some View {
         Toggle(Constants.settingsElementThemeColor, isOn: Binding(
             get: { appState.userData.menuBarUseThemeColor },
             set: { appState.userData.menuBarUseThemeColor = $0 }
         ))
-        .withSettingToggleStyle()
+        .toggleStyle(CheckToggleStyle())
+        .pointerOnHover()
     }
     
     // MARK: Private functions
@@ -160,14 +182,12 @@ struct MenuBarStatusEditView: @MainActor MenuBarItemsContainerView {
             keys: appState.userData.menuBarShownItems,
             appState: appState,
             colorScheme: appearance.colorScheme,
-            displayScale: displayScale,
             isExampleAllowed: true)
         
         let hiddenItems = getMenuBarElements(
             keys: appState.userData.menuBarHiddenItems,
             appState: appState,
             colorScheme: appearance.colorScheme,
-            displayScale: displayScale,
             isExampleAllowed: true)
         
         self.shownItems.removeAll()
@@ -226,15 +246,6 @@ private extension Text {
         self.font(.title3)
             .padding(.top, 5)
             .padding(.bottom, 5)
-    }
-}
-
-private extension Toggle {
-    func withSettingToggleStyle() -> some View {
-        self.toggleStyle(CheckToggleStyle())
-            .pointerOnHover()
-            .padding(.leading)
-            .padding(.top)
     }
 }
 

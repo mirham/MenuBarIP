@@ -16,28 +16,39 @@ extension View {
         modifier(PointerOnHoverModifier())
     }
     
+    func wholePoints() -> some View {
+        WholePointLayout { self }
+    }
+    
     @MainActor
-    func renderAsImage(scale: CGFloat) -> NSImage? {
-        let hosting = NSHostingView(rootView: self)
-        let fitting = hosting.fittingSize
+    func renderAsImage() -> NSImage? {
+        let probe = ImageRenderer(content: self)
+        probe.scale = 2
         
-        guard fitting.width > 0, fitting.height > 0
+        guard let probeImage = probe.cgImage
         else { return nil }
         
-        let size = CGSize(
-            width: ceil(fitting.width * scale) / scale,
-            height: ceil(fitting.height * scale) / scale)
+        let pointSize = NSSize(
+            width: ceil(CGFloat(probeImage.width) / 2),
+            height: ceil(CGFloat(probeImage.height) / 2))
+        let content = self
+            .fixedSize()
+            .frame(width: pointSize.width, height: pointSize.height)
+        let image = NSImage(size: pointSize)
         
-        let renderer = ImageRenderer(content: self.frame(
-            width: size.width,
-            height: size.height)
-        )
-        renderer.scale = scale
+        for scale in [1.0, 2.0] as [CGFloat] {
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = scale
+            
+            guard let cg = renderer.cgImage
+            else { continue }
+            
+            let rep = NSBitmapImageRep(cgImage: cg)
+            rep.size = pointSize
+            image.addRepresentation(rep)
+        }
         
-        guard let cgImage = renderer.cgImage
-        else { return nil }
-        
-        return NSImage(cgImage: cgImage, size: size)
+        return image.representations.isEmpty ? nil : image
     }
     
     @ViewBuilder

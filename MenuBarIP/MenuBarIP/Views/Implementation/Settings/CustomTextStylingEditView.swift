@@ -1,5 +1,5 @@
 //
-//  CustomTextCustomizationsEditView.swift
+//  CustomTextStylingEditView.swift
 //  MenuBarIP
 //
 //  Created by UglyGeorge on 25.02.2026.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Factory
 
-struct CustomTextCustomizationsEditView : CustomizableItemsContainerView {
+struct CustomTextStylingEditView : CustomizableItemsContainerView {
     @Environment(\.controlActiveState) private var controlActiveState
     
     @Injected(\.appState) private var appState
@@ -230,6 +230,6 @@ private extension Circle {
 }
 
 #Preview {
-    CustomTextCustomizationsEditView()
+    CustomTextStylingEditView()
 }
 

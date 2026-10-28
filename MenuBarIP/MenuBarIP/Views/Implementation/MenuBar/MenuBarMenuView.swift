@@ -42,7 +42,7 @@ struct MenuBarMenuView : IpAddressContainerView {
     }
     
     private var baseColor: Color {
-        return getBaseColor(colorScheme: appearance.colorScheme, forMenu: true)
+        return getBaseColor(colorScheme: appearance.systemColorScheme, forMenu: true)
     }
     
     var body: some View {

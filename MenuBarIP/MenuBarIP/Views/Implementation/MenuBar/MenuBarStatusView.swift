@@ -9,8 +9,6 @@ import SwiftUI
 import Factory
 
 struct MenuBarStatusView: MenuBarItemsContainerView {
-    @Environment(\.displayScale) private var displayScale
-    
     @Injected(\.appState) private var appState
     @Injected(\.appAppearance) private var appearance
     
@@ -19,20 +17,10 @@ struct MenuBarStatusView: MenuBarItemsContainerView {
         
         let image = MenuBarStatusRawView(
             appState: appState,
-            colorScheme: appearance.colorScheme,
-            displayScale: displayScale)
-            .fixedSize()
-            .frame(height: min(
-                NSStatusBar.system.thickness,
-                Constants.defaultMenuBarHeight)
-            )
-            .renderAsImage(scale: displayScale)
+            colorScheme: appearance.colorScheme)
+            .renderAsImage()
         
-        HStack {
-            if let image {
-                Image(nsImage: image)
-            }
-        }
+        return Image(nsImage: image ?? NSImage())
     }
 }
 
@@ -41,11 +29,9 @@ struct MenuBarStatusView: MenuBarItemsContainerView {
 private struct MenuBarStatusRawView: MenuBarItemsContainerView {
     private let appState: AppState
     private let colorScheme: ColorScheme
-    private let displayScale: CGFloat
     
-    init(appState: AppState, colorScheme: ColorScheme, displayScale: CGFloat) {
+    init(appState: AppState, colorScheme: ColorScheme) {
         self.appState = appState
-        self.displayScale = displayScale
         self.colorScheme = colorScheme
     }
     
@@ -96,12 +82,11 @@ private struct MenuBarStatusRawView: MenuBarItemsContainerView {
         let shownItems = getMenuBarElements(
             keys: appState.userData.menuBarShownItems,
             appState: appState,
-            colorScheme: colorScheme,
-            displayScale: displayScale)
+            colorScheme: colorScheme)
         
-        return HStack(spacing: appState.userData.menuBarSpacing) {
+        return HStack(spacing: appState.userData.menuBarSpacing.rounded()) {
             ForEach(shownItems, id: \.id) { item in
-                Image(nsImage: item.image)
+                item
             }
         }
     }

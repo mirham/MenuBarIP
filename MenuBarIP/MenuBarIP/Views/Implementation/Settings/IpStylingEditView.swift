@@ -1,5 +1,5 @@
 //
-//  IpCustomizationsEditView.swift
+//  IpStylingEditView.swift
 //  MenuBarIP
 //
 //  Created by UglyGeorge on 19.08.2024.
@@ -10,7 +10,7 @@ import Network
 import RegexBuilder
 import Factory
 
-struct IpCustomizationsEditView : IpAddressContainerView {
+struct IpStylingEditView : IpAddressContainerView {
     @Environment(\.controlActiveState) private var controlActiveState
     
     @Injected(\.appState) private var appState
@@ -247,6 +247,6 @@ private extension Circle {
 }
 
 #Preview {
-    IpCustomizationsEditView()
+    IpStylingEditView()
 }
 

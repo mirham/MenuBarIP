@@ -39,14 +39,14 @@ struct SettingsView : View {
                 title: Constants.settingsElementIpCustomization,
                 icon: Constants.iconPaintbrush
             ) {
-                IpCustomizationsEditView()
+                IpStylingEditView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             FixedSidebarTabView.TabItem(
                 title: Constants.settingsElementCustomTextCustomization,
                 icon: Constants.iconPaintbrush
             ) {
-                CustomTextCustomizationsEditView()
+                CustomTextStylingEditView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             FixedSidebarTabView.TabItem(
