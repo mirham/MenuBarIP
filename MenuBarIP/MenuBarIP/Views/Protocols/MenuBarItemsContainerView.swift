@@ -13,7 +13,6 @@ protocol MenuBarItemsContainerView : IpAddressContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
-        displayScale: CGFloat,
         isExampleAllowed: Bool) -> [MenuBarElement]
 }
 
@@ -23,7 +22,6 @@ extension MenuBarItemsContainerView {
         keys: [String],
         appState: AppState,
         colorScheme: ColorScheme,
-        displayScale: CGFloat,
         isExampleAllowed: Bool = false
     ) -> [MenuBarElement] {
         let colors = MenuBarColors(
@@ -47,7 +45,6 @@ extension MenuBarItemsContainerView {
                 for: key,
                 appState: appState,
                 colors: colors,
-                displayScale: displayScale,
                 isExampleAllowed: isExampleAllowed
             )
         }
@@ -60,7 +57,6 @@ extension MenuBarItemsContainerView {
         for key: String,
         appState: AppState,
         colors: MenuBarColors,
-        displayScale: CGFloat,
         isExampleAllowed: Bool
     ) -> MenuBarElement? {
         let textSize = appState.userData.menuBarTextSize
@@ -73,7 +69,6 @@ extension MenuBarItemsContainerView {
                         networkStatus: appState.network.status,
                         hasNetworkAccess: appState.network.hasInternetAccess,
                         borderColor: colors.baseInverted,
-                        displayScale: displayScale,
                         textSize: textSize
                     )
                 )
@@ -175,7 +170,6 @@ extension MenuBarItemsContainerView {
                     image: getCountryFlagItem(
                         countryCode: appState.network.publicIp?.countryCode ?? String(),
                         isExampleAllowed: isExampleAllowed,
-                        displayScale: displayScale,
                         textSize: textSize
                     )
                 )
@@ -186,7 +180,6 @@ extension MenuBarItemsContainerView {
                     image: getCountryFlagItem(
                         countryCode: appState.network.publicIp?.countryCode ?? String(),
                         isExampleAllowed: isExampleAllowed,
-                        displayScale: displayScale,
                         scalable: false
                     )
                 )
@@ -228,27 +221,22 @@ extension MenuBarItemsContainerView {
     
     @MainActor
     private func makeMenuBarItem(key: String, view: some View) -> MenuBarElement {
-        MenuBarElement(
-            image: renderMenuBarItemImage(view: view),
-            key: key
-        )
+        MenuBarElement(content: AnyView(view.wholePoints()), key: key)
     }
     
     @MainActor
     private func makeMenuBarItemWithImage(key: String, image: NSImage) -> MenuBarElement {
         MenuBarElement(
-            image: image,
-            key: key
-        )
+            content: AnyView(Image(nsImage: image).wholePoints()),
+            key: key)
     }
     
     @MainActor
     private func makeSeparatorItem(key: String, view: some View) -> MenuBarElement {
         MenuBarElement(
-            image: renderMenuBarItemImage(view: view),
+            content: AnyView(view.wholePoints()),
             key: key,
-            isSeparator: true
-        )
+            isSeparator: true)
     }
     
     @MainActor
@@ -269,10 +257,7 @@ extension MenuBarItemsContainerView {
     
     @MainActor
     private func renderMenuBarItemImage(view: some View) -> NSImage {
-        let renderer = ImageRenderer(content: view)
-        let result = renderer.nsImage ?? NSImage()
-        
-        return result
+        view.renderAsImage() ?? NSImage()
     }
     
     private func getIpAddressItem(
@@ -407,26 +392,30 @@ extension MenuBarItemsContainerView {
     private func getCountryFlagItem(
         countryCode: String,
         isExampleAllowed: Bool,
-        displayScale: CGFloat,
         textSize: Double = Constants.defaultMenuBarTextSize,
         scalable: Bool = true) -> NSImage {
-        let factor = scalable ? 0.9 * textSize / 16 : 0.9
         let effectiveCountryCode = countryCode.isEmpty && isExampleAllowed
             ? Constants.defaultCountryCode
             : countryCode
-            
         let original = getCountryFlag(countryCode: effectiveCountryCode)
-        let target = NSSize(width: original.size.width * factor,
-                            height: original.size.height * factor)
+        let factor = scalable ? 0.9 * textSize / 16 : 0.9
+        
+        guard original.size.width > 0, original.size.height > 0
+        else { return original }
             
-        return original.pixelSnapped(to: target, scale: displayScale)
+        let height = (original.size.height * factor).rounded()
+        let width = (height * original.size.width / original.size.height).rounded()
+        
+        let result = (original.copy() as? NSImage) ?? original
+        result.size = NSSize(width: width, height: height)
+        
+        return result
     }
     
     private func getInternetStatusItem(
         networkStatus: NetworkStatusType,
         hasNetworkAccess: Bool,
         borderColor: Color,
-        displayScale: CGFloat,
         textSize: Double = Constants.defaultMenuBarTextSize,
         sizeRatio: Double = 1.0) -> some View {
             
@@ -434,10 +423,8 @@ extension MenuBarItemsContainerView {
             ? .green
             : networkStatus != .off ? .orange : .red
             
-        let rawPixels = textSize * sizeRatio * displayScale
-        let pixels = max((rawPixels / 2).rounded() * 2, 4)
-        let diameter = pixels / displayScale
-        let lineWidth = 1.0 / displayScale
+        let diameter = max((textSize * sizeRatio / 2).rounded() * 2, 4)
+        let lineWidth = 1.0
             
         return Circle()
             .fill(color)
@@ -498,7 +485,9 @@ private struct MenuBarColors {
     var effectiveIpColor: Color { useThemeColor ? base : ip }
     var effectiveCustomTextColor: Color { useThemeColor ? base : customText }
     var effectiveLocalIpColor: Color { useThemeColor ? base : localIp }
-    var effectiveLocalIpCustomTextColor: Color { useThemeColor ? base : localIpCustomText }
+    var effectiveLocalIpCustomTextColor: Color {
+        useThemeColor ? base : localIpCustomText
+    }
 }
 
 private extension Text {

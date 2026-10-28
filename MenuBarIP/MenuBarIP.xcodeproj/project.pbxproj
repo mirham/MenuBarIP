@@ -72,6 +72,8 @@
 		358DDA262E00A6D6002DF782 /* LogDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 358DDA252E00A6D6002DF782 /* LogDestination.swift */; };
 		3594DE132E09F18B0040EA43 /* UTTypeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */; };
 		359799263090F5F10061F907 /* ColorSchemeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799253090F5E80061F907 /* ColorSchemeExtensions.swift */; };
+		359799283091FD150061F907 /* NSScreenExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799273091FD0F0061F907 /* NSScreenExtensions.swift */; };
+		3597992A309209220061F907 /* WholePointLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 359799293092091E0061F907 /* WholePointLayout.swift */; };
 		35980DF72C736B8B0036AB41 /* ImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF62C736B8B0036AB41 /* ImageExtensions.swift */; };
 		35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DF82C736BB30036AB41 /* ColorExtensions.swift */; };
 		35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */; };
@@ -169,6 +171,8 @@
 		358DDA252E00A6D6002DF782 /* LogDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDestination.swift; sourceTree = "<group>"; };
 		3594DE122E09F1860040EA43 /* UTTypeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTTypeExtensions.swift; sourceTree = "<group>"; };
 		359799253090F5E80061F907 /* ColorSchemeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeExtensions.swift; sourceTree = "<group>"; };
+		359799273091FD0F0061F907 /* NSScreenExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSScreenExtensions.swift; sourceTree = "<group>"; };
+		359799293092091E0061F907 /* WholePointLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholePointLayout.swift; sourceTree = "<group>"; };
 		35980DF62C736B8B0036AB41 /* ImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExtensions.swift; sourceTree = "<group>"; };
 		35980DF82C736BB30036AB41 /* ColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensions.swift; sourceTree = "<group>"; };
 		35980DFA2C736C8A0036AB41 /* MenuBarStatusEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarStatusEditView.swift; sourceTree = "<group>"; };
@@ -344,6 +348,7 @@
 			children = (
 				354032862C5E77A9002624D2 /* ViewExtensions.swift */,
 				35980DF62C736B8B0036AB41 /* ImageExtensions.swift */,
+				359799273091FD0F0061F907 /* NSScreenExtensions.swift */,
 				35980DF82C736BB30036AB41 /* ColorExtensions.swift */,
 				359799253090F5E80061F907 /* ColorSchemeExtensions.swift */,
 			);
@@ -375,6 +380,7 @@
 				354032952C5E7A13002624D2 /* AsyncButton.swift */,
 				354032972C5E7A4C002624D2 /* MenuBarElement.swift */,
 				352D59B62C7748DA0058B51B /* PopoverColorPicker.swift */,
+				359799293092091E0061F907 /* WholePointLayout.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -606,6 +612,7 @@
 				35980DFB2C736C8A0036AB41 /* MenuBarStatusEditView.swift in Sources */,
 				3540326B2C5E6899002624D2 /* CodableIgnored.swift in Sources */,
 				3540325A2C5E64DB002624D2 /* AppState.swift in Sources */,
+				3597992A309209220061F907 /* WholePointLayout.swift in Sources */,
 				3540325D2C5E65EF002624D2 /* NetworkStatusType.swift in Sources */,
 				35980DF92C736BB30036AB41 /* ColorExtensions.swift in Sources */,
 				3575CCAF2DD7698300102D4E /* TaskExtensions.swift in Sources */,
@@ -631,6 +638,7 @@
 				35779E8D30055A450054927B /* WindowRegistry.swift in Sources */,
 				35779E8E30055A450054927B /* WindowController.swift in Sources */,
 				35779E8F30055A450054927B /* ButtonType.swift in Sources */,
+				359799283091FD150061F907 /* NSScreenExtensions.swift in Sources */,
 				35779E9030055A450054927B /* WindowManager.swift in Sources */,
 				35747A8D2C7A2D3F00935C82 /* InfoView.swift in Sources */,
 				35980E062C75310B0036AB41 /* PublicIpLocationView.swift in Sources */,
